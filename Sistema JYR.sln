@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sistema JYR", "Sistema JYR\Sistema JYR.csproj", "{DE2FB770-988C-4726-BC92-01A9C1D353FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sistema JYR.Tests", "Sistema JYR.Tests\Sistema JYR.Tests.csproj", "{D28D00F2-CBE6-4031-9D99-A83C091B8DFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE2FB770-988C-4726-BC92-01A9C1D353FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE2FB770-988C-4726-BC92-01A9C1D353FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE2FB770-988C-4726-BC92-01A9C1D353FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE2FB770-988C-4726-BC92-01A9C1D353FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D28D00F2-CBE6-4031-9D99-A83C091B8DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D28D00F2-CBE6-4031-9D99-A83C091B8DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D28D00F2-CBE6-4031-9D99-A83C091B8DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D28D00F2-CBE6-4031-9D99-A83C091B8DFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D64A091B-A360-43B7-9D58-D31A25A61C0D}
+	EndGlobalSection
+EndGlobal

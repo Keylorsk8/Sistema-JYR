@@ -1,0 +1,11 @@
+﻿#RenderBody{
+    margin-top: 2%;
+}
+
+#NavBar {
+    background-color: #043443 !important;
+}
+
+#NavBar.nav-link {
+    background-color: black !important;
+}

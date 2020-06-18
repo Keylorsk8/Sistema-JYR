@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Ferretería y Materiales JYR S.A</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="NavBar" style="padding-left: 30px;padding-right:30px">
+        <div>
+            <img src="~/Content/imagenes/logoC.png" width="50" />
+            <h2 class="navbar-brand" style="font-weight:100">Ferretería y Materiales JYR</h2>
+        </div>
+
+        <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarColor02" aria-label="Toggle navigation" type="button" data-target="#navbarColor02" data-toggle="collapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            @Html.Partial("_LoginPartial")
+        </div>
+    </nav>
+
+    <div class="container body-content" id="RenderBody">
+        @RenderBody()
+        <hr />
+        <footer style="text-align: center">
+            <p>&copy; @DateTime.Now.Year - Ferretería y Materiales JYR S.A</p>
+        </footer>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

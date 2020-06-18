@@ -1,0 +1,1183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SistemaJYRModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="Discriminator" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaims">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ClaimType" Type="nvarchar(max)" />
+          <Property Name="ClaimValue" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogins">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ProviderKey" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar(max)" />
+          <Property Name="Apellido1" Type="nvarchar(max)" />
+          <Property Name="Apellido2" Type="nvarchar(max)" />
+          <Property Name="Cedula" Type="int" Nullable="false" />
+          <Property Name="Rol" Type="int" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CategoriasProducto">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Direcciones">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Direccion" Type="nchar" MaxLength="500" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EstadoPedido">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EstadoProforma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PedidoDetalle">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="IdPedido" Type="int" Nullable="false" />
+          <Property Name="IdProducto" Type="int" Nullable="false" />
+          <Property Name="Cantidad" Type="float" Nullable="false" />
+          <Property Name="PrecioUnitario" Type="float" Nullable="false" />
+          <Property Name="Descuento" Type="float" Nullable="false" />
+          <Property Name="CantidadEnviada" Type="float" />
+        </EntityType>
+        <EntityType Name="Pedidos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IdEstado" Type="int" Nullable="false" />
+          <Property Name="Fecha" Type="date" Nullable="false" />
+          <Property Name="TotalPagar" Type="float" Nullable="false" />
+          <Property Name="TotalDescuento" Type="float" Nullable="false" />
+          <Property Name="TotalImpuesto" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Productos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="150" />
+          <Property Name="UnidadDeMedida" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="Precio" Type="float" Nullable="false" />
+          <Property Name="CantidadEnInventario" Type="float" Nullable="false" />
+          <Property Name="IdCategoria" Type="int" Nullable="false" />
+          <Property Name="FechaVencimiento" Type="date" />
+          <Property Name="Impuesto" Type="int" />
+        </EntityType>
+        <EntityType Name="ProductosPrecioUsuarios">
+          <Key>
+            <PropertyRef Name="IdProducto" />
+            <PropertyRef Name="IdCliente" />
+          </Key>
+          <Property Name="IdProducto" Type="int" Nullable="false" />
+          <Property Name="IdCliente" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Precio" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProformaDetalle">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="IdProforma" Type="int" Nullable="false" />
+          <Property Name="IdProducto" Type="int" Nullable="false" />
+          <Property Name="Cantidad" Type="float" Nullable="false" />
+          <Property Name="PrecioUnitario" Type="float" Nullable="false" />
+          <Property Name="Descuento" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Proformas">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IdEstado" Type="int" Nullable="false" />
+          <Property Name="Fecha" Type="date" Nullable="false" />
+          <Property Name="TotalPagar" Type="float" Nullable="false" />
+          <Property Name="TotalDescuento" Type="float" Nullable="false" />
+          <Property Name="TotalImpuesto" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Telefonos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Telefono" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="Propietario" Type="nchar" MaxLength="25" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UsuariosDirecciones">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+            <PropertyRef Name="IdDireccion" />
+          </Key>
+          <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IdDireccion" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UsuariosTelefonos">
+          <Key>
+            <PropertyRef Name="IdUsuario" />
+            <PropertyRef Name="IdTelefono" />
+          </Key>
+          <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IdTelefono" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaims" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PedidoDetalle_Pedidos">
+          <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="1" />
+          <End Role="PedidoDetalle" Type="Self.PedidoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pedidos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PedidoDetalle">
+              <PropertyRef Name="IdPedido" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PedidoDetalle_Productos">
+          <End Role="Productos" Type="Self.Productos" Multiplicity="1" />
+          <End Role="PedidoDetalle" Type="Self.PedidoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PedidoDetalle">
+              <PropertyRef Name="IdProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pedidos_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Pedidos">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pedidos_EstadoPedido">
+          <End Role="EstadoPedido" Type="Self.EstadoPedido" Multiplicity="1" />
+          <End Role="Pedidos" Type="Self.Pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadoPedido">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Pedidos">
+              <PropertyRef Name="IdEstado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Productos_CategoriasProducto">
+          <End Role="CategoriasProducto" Type="Self.CategoriasProducto" Multiplicity="1" />
+          <End Role="Productos" Type="Self.Productos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoriasProducto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Productos">
+              <PropertyRef Name="IdCategoria" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductosPrecioUsuarios_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="ProductosPrecioUsuarios" Type="Self.ProductosPrecioUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductosPrecioUsuarios">
+              <PropertyRef Name="IdCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductosPrecioUsuarios_Productos">
+          <End Role="Productos" Type="Self.Productos" Multiplicity="1" />
+          <End Role="ProductosPrecioUsuarios" Type="Self.ProductosPrecioUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductosPrecioUsuarios">
+              <PropertyRef Name="IdProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProformaDetalle_Productos">
+          <End Role="Productos" Type="Self.Productos" Multiplicity="1" />
+          <End Role="ProformaDetalle" Type="Self.ProformaDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProformaDetalle">
+              <PropertyRef Name="IdProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProformaDetalle_Proformas">
+          <End Role="Proformas" Type="Self.Proformas" Multiplicity="1" />
+          <End Role="ProformaDetalle" Type="Self.ProformaDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proformas">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProformaDetalle">
+              <PropertyRef Name="IdProforma" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Proformas_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Proformas" Type="Self.Proformas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Proformas">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Proformas_EstadoProforma">
+          <End Role="EstadoProforma" Type="Self.EstadoProforma" Multiplicity="1" />
+          <End Role="Proformas" Type="Self.Proformas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadoProforma">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Proformas">
+              <PropertyRef Name="IdEstado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsuariosDirecciones_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UsuariosDirecciones" Type="Self.UsuariosDirecciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UsuariosDirecciones">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsuariosDirecciones_Direcciones">
+          <End Role="Direcciones" Type="Self.Direcciones" Multiplicity="1" />
+          <End Role="UsuariosDirecciones" Type="Self.UsuariosDirecciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Direcciones">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UsuariosDirecciones">
+              <PropertyRef Name="IdDireccion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsuariosTelefonos_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="UsuariosTelefonos" Type="Self.UsuariosTelefonos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UsuariosTelefonos">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsuariosTelefonos_Telefonos">
+          <End Role="Telefonos" Type="Self.Telefonos" Multiplicity="1" />
+          <End Role="UsuariosTelefonos" Type="Self.UsuariosTelefonos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Telefonos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UsuariosTelefonos">
+              <PropertyRef Name="IdTelefono" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SistemaJYRModelStoreContainer">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CategoriasProducto" EntityType="Self.CategoriasProducto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Direcciones" EntityType="Self.Direcciones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EstadoPedido" EntityType="Self.EstadoPedido" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EstadoProforma" EntityType="Self.EstadoProforma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PedidoDetalle" EntityType="Self.PedidoDetalle" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pedidos" EntityType="Self.Pedidos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Productos" EntityType="Self.Productos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductosPrecioUsuarios" EntityType="Self.ProductosPrecioUsuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProformaDetalle" EntityType="Self.ProformaDetalle" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Proformas" EntityType="Self.Proformas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Telefonos" EntityType="Self.Telefonos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsuariosDirecciones" EntityType="Self.UsuariosDirecciones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsuariosTelefonos" EntityType="Self.UsuariosTelefonos" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PedidoDetalle_Pedidos" Association="Self.FK_PedidoDetalle_Pedidos">
+            <End Role="Pedidos" EntitySet="Pedidos" />
+            <End Role="PedidoDetalle" EntitySet="PedidoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PedidoDetalle_Productos" Association="Self.FK_PedidoDetalle_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="PedidoDetalle" EntitySet="PedidoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pedidos_AspNetUsers" Association="Self.FK_Pedidos_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Pedidos" EntitySet="Pedidos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pedidos_EstadoPedido" Association="Self.FK_Pedidos_EstadoPedido">
+            <End Role="EstadoPedido" EntitySet="EstadoPedido" />
+            <End Role="Pedidos" EntitySet="Pedidos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Productos_CategoriasProducto" Association="Self.FK_Productos_CategoriasProducto">
+            <End Role="CategoriasProducto" EntitySet="CategoriasProducto" />
+            <End Role="Productos" EntitySet="Productos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductosPrecioUsuarios_AspNetUsers" Association="Self.FK_ProductosPrecioUsuarios_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="ProductosPrecioUsuarios" EntitySet="ProductosPrecioUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductosPrecioUsuarios_Productos" Association="Self.FK_ProductosPrecioUsuarios_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="ProductosPrecioUsuarios" EntitySet="ProductosPrecioUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProformaDetalle_Productos" Association="Self.FK_ProformaDetalle_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="ProformaDetalle" EntitySet="ProformaDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProformaDetalle_Proformas" Association="Self.FK_ProformaDetalle_Proformas">
+            <End Role="Proformas" EntitySet="Proformas" />
+            <End Role="ProformaDetalle" EntitySet="ProformaDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Proformas_AspNetUsers" Association="Self.FK_Proformas_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Proformas" EntitySet="Proformas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Proformas_EstadoProforma" Association="Self.FK_Proformas_EstadoProforma">
+            <End Role="EstadoProforma" EntitySet="EstadoProforma" />
+            <End Role="Proformas" EntitySet="Proformas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsuariosDirecciones_AspNetUsers" Association="Self.FK_UsuariosDirecciones_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="UsuariosDirecciones" EntitySet="UsuariosDirecciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsuariosDirecciones_Direcciones" Association="Self.FK_UsuariosDirecciones_Direcciones">
+            <End Role="Direcciones" EntitySet="Direcciones" />
+            <End Role="UsuariosDirecciones" EntitySet="UsuariosDirecciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsuariosTelefonos_AspNetUsers" Association="Self.FK_UsuariosTelefonos_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="UsuariosTelefonos" EntitySet="UsuariosTelefonos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsuariosTelefonos_Telefonos" Association="Self.FK_UsuariosTelefonos_Telefonos">
+            <End Role="Telefonos" EntitySet="Telefonos" />
+            <End Role="UsuariosTelefonos" EntitySet="UsuariosTelefonos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SistemaJYRModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
+          <Property Name="Discriminator" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaims">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaims" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogins">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Apellido1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Apellido2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Cedula" Type="Int32" Nullable="false" />
+          <Property Name="Rol" Type="Int32" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
+          <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
+          <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+          <NavigationProperty Name="Pedidos" Relationship="SistemaJYRModel.FK_Pedidos_AspNetUsers" FromRole="AspNetUsers" ToRole="Pedidos" />
+          <NavigationProperty Name="ProductosPrecioUsuarios" Relationship="SistemaJYRModel.FK_ProductosPrecioUsuarios_AspNetUsers" FromRole="AspNetUsers" ToRole="ProductosPrecioUsuarios" />
+          <NavigationProperty Name="Proformas" Relationship="SistemaJYRModel.FK_Proformas_AspNetUsers" FromRole="AspNetUsers" ToRole="Proformas" />
+          <NavigationProperty Name="Direcciones" Relationship="SistemaJYRModel.UsuariosDirecciones" FromRole="AspNetUsers" ToRole="Direcciones" />
+          <NavigationProperty Name="Telefonos" Relationship="SistemaJYRModel.UsuariosTelefonos" FromRole="AspNetUsers" ToRole="Telefonos" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaims" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AspNetUserRoles">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="*" />
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="SistemaJYREntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" />
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+          <EntitySet Name="CategoriasProducto" EntityType="SistemaJYRModel.CategoriasProducto" />
+          <EntitySet Name="Direcciones" EntityType="SistemaJYRModel.Direcciones" />
+          <EntitySet Name="EstadoPedido" EntityType="SistemaJYRModel.EstadoPedido" />
+          <EntitySet Name="EstadoProforma" EntityType="SistemaJYRModel.EstadoProforma" />
+          <EntitySet Name="PedidoDetalle" EntityType="SistemaJYRModel.PedidoDetalle" />
+          <EntitySet Name="Pedidos" EntityType="SistemaJYRModel.Pedidos" />
+          <EntitySet Name="Productos" EntityType="SistemaJYRModel.Productos" />
+          <EntitySet Name="ProductosPrecioUsuarios" EntityType="SistemaJYRModel.ProductosPrecioUsuarios" />
+          <EntitySet Name="ProformaDetalle" EntityType="SistemaJYRModel.ProformaDetalle" />
+          <EntitySet Name="Proformas" EntityType="SistemaJYRModel.Proformas" />
+          <EntitySet Name="Telefonos" EntityType="SistemaJYRModel.Telefonos" />
+          <AssociationSet Name="FK_Pedidos_AspNetUsers" Association="SistemaJYRModel.FK_Pedidos_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Pedidos" EntitySet="Pedidos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductosPrecioUsuarios_AspNetUsers" Association="SistemaJYRModel.FK_ProductosPrecioUsuarios_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="ProductosPrecioUsuarios" EntitySet="ProductosPrecioUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Proformas_AspNetUsers" Association="SistemaJYRModel.FK_Proformas_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Proformas" EntitySet="Proformas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Productos_CategoriasProducto" Association="SistemaJYRModel.FK_Productos_CategoriasProducto">
+            <End Role="CategoriasProducto" EntitySet="CategoriasProducto" />
+            <End Role="Productos" EntitySet="Productos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pedidos_EstadoPedido" Association="SistemaJYRModel.FK_Pedidos_EstadoPedido">
+            <End Role="EstadoPedido" EntitySet="EstadoPedido" />
+            <End Role="Pedidos" EntitySet="Pedidos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Proformas_EstadoProforma" Association="SistemaJYRModel.FK_Proformas_EstadoProforma">
+            <End Role="EstadoProforma" EntitySet="EstadoProforma" />
+            <End Role="Proformas" EntitySet="Proformas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PedidoDetalle_Pedidos" Association="SistemaJYRModel.FK_PedidoDetalle_Pedidos">
+            <End Role="Pedidos" EntitySet="Pedidos" />
+            <End Role="PedidoDetalle" EntitySet="PedidoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PedidoDetalle_Productos" Association="SistemaJYRModel.FK_PedidoDetalle_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="PedidoDetalle" EntitySet="PedidoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductosPrecioUsuarios_Productos" Association="SistemaJYRModel.FK_ProductosPrecioUsuarios_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="ProductosPrecioUsuarios" EntitySet="ProductosPrecioUsuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProformaDetalle_Productos" Association="SistemaJYRModel.FK_ProformaDetalle_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="ProformaDetalle" EntitySet="ProformaDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProformaDetalle_Proformas" Association="SistemaJYRModel.FK_ProformaDetalle_Proformas">
+            <End Role="Proformas" EntitySet="Proformas" />
+            <End Role="ProformaDetalle" EntitySet="ProformaDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="UsuariosDirecciones" Association="SistemaJYRModel.UsuariosDirecciones">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Direcciones" EntitySet="Direcciones" />
+          </AssociationSet>
+          <AssociationSet Name="UsuariosTelefonos" Association="SistemaJYRModel.UsuariosTelefonos">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Telefonos" EntitySet="Telefonos" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="CategoriasProducto">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Productos" Relationship="SistemaJYRModel.FK_Productos_CategoriasProducto" FromRole="CategoriasProducto" ToRole="Productos" />
+        </EntityType>
+        <EntityType Name="Direcciones">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Direccion" Type="String" Nullable="false" MaxLength="500" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.UsuariosDirecciones" FromRole="Direcciones" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="EstadoPedido">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Pedidos" Relationship="SistemaJYRModel.FK_Pedidos_EstadoPedido" FromRole="EstadoPedido" ToRole="Pedidos" />
+        </EntityType>
+        <EntityType Name="EstadoProforma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Proformas" Relationship="SistemaJYRModel.FK_Proformas_EstadoProforma" FromRole="EstadoProforma" ToRole="Proformas" />
+        </EntityType>
+        <EntityType Name="PedidoDetalle">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="IdPedido" Type="Int32" Nullable="false" />
+          <Property Name="IdProducto" Type="Int32" Nullable="false" />
+          <Property Name="Cantidad" Type="Double" Nullable="false" />
+          <Property Name="PrecioUnitario" Type="Double" Nullable="false" />
+          <Property Name="Descuento" Type="Double" Nullable="false" />
+          <Property Name="CantidadEnviada" Type="Double" />
+          <NavigationProperty Name="Pedidos" Relationship="SistemaJYRModel.FK_PedidoDetalle_Pedidos" FromRole="PedidoDetalle" ToRole="Pedidos" />
+          <NavigationProperty Name="Productos" Relationship="SistemaJYRModel.FK_PedidoDetalle_Productos" FromRole="PedidoDetalle" ToRole="Productos" />
+        </EntityType>
+        <EntityType Name="Pedidos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IdEstado" Type="Int32" Nullable="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="TotalPagar" Type="Double" Nullable="false" />
+          <Property Name="TotalDescuento" Type="Double" Nullable="false" />
+          <Property Name="TotalImpuesto" Type="Double" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.FK_Pedidos_AspNetUsers" FromRole="Pedidos" ToRole="AspNetUsers" />
+          <NavigationProperty Name="EstadoPedido" Relationship="SistemaJYRModel.FK_Pedidos_EstadoPedido" FromRole="Pedidos" ToRole="EstadoPedido" />
+          <NavigationProperty Name="PedidoDetalle" Relationship="SistemaJYRModel.FK_PedidoDetalle_Pedidos" FromRole="Pedidos" ToRole="PedidoDetalle" />
+        </EntityType>
+        <EntityType Name="Productos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Descripcion" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="UnidadDeMedida" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Precio" Type="Double" Nullable="false" />
+          <Property Name="CantidadEnInventario" Type="Double" Nullable="false" />
+          <Property Name="IdCategoria" Type="Int32" Nullable="false" />
+          <Property Name="FechaVencimiento" Type="DateTime" Precision="0" />
+          <Property Name="Impuesto" Type="Int32" />
+          <NavigationProperty Name="CategoriasProducto" Relationship="SistemaJYRModel.FK_Productos_CategoriasProducto" FromRole="Productos" ToRole="CategoriasProducto" />
+          <NavigationProperty Name="PedidoDetalle" Relationship="SistemaJYRModel.FK_PedidoDetalle_Productos" FromRole="Productos" ToRole="PedidoDetalle" />
+          <NavigationProperty Name="ProductosPrecioUsuarios" Relationship="SistemaJYRModel.FK_ProductosPrecioUsuarios_Productos" FromRole="Productos" ToRole="ProductosPrecioUsuarios" />
+          <NavigationProperty Name="ProformaDetalle" Relationship="SistemaJYRModel.FK_ProformaDetalle_Productos" FromRole="Productos" ToRole="ProformaDetalle" />
+        </EntityType>
+        <EntityType Name="ProductosPrecioUsuarios">
+          <Key>
+            <PropertyRef Name="IdProducto" />
+            <PropertyRef Name="IdCliente" />
+          </Key>
+          <Property Name="IdProducto" Type="Int32" Nullable="false" />
+          <Property Name="IdCliente" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Precio" Type="Double" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.FK_ProductosPrecioUsuarios_AspNetUsers" FromRole="ProductosPrecioUsuarios" ToRole="AspNetUsers" />
+          <NavigationProperty Name="Productos" Relationship="SistemaJYRModel.FK_ProductosPrecioUsuarios_Productos" FromRole="ProductosPrecioUsuarios" ToRole="Productos" />
+        </EntityType>
+        <EntityType Name="ProformaDetalle">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="IdProforma" Type="Int32" Nullable="false" />
+          <Property Name="IdProducto" Type="Int32" Nullable="false" />
+          <Property Name="Cantidad" Type="Double" Nullable="false" />
+          <Property Name="PrecioUnitario" Type="Double" Nullable="false" />
+          <Property Name="Descuento" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Productos" Relationship="SistemaJYRModel.FK_ProformaDetalle_Productos" FromRole="ProformaDetalle" ToRole="Productos" />
+          <NavigationProperty Name="Proformas" Relationship="SistemaJYRModel.FK_ProformaDetalle_Proformas" FromRole="ProformaDetalle" ToRole="Proformas" />
+        </EntityType>
+        <EntityType Name="Proformas">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IdEstado" Type="Int32" Nullable="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="TotalPagar" Type="Double" Nullable="false" />
+          <Property Name="TotalDescuento" Type="Double" Nullable="false" />
+          <Property Name="TotalImpuesto" Type="Double" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.FK_Proformas_AspNetUsers" FromRole="Proformas" ToRole="AspNetUsers" />
+          <NavigationProperty Name="EstadoProforma" Relationship="SistemaJYRModel.FK_Proformas_EstadoProforma" FromRole="Proformas" ToRole="EstadoProforma" />
+          <NavigationProperty Name="ProformaDetalle" Relationship="SistemaJYRModel.FK_ProformaDetalle_Proformas" FromRole="Proformas" ToRole="ProformaDetalle" />
+        </EntityType>
+        <EntityType Name="Telefonos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Telefono" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Propietario" Type="String" Nullable="false" MaxLength="25" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.UsuariosTelefonos" FromRole="Telefonos" ToRole="AspNetUsers" />
+        </EntityType>
+        <Association Name="FK_Pedidos_AspNetUsers">
+          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Pedidos" Role="Pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Pedidos">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductosPrecioUsuarios_AspNetUsers">
+          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="SistemaJYRModel.ProductosPrecioUsuarios" Role="ProductosPrecioUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductosPrecioUsuarios">
+              <PropertyRef Name="IdCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Proformas_AspNetUsers">
+          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Proformas" Role="Proformas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Proformas">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Productos_CategoriasProducto">
+          <End Type="SistemaJYRModel.CategoriasProducto" Role="CategoriasProducto" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Productos" Role="Productos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CategoriasProducto">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Productos">
+              <PropertyRef Name="IdCategoria" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pedidos_EstadoPedido">
+          <End Type="SistemaJYRModel.EstadoPedido" Role="EstadoPedido" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Pedidos" Role="Pedidos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadoPedido">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Pedidos">
+              <PropertyRef Name="IdEstado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Proformas_EstadoProforma">
+          <End Type="SistemaJYRModel.EstadoProforma" Role="EstadoProforma" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Proformas" Role="Proformas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EstadoProforma">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Proformas">
+              <PropertyRef Name="IdEstado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PedidoDetalle_Pedidos">
+          <End Type="SistemaJYRModel.Pedidos" Role="Pedidos" Multiplicity="1" />
+          <End Type="SistemaJYRModel.PedidoDetalle" Role="PedidoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pedidos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PedidoDetalle">
+              <PropertyRef Name="IdPedido" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PedidoDetalle_Productos">
+          <End Type="SistemaJYRModel.Productos" Role="Productos" Multiplicity="1" />
+          <End Type="SistemaJYRModel.PedidoDetalle" Role="PedidoDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PedidoDetalle">
+              <PropertyRef Name="IdProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductosPrecioUsuarios_Productos">
+          <End Type="SistemaJYRModel.Productos" Role="Productos" Multiplicity="1" />
+          <End Type="SistemaJYRModel.ProductosPrecioUsuarios" Role="ProductosPrecioUsuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProductosPrecioUsuarios">
+              <PropertyRef Name="IdProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProformaDetalle_Productos">
+          <End Type="SistemaJYRModel.Productos" Role="Productos" Multiplicity="1" />
+          <End Type="SistemaJYRModel.ProformaDetalle" Role="ProformaDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProformaDetalle">
+              <PropertyRef Name="IdProducto" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProformaDetalle_Proformas">
+          <End Type="SistemaJYRModel.Proformas" Role="Proformas" Multiplicity="1" />
+          <End Type="SistemaJYRModel.ProformaDetalle" Role="ProformaDetalle" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proformas">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProformaDetalle">
+              <PropertyRef Name="IdProforma" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UsuariosDirecciones">
+          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
+          <End Type="SistemaJYRModel.Direcciones" Role="Direcciones" Multiplicity="*" />
+        </Association>
+        <Association Name="UsuariosTelefonos">
+          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
+          <End Type="SistemaJYRModel.Telefonos" Role="Telefonos" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SistemaJYRModelStoreContainer" CdmEntityContainer="SistemaJYREntities">
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="SistemaJYRModel.AspNetRoles">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="Discriminator" ColumnName="Discriminator" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserClaims">
+            <EntityTypeMapping TypeName="SistemaJYRModel.AspNetUserClaims">
+              <MappingFragment StoreEntitySet="AspNetUserClaims">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserLogins">
+            <EntityTypeMapping TypeName="SistemaJYRModel.AspNetUserLogins">
+              <MappingFragment StoreEntitySet="AspNetUserLogins">
+                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="SistemaJYRModel.AspNetUsers">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
+                <ScalarProperty Name="Apellido2" ColumnName="Apellido2" />
+                <ScalarProperty Name="Cedula" ColumnName="Cedula" />
+                <ScalarProperty Name="Rol" ColumnName="Rol" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="SistemaJYRModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+            <EndProperty Name="AspNetRoles">
+              <ScalarProperty Name="Id" ColumnName="RoleId" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="CategoriasProducto">
+            <EntityTypeMapping TypeName="SistemaJYRModel.CategoriasProducto">
+              <MappingFragment StoreEntitySet="CategoriasProducto">
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Direcciones">
+            <EntityTypeMapping TypeName="SistemaJYRModel.Direcciones">
+              <MappingFragment StoreEntitySet="Direcciones">
+                <ScalarProperty Name="Direccion" ColumnName="Direccion" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EstadoPedido">
+            <EntityTypeMapping TypeName="SistemaJYRModel.EstadoPedido">
+              <MappingFragment StoreEntitySet="EstadoPedido">
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EstadoProforma">
+            <EntityTypeMapping TypeName="SistemaJYRModel.EstadoProforma">
+              <MappingFragment StoreEntitySet="EstadoProforma">
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PedidoDetalle">
+            <EntityTypeMapping TypeName="SistemaJYRModel.PedidoDetalle">
+              <MappingFragment StoreEntitySet="PedidoDetalle">
+                <ScalarProperty Name="CantidadEnviada" ColumnName="CantidadEnviada" />
+                <ScalarProperty Name="Descuento" ColumnName="Descuento" />
+                <ScalarProperty Name="PrecioUnitario" ColumnName="PrecioUnitario" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="IdProducto" ColumnName="IdProducto" />
+                <ScalarProperty Name="IdPedido" ColumnName="IdPedido" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pedidos">
+            <EntityTypeMapping TypeName="SistemaJYRModel.Pedidos">
+              <MappingFragment StoreEntitySet="Pedidos">
+                <ScalarProperty Name="TotalImpuesto" ColumnName="TotalImpuesto" />
+                <ScalarProperty Name="TotalDescuento" ColumnName="TotalDescuento" />
+                <ScalarProperty Name="TotalPagar" ColumnName="TotalPagar" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="IdEstado" ColumnName="IdEstado" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Productos">
+            <EntityTypeMapping TypeName="SistemaJYRModel.Productos">
+              <MappingFragment StoreEntitySet="Productos">
+                <ScalarProperty Name="Impuesto" ColumnName="Impuesto" />
+                <ScalarProperty Name="FechaVencimiento" ColumnName="FechaVencimiento" />
+                <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />
+                <ScalarProperty Name="CantidadEnInventario" ColumnName="CantidadEnInventario" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="UnidadDeMedida" ColumnName="UnidadDeMedida" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductosPrecioUsuarios">
+            <EntityTypeMapping TypeName="SistemaJYRModel.ProductosPrecioUsuarios">
+              <MappingFragment StoreEntitySet="ProductosPrecioUsuarios">
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="IdCliente" ColumnName="IdCliente" />
+                <ScalarProperty Name="IdProducto" ColumnName="IdProducto" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProformaDetalle">
+            <EntityTypeMapping TypeName="SistemaJYRModel.ProformaDetalle">
+              <MappingFragment StoreEntitySet="ProformaDetalle">
+                <ScalarProperty Name="Descuento" ColumnName="Descuento" />
+                <ScalarProperty Name="PrecioUnitario" ColumnName="PrecioUnitario" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="IdProducto" ColumnName="IdProducto" />
+                <ScalarProperty Name="IdProforma" ColumnName="IdProforma" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Proformas">
+            <EntityTypeMapping TypeName="SistemaJYRModel.Proformas">
+              <MappingFragment StoreEntitySet="Proformas">
+                <ScalarProperty Name="TotalImpuesto" ColumnName="TotalImpuesto" />
+                <ScalarProperty Name="TotalDescuento" ColumnName="TotalDescuento" />
+                <ScalarProperty Name="TotalPagar" ColumnName="TotalPagar" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="IdEstado" ColumnName="IdEstado" />
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Telefonos">
+            <EntityTypeMapping TypeName="SistemaJYRModel.Telefonos">
+              <MappingFragment StoreEntitySet="Telefonos">
+                <ScalarProperty Name="Propietario" ColumnName="Propietario" />
+                <ScalarProperty Name="Telefono" ColumnName="Telefono" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="UsuariosDirecciones" TypeName="SistemaJYRModel.UsuariosDirecciones" StoreEntitySet="UsuariosDirecciones">
+            <EndProperty Name="Direcciones">
+              <ScalarProperty Name="Id" ColumnName="IdDireccion" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="IdUsuario" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="UsuariosTelefonos" TypeName="SistemaJYRModel.UsuariosTelefonos" StoreEntitySet="UsuariosTelefonos">
+            <EndProperty Name="Telefonos">
+              <ScalarProperty Name="Id" ColumnName="IdTelefono" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="IdUsuario" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

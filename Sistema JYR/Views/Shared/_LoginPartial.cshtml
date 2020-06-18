@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
+@if (Request.IsAuthenticated)
+{
+    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+    SistemaJYREntities db = new SistemaJYREntities();
+    string id = HttpContext.Current.User.Identity.GetUserId();
+    usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+
+
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "ml-auto" +
+        "" }))
+    {
+        @Html.AntiForgeryToken()
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="nav-item dropdown">
+                <i class="fa fa-user-circle" style="display: inline-block; color: white; margin-right: -5px"></i>
+                <a class="nav-link dropdown-toggle" style="display:inline-block; color: white !important" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @usuario.Nombre @usuario.Apellido1
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    @Html.ActionLink("Preferencias", "Index", "Manage", new { }, new { @class = "dropdown-item" })
+                    <div class="dropdown-divider"></div>
+                    <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item">Cerrar sesión</a>
+                </div>
+            </li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+        <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+        <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+        <li class="nav-item">
+        <li class="nav-item">
+            @Html.ActionLink("Registrarse", "Register", "Account", new { }, new { @class = "nav-link", @style = "color: white !important" })
+        </li>
+        <li class="nav-item">
+            @Html.ActionLink("Iniciar sesión", "Login", "Account", new { }, new { @class = "nav-link", @style = "color: white !important" })
+        </li>
+    </ul>
+}
+<style>
+
+    .ml-auto > .nav-item {
+        padding-left: 2px;
+        padding-right: 2px;
+        font-weight: 100;
+    }
+    .ml-auto > .nav-item:hover {
+        background-color: #0D4657;
+    }
+</style>

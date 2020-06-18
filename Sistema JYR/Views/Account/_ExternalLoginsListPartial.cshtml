@@ -1,0 +1,32 @@
+﻿@model Sistema_JYR.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+<h4>Utilice otro servicio para iniciar sesión.</h4>
+<hr />
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    var facebook = loginProviders.ElementAt<AuthenticationDescription>(1);
+    var google = loginProviders.ElementAt<AuthenticationDescription>(0);
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                No existen servicios de autenticación externos configurados. Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
+                para obtener información sobre cómo configurar esta aplicación ASP.NET para admitir el inicio de sesión a través de servicios externos.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="socialLoginList" style="margin-top: 15%">
+                <button type="submit" class="btn btn-primary btn-block" id="@facebook.AuthenticationType" name="provider" value="@facebook.AuthenticationType" title="Inicie sesión con su cuenta @facebook.Caption"><i class="fa fa-facebook-f" aria-hidden="true" style="margin-right:5px"></i>Iniciar sesión con Facebook</button>
+                <button type="submit" class="btn btn-dark btn-block" id="@google.AuthenticationType" name="provider" value="@google.AuthenticationType" title="Inicie sesión con su cuenta @google.Caption"><i class="fa fa-google" aria-hidden="true" style="margin-right:5px"></i>Iniciar sesión con Google</button>
+            </div>
+        }
+    }
+}
+
+
