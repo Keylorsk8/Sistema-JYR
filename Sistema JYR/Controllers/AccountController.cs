@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -103,6 +100,7 @@ namespace Sistema_JYR.Controllers
                     user.Email = us.Email;
                     user.UserName = us.UserName;
                     user.Rol = us.Rol;
+                    user.Estado = us.Estado;
                     Session["usuario"] = user;
                     
                     return RedirectToLocal(returnUrl);
@@ -177,20 +175,20 @@ namespace Sistema_JYR.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Rol = 3 };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Rol = 3, Estado = true};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddToRoleAsync(user.Id, "Cliente" );
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     Session["usuario"] = user;
-                    
+
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-
+                    Session["Registro"] = "Exitoso";
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -395,7 +393,7 @@ namespace Sistema_JYR.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2 };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Estado = model.Estado ,Rol = model.Rol };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

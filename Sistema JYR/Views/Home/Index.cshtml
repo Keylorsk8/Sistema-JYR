@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Inicio";
 }
 
 <div class="jumbotron">
@@ -29,3 +29,35 @@
         <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
     </div>
 </div>
+
+@if (Session["Registro"] != null)
+{
+    if (Session["Registro"].Equals("Exitoso"))
+    {
+        <script type="text/javascript">
+            function RegistroExitoso() {
+                Swal.fire({
+                    title: '¡Registro Exitoso!',
+                    icon: 'success',
+                    toast: false,
+                    timer: 5000,
+                    timerProgressBar: true
+                });
+            };
+            RegistroExitoso();
+        </script>
+        Session["Registro"] = null;
+    }
+}
+
+<script type="text/javascript">
+    function RegistroExitoso() {
+        Swal.fire({
+            title: '¡Registro Exitoso!',
+            icon: 'success',
+            toast: false,
+            timer: 5000,
+            timerProgressBar: true
+        });
+    }
+</script>

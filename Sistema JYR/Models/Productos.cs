@@ -31,6 +31,7 @@ namespace Sistema_JYR.Models
         public int IdCategoria { get; set; }
         public Nullable<System.DateTime> FechaVencimiento { get; set; }
         public Nullable<int> Impuesto { get; set; }
+        public bool Estado { get; set; }
     
         public virtual CategoriasProducto CategoriasProducto { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

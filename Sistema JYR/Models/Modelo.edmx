@@ -50,6 +50,7 @@
           <Property Name="Apellido2" Type="nvarchar(max)" />
           <Property Name="Cedula" Type="int" Nullable="false" />
           <Property Name="Rol" Type="int" Nullable="false" />
+          <Property Name="Estado" Type="bit" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="256" />
           <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
           <Property Name="PasswordHash" Type="nvarchar(max)" />
@@ -113,6 +114,7 @@
           <Property Name="TotalPagar" Type="float" Nullable="false" />
           <Property Name="TotalDescuento" Type="float" Nullable="false" />
           <Property Name="TotalImpuesto" Type="float" Nullable="false" />
+          <Property Name="NumeroProforma" Type="int" />
         </EntityType>
         <EntityType Name="Productos">
           <Key>
@@ -127,6 +129,7 @@
           <Property Name="IdCategoria" Type="int" Nullable="false" />
           <Property Name="FechaVencimiento" Type="date" />
           <Property Name="Impuesto" Type="int" />
+          <Property Name="Estado" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductosPrecioUsuarios">
           <Key>
@@ -579,6 +582,7 @@
           <NavigationProperty Name="Proformas" Relationship="SistemaJYRModel.FK_Proformas_AspNetUsers" FromRole="AspNetUsers" ToRole="Proformas" />
           <NavigationProperty Name="Direcciones" Relationship="SistemaJYRModel.UsuariosDirecciones" FromRole="AspNetUsers" ToRole="Direcciones" />
           <NavigationProperty Name="Telefonos" Relationship="SistemaJYRModel.UsuariosTelefonos" FromRole="AspNetUsers" ToRole="Telefonos" />
+          <Property Name="Estado" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -753,6 +757,7 @@
           <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.FK_Pedidos_AspNetUsers" FromRole="Pedidos" ToRole="AspNetUsers" />
           <NavigationProperty Name="EstadoPedido" Relationship="SistemaJYRModel.FK_Pedidos_EstadoPedido" FromRole="Pedidos" ToRole="EstadoPedido" />
           <NavigationProperty Name="PedidoDetalle" Relationship="SistemaJYRModel.FK_PedidoDetalle_Pedidos" FromRole="Pedidos" ToRole="PedidoDetalle" />
+          <Property Name="NumeroProforma" Type="Int32" />
         </EntityType>
         <EntityType Name="Productos">
           <Key>
@@ -771,6 +776,7 @@
           <NavigationProperty Name="PedidoDetalle" Relationship="SistemaJYRModel.FK_PedidoDetalle_Productos" FromRole="Productos" ToRole="PedidoDetalle" />
           <NavigationProperty Name="ProductosPrecioUsuarios" Relationship="SistemaJYRModel.FK_ProductosPrecioUsuarios_Productos" FromRole="Productos" ToRole="ProductosPrecioUsuarios" />
           <NavigationProperty Name="ProformaDetalle" Relationship="SistemaJYRModel.FK_ProformaDetalle_Productos" FromRole="Productos" ToRole="ProformaDetalle" />
+          <Property Name="Estado" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="ProductosPrecioUsuarios">
           <Key>
@@ -997,6 +1003,7 @@
           <EntitySetMapping Name="AspNetUsers">
             <EntityTypeMapping TypeName="SistemaJYRModel.AspNetUsers">
               <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="Apellido1" ColumnName="Apellido1" />
@@ -1073,6 +1080,7 @@
           <EntitySetMapping Name="Pedidos">
             <EntityTypeMapping TypeName="SistemaJYRModel.Pedidos">
               <MappingFragment StoreEntitySet="Pedidos">
+                <ScalarProperty Name="NumeroProforma" ColumnName="NumeroProforma" />
                 <ScalarProperty Name="TotalImpuesto" ColumnName="TotalImpuesto" />
                 <ScalarProperty Name="TotalDescuento" ColumnName="TotalDescuento" />
                 <ScalarProperty Name="TotalPagar" ColumnName="TotalPagar" />
@@ -1086,6 +1094,7 @@
           <EntitySetMapping Name="Productos">
             <EntityTypeMapping TypeName="SistemaJYRModel.Productos">
               <MappingFragment StoreEntitySet="Productos">
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
                 <ScalarProperty Name="Impuesto" ColumnName="Impuesto" />
                 <ScalarProperty Name="FechaVencimiento" ColumnName="FechaVencimiento" />
                 <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />

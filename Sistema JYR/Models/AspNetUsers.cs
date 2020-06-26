@@ -11,7 +11,8 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class AspNetUsers
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -26,11 +27,11 @@ namespace Sistema_JYR.Models
             this.Direcciones = new HashSet<Direcciones>();
             this.Telefonos = new HashSet<Telefonos>();
         }
-    
         public string Id { get; set; }
         public string Nombre { get; set; }
         public string Apellido1 { get; set; }
         public string Apellido2 { get; set; }
+        [Display(Name = "Cédula")]
         public int Cedula { get; set; }
         public int Rol { get; set; }
         public string Email { get; set; }
@@ -44,6 +45,7 @@ namespace Sistema_JYR.Models
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }
+        public bool Estado { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }

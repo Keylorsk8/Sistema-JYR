@@ -8,14 +8,34 @@
     usuario = db.AspNetUsers.Where(x => x.Id == id).First();
 
 
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "ml-auto" +
-        "" }))
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new
+    {
+        id = "logoutForm",
+        @class = "ml-auto" +
+        ""
+    }))
     {
         @Html.AntiForgeryToken()
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-            <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-            <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            @if (usuario.Rol == 1)
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style="color: white !important" href="#" id="navbarDropdownMantenimientos" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Mantenimientos
+                    </a>
+
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <h6 class="dropdown-header">Usuarios</h6>
+                        @Html.ActionLink("Vendedores", "Index", "Usuarios", new { }, new { @class = "dropdown-item" })
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Inventario</h6>
+                        @Html.ActionLink("Categorias de Productos", "Index", "CategoriasProducto", new { }, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Productos", "Index", "Manage", new { }, new { @class = "dropdown-item" })
+                    </div>
+                </li>
+            }
+
             <li class="nav-item dropdown">
                 <i class="fa fa-user-circle" style="display: inline-block; color: white; margin-right: -5px"></i>
                 <a class="nav-link dropdown-toggle" style="display:inline-block; color: white !important" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -35,8 +55,6 @@ else
 {
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-        <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-        <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
         <li class="nav-item">
         <li class="nav-item">
             @Html.ActionLink("Registrarse", "Register", "Account", new { }, new { @class = "nav-link", @style = "color: white !important" })
@@ -53,7 +71,8 @@ else
         padding-right: 2px;
         font-weight: 100;
     }
-    .ml-auto > .nav-item:hover {
-        background-color: #0D4657;
-    }
+
+        .ml-auto > .nav-item:hover {
+            background-color: #0D4657;
+        }
 </style>

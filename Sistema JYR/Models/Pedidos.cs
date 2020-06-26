@@ -27,6 +27,7 @@ namespace Sistema_JYR.Models
         public double TotalPagar { get; set; }
         public double TotalDescuento { get; set; }
         public double TotalImpuesto { get; set; }
+        public Nullable<int> NumeroProforma { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual EstadoPedido EstadoPedido { get; set; }
