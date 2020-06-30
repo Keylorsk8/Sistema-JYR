@@ -1,116 +1,129 @@
-﻿ using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Net;
 using Sistema_JYR.Models;
+using System.IO;
+using System.Drawing;
+using System.Web.Helpers;
+
 
 namespace Sistema_JYR.Controllers
 {
-    public class CategoriasProductoController : Controller
+    public class ProductosController : Controller
     {
         private SistemaJYREntities db = new SistemaJYREntities();
 
-        // GET: CategoriasProducto
+        // GET: Productos
         public ActionResult Index()
         {
-            return View(db.CategoriasProducto.ToList());
+            var productos = db.Productos.Include(p => p.CategoriasProducto);
+            return View(productos.ToList());
         }
 
-        // GET: CategoriasProducto/Details/5
+        // GET: Productos/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CategoriasProducto categoriasProducto = db.CategoriasProducto.Find(id);
-            if (categoriasProducto == null)
+            Productos productos = db.Productos.Find(id);
+            if (productos == null)
             {
                 return HttpNotFound();
             }
-            return View(categoriasProducto);
+            return View(productos);
         }
 
-        // GET: CategoriasProducto/Create
+        // GET: Productos/Create
         public ActionResult Create()
         {
+            ViewBag.IdCategoria = new SelectList(db.CategoriasProducto, "Id", "Descripcion");
             return View();
         }
 
-        // POST: CategoriasProducto/Create
+        // POST: Productos/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Descripcion")] CategoriasProducto categoriasProducto)
+        public ActionResult Create([Bind(Include = "Id,Nombre,Descripcion,UnidadDeMedida,Precio,CantidadEnInventario,IdCategoria,FechaVencimiento,Impuesto,Estado,imagen")] Productos producto)
         {
+            HttpPostedFileBase FileBase = Request.Files[0];
+
+            WebImage image = new WebImage(FileBase.InputStream);
+            producto.imagen = image.GetBytes();
             if (ModelState.IsValid)
             {
-                db.CategoriasProducto.Add(categoriasProducto);
+                db.Productos.Add(producto);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(categoriasProducto);
+            ViewBag.IdCategoria = new SelectList(db.CategoriasProducto, "Id", "Descripcion", producto.IdCategoria);
+            return View(producto);
         }
 
-        // GET: CategoriasProducto/Edit/5
+        // GET: Productos/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CategoriasProducto categoriasProducto = db.CategoriasProducto.Find(id);
-            if (categoriasProducto == null)
+            Productos productos = db.Productos.Find(id);
+            if (productos == null)
             {
                 return HttpNotFound();
             }
-            return View(categoriasProducto);
+            ViewBag.IdCategoria = new SelectList(db.CategoriasProducto, "Id", "Descripcion", productos.IdCategoria);
+            return View(productos);
         }
 
-        // POST: CategoriasProducto/Edit/5
+        // POST: Productos/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Descripcion")] CategoriasProducto categoriasProducto)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Descripcion,UnidadDeMedida,Precio,CantidadEnInventario,IdCategoria,FechaVencimiento,Impuesto,Estado")] Productos productos)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(categoriasProducto).State = EntityState.Modified;
+                db.Entry(productos).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(categoriasProducto);
+            ViewBag.IdCategoria = new SelectList(db.CategoriasProducto, "Id", "Descripcion", productos.IdCategoria);
+            return View(productos);
         }
 
-        // GET: CategoriasProducto/Delete/5
+        // GET: Productos/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CategoriasProducto categoriasProducto = db.CategoriasProducto.Find(id);
-            if (categoriasProducto == null)
+            Productos productos = db.Productos.Find(id);
+            if (productos == null)
             {
                 return HttpNotFound();
             }
-            return View(categoriasProducto);
+            return View(productos);
         }
 
-        // POST: CategoriasProducto/Delete/5
+        // POST: Productos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            CategoriasProducto categoriasProducto = db.CategoriasProducto.Find(id);
-            db.CategoriasProducto.Remove(categoriasProducto);
+            Productos productos = db.Productos.Find(id);
+            db.Productos.Remove(productos);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

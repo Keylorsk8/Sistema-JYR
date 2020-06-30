@@ -9,3 +9,104 @@
 #NavBar.nav-link {
     background-color: black !important;
 }
+
+.scrollup {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    display: none;
+    text-indent: -9999px;
+    background: no-repeat;
+    background-image: url('imagenes/scroll.png');
+    background-size: cover;
+}
+
+@media screen and (max-width: 500px) {
+
+    .scrollup {
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
+.how-section1 {
+    margin-top: -15%;
+    padding: 10%;
+}
+
+    .how-section1 h4 {
+        color: #ffa500;
+        font-weight: bold;
+        font-size: 30px;
+    }
+
+    .how-section1 .subheading {
+        color: #3931af;
+        font-size: 20px;
+    }
+
+    .how-section1 .row {
+        margin-top: 10%;
+    }
+
+.how-img {
+    text-align: center;
+}
+
+    .how-img img {
+        width: 40%;
+    }
+
+#RenderBody {
+    margin-top: 7%;
+}
+
+@media (max-width: 1200px) {
+    #RenderBody {
+        margin-top: 9%;
+    }
+}
+
+@media (max-width: 900px) {
+    #RenderBody {
+        margin-top: 13%;
+    }
+}
+
+@media (max-width: 760px) {
+    #RenderBody {
+        margin-top: 15%;
+    }
+}
+
+
+@media (max-width: 500px) {
+    #RenderBody {
+        margin-top: 20%;
+    }
+
+    #NavBrand {
+        display: none !important;
+    }
+}
+
+@media (max-width: 400px) {
+    #RenderBody {
+        margin-top: 25%;
+    }
+
+    #NavBrand {
+        display: none !important;
+    }
+}
+
+@media (max-width: 300px) {
+    #RenderBody {
+        margin-top: 30%;
+    }
+    #NavBrand{
+        display: none !important;
+    }
+}

@@ -5,17 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Ferretería y Materiales JYR S.A</title>
+    <link href="~/Content/Site.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/Content/Site.css" rel="stylesheet" />
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="NavBar" style="padding-left: 30px;padding-right:30px">
-        <div>
-            <img src="~/Content/imagenes/logoC.png" width="50" />
-            <h2 class="navbar-brand" style="font-weight:100">Ferretería y Materiales JYR</h2>
-        </div>
+        <a href="@Url.Action("Index","Home")" style="text-decoration: none">
+            <img src="~/Content/imagenes/logoC.png" width="50" id="imgBrand"/>
+            <h2 class="navbar-brand" style="font-weight:100;" id="NavBrand">Ferretería y Materiales JYR</h2>
+        </a>
+
 
         <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarColor02" aria-label="Toggle navigation" type="button" data-target="#navbarColor02" data-toggle="collapse">
             <span class="navbar-toggler-icon"></span>
@@ -26,16 +27,22 @@
         </div>
     </nav>
 
-    <div class="container body-content" id="RenderBody" style="margin-top:7%">
+    <div class="container body-content" id="RenderBody">
         @RenderBody()
         <hr />
         <footer style="text-align: center">
             <p>&copy; @DateTime.Now.Year - Ferretería y Materiales JYR S.A</p>
+            <div>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <div>Icons made by <a href="https://www.flaticon.com/free-icon/sweeping_3035186?term=clean&page=4&position=42" title="Linector">Linector</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <div>Icons made by <a href="https://www.flaticon.com/authors/ultimatearm" title="ultimatearm">ultimatearm</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
         </footer>
+        <a href="#" class="scrollup">Scroll</a>
     </div>
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/index.js"></script>
     <script src="~/Scripts/popper.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     @RenderSection("scripts", required: false)
+
 </body>
 </html>

@@ -175,6 +175,7 @@
     <Compile Include="Controllers\CategoriasProductoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ProductosController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SweetController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -257,9 +258,22 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\imagenes\Carrusel\banner.jpg" />
+    <Content Include="Content\imagenes\Carrusel\imagen1.jpg" />
+    <Content Include="Content\imagenes\Carrusel\imagen2.jpg" />
+    <Content Include="Content\imagenes\Carrusel\imagen3.jpg" />
+    <Content Include="Content\imagenes\Carrusel\imagen4.jpg" />
+    <Content Include="Content\imagenes\Carrusel\imagen5.jpg" />
+    <Content Include="Content\imagenes\Index\Compromise.png" />
+    <Content Include="Content\imagenes\Index\Generosity.png" />
+    <Content Include="Content\imagenes\Index\leader.png" />
+    <Content Include="Content\imagenes\Index\Order.png" />
+    <Content Include="Content\imagenes\Index\responsability.png" />
+    <Content Include="Content\imagenes\Index\target.png" />
     <Content Include="Content\imagenes\logoB.png" />
     <Content Include="Content\imagenes\logoC.png" />
     <Content Include="Content\imagenes\logoN.png" />
+    <Content Include="Content\imagenes\scroll.png" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\sweetalert\bootstrap-sweetalert.png" />
     <Content Include="Content\sweetalert\docs.css" />
@@ -293,6 +307,7 @@
     <Content Include="Scripts\esm\popper-utils.min.js" />
     <Content Include="Scripts\esm\popper.js" />
     <Content Include="Scripts\esm\popper.min.js" />
+    <Content Include="Scripts\index.js" />
     <Content Include="Scripts\index.js.flow" />
     <Content Include="Scripts\esm\popper.min.js.map" />
     <Content Include="Scripts\esm\popper.js.map" />
@@ -458,6 +473,11 @@
     <Content Include="Views\CategoriasProducto\Details.cshtml" />
     <Content Include="Views\CategoriasProducto\Edit.cshtml" />
     <Content Include="Views\CategoriasProducto\Index.cshtml" />
+    <Content Include="Views\Productos\Create.cshtml" />
+    <Content Include="Views\Productos\Delete.cshtml" />
+    <Content Include="Views\Productos\Details.cshtml" />
+    <Content Include="Views\Productos\Edit.cshtml" />
+    <Content Include="Views\Productos\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -67,7 +67,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Descripcion" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Direcciones">
@@ -120,7 +120,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nombre" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Descripcion" Type="varchar" MaxLength="150" />
           <Property Name="UnidadDeMedida" Type="nchar" MaxLength="10" Nullable="false" />
@@ -130,6 +130,7 @@
           <Property Name="FechaVencimiento" Type="date" />
           <Property Name="Impuesto" Type="int" />
           <Property Name="Estado" Type="bit" Nullable="false" />
+          <Property Name="imagen" Type="image" />
         </EntityType>
         <EntityType Name="ProductosPrecioUsuarios">
           <Key>
@@ -777,6 +778,7 @@
           <NavigationProperty Name="ProductosPrecioUsuarios" Relationship="SistemaJYRModel.FK_ProductosPrecioUsuarios_Productos" FromRole="Productos" ToRole="ProductosPrecioUsuarios" />
           <NavigationProperty Name="ProformaDetalle" Relationship="SistemaJYRModel.FK_ProformaDetalle_Productos" FromRole="Productos" ToRole="ProformaDetalle" />
           <Property Name="Estado" Type="Boolean" Nullable="false" />
+          <Property Name="imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="ProductosPrecioUsuarios">
           <Key>
@@ -1094,6 +1096,7 @@
           <EntitySetMapping Name="Productos">
             <EntityTypeMapping TypeName="SistemaJYRModel.Productos">
               <MappingFragment StoreEntitySet="Productos">
+                <ScalarProperty Name="imagen" ColumnName="imagen" />
                 <ScalarProperty Name="Estado" ColumnName="Estado" />
                 <ScalarProperty Name="Impuesto" ColumnName="Impuesto" />
                 <ScalarProperty Name="FechaVencimiento" ColumnName="FechaVencimiento" />

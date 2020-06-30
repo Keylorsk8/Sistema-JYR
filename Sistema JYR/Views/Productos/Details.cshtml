@@ -1,0 +1,90 @@
+﻿@model Sistema_JYR.Models.Productos
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Productos</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UnidadDeMedida)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UnidadDeMedida)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Precio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Precio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CantidadEnInventario)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CantidadEnInventario)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaVencimiento)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaVencimiento)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Impuesto)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Impuesto)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Estado)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CategoriasProducto.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CategoriasProducto.Descripcion)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
