@@ -22,7 +22,9 @@
                 <h2>Crear Nuevo Producto</h2>
             </div>
             <div class="col-md-6">
-                @Html.ActionLink("Volver al listado", "Index", new { }, new { @class = "btn btn-outline-dark btn-block" })
+                <a class = "btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                    <i class="fa fa-arrow-left"></i> Volver
+                </a>
             </div>
         </div>
         <hr />
@@ -41,7 +43,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-12" })
                     <div class="col-md-12">
-                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @required = "requerido" } })
                         @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -116,7 +118,9 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <input type="submit" value="Crear" class="btn btn-success btn-block" />
+                <button type="submit" value="Crear" class="btn btn-success btn-block">
+                    <i class="fa fa-save"></i> Crear
+                </button>
             </div>
         </div>
     </div>

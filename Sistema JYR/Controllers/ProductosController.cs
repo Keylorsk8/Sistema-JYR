@@ -56,8 +56,10 @@ namespace Sistema_JYR.Controllers
         {
             HttpPostedFileBase FileBase = Request.Files[0];
 
-            WebImage image = new WebImage(FileBase.InputStream);
-            producto.imagen = image.GetBytes();
+                WebImage image = new WebImage(FileBase.InputStream);
+                producto.imagen = image.GetBytes();
+
+            
             if (ModelState.IsValid)
             {
                 db.Productos.Add(producto);
@@ -126,6 +128,30 @@ namespace Sistema_JYR.Controllers
             db.Productos.Remove(productos);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult filtrarProductosAjax(string terminoBusqueda)
+        {
+            if (terminoBusqueda != null)
+            {
+                var lista = db.Productos.Where(x => x.Nombre.Contains(terminoBusqueda));
+                return PartialView("_ListaProductos", lista.ToList());
+            }
+            return View();
+        }
+
+        public ActionResult getImage(int id)
+        {
+            Productos pro = db.Productos.Find(id);
+            byte[] byteImage = pro.imagen;
+
+            System.IO.MemoryStream memory = new MemoryStream(byteImage);
+            Image image = Image.FromStream(memory);
+
+            memory = new MemoryStream();
+            image.Save(memory, System.Drawing.Imaging.ImageFormat.Jpeg);
+            memory.Position = 0;
+            return File(memory, "image/jpg");
         }
 
         protected override void Dispose(bool disposing)

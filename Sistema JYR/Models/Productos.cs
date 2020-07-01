@@ -11,7 +11,8 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Productos
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -23,15 +24,26 @@ namespace Sistema_JYR.Models
         }
     
         public int Id { get; set; }
+        [Required]
         public string Nombre { get; set; }
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
+        [Required]
+        [Display(Name = "Unidad de Medida")]
         public string UnidadDeMedida { get; set; }
+        [Required]
         public double Precio { get; set; }
+        [Required]
+        [Display(Name = "Cantidad en Inventario")]
         public double CantidadEnInventario { get; set; }
+        [Required]
+        [Display(Name = "Categoría")]
         public int IdCategoria { get; set; }
+        [Display(Name = "Fecha de Vencimiento")]
         public Nullable<System.DateTime> FechaVencimiento { get; set; }
         public Nullable<int> Impuesto { get; set; }
         public bool Estado { get; set; }
+        [Display(Name = "Imagen")]
         public byte[] imagen { get; set; }
     
         public virtual CategoriasProducto CategoriasProducto { get; set; }
