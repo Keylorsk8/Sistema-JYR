@@ -175,7 +175,9 @@
     <Compile Include="Controllers\CategoriasProductoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PedidoController.cs" />
     <Compile Include="Controllers\ProductosController.cs" />
+    <Compile Include="Controllers\ProformasController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SweetController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -478,6 +480,16 @@
     <Content Include="Views\Productos\Details.cshtml" />
     <Content Include="Views\Productos\Edit.cshtml" />
     <Content Include="Views\Productos\Index.cshtml" />
+    <Content Include="Views\Pedido\Create.cshtml" />
+    <Content Include="Views\Pedido\Delete.cshtml" />
+    <Content Include="Views\Pedido\Details.cshtml" />
+    <Content Include="Views\Pedido\Edit.cshtml" />
+    <Content Include="Views\Pedido\Index.cshtml" />
+    <Content Include="Views\Proformas\Create.cshtml" />
+    <Content Include="Views\Proformas\Delete.cshtml" />
+    <Content Include="Views\Proformas\Details.cshtml" />
+    <Content Include="Views\Proformas\Edit.cshtml" />
+    <Content Include="Views\Proformas\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

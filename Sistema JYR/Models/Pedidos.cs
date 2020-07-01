@@ -11,7 +11,7 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class Pedidos
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,14 +19,23 @@ namespace Sistema_JYR.Models
         {
             this.PedidoDetalle = new HashSet<PedidoDetalle>();
         }
-    
+
         public int Id { get; set; }
+
+        [System.ComponentModel.DisplayName("Usuario")]
         public string IdUsuario { get; set; }
+        [System.ComponentModel.DisplayName("Estado")]
         public int IdEstado { get; set; }
+        [System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public System.DateTime Fecha { get; set; }
+
+        [System.ComponentModel.DisplayName("Total Pagar")]
         public double TotalPagar { get; set; }
+        [System.ComponentModel.DisplayName("Total Descuento")]
         public double TotalDescuento { get; set; }
+        [System.ComponentModel.DisplayName("Total Impuesto")]
         public double TotalImpuesto { get; set; }
+        [System.ComponentModel.DisplayName("Número Proforma")]
         public Nullable<int> NumeroProforma { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }

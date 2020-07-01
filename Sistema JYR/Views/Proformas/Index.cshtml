@@ -1,0 +1,126 @@
+﻿@model IEnumerable<Sistema_JYR.Models.Proformas>
+
+@{
+    ViewBag.Title = "Mantenimiento Proformas";
+}
+
+<ol class="breadcrumb container-fluid">
+    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+    <li class="breadcrumb-item active">Mantenimientos</li>
+    <li class="breadcrumb-item active">Proforma</li>
+    <li class="breadcrumb-item active">Mantenimiento Proformas</li>
+</ol>
+@using (Ajax.BeginForm("filtrarProformasAjax", "Proformas", new AjaxOptions
+{
+    HttpMethod = "GET",
+    UpdateTargetId = "divProformas",
+    InsertionMode = InsertionMode.Replace
+
+}))
+{
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Mantenimiento Proformas</h2>
+            </div>
+            <div class="col-lg-6">
+                <a class="btn btn-dark btn-block" href="@Url.Action("",new {})">
+                    <i class="fa fa-plus" style="margin-right:5px"></i>Crear Nueva Proforma
+                </a>
+
+            </div>
+        </div>
+        <div class="row" style="margin: 2%">
+            <div class="col-md-1">
+                Filtro:
+            </div>
+            <div class="col-md-9">
+
+                @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Buscar" class="btn btn-dark btn-block" />
+
+            </div>
+        </div>
+    </div>}
+
+<hr />
+
+<div class="container" style="margin-bottom: 2%; padding-top: 5px; padding-bottom: 5px">
+
+</div>
+
+
+<div class="container" style="text-align: center">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+
+            <th>
+                Usuario
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.TotalDescuento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalImpuesto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPagar)
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.AspNetUsers.Nombre)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalDescuento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalImpuesto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPagar)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EstadoProforma.Descripcion)
+                </td>
+                <td>
+                    <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
+                        <i class="fa fa-pencil-square-o"></i>Editar
+                    </a>
+                    <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
+                        <i class="fa fa-info-circle"></i>Detalles
+                    </a>
+
+                </td>
+            </tr>
+        }    @if (Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="9">
+                    No hay elementos
+                </td>
+            </tr>
+        }
+    </table>
+    </div>

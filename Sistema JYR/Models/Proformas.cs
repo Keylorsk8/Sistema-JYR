@@ -21,11 +21,18 @@ namespace Sistema_JYR.Models
         }
     
         public int Id { get; set; }
+        [System.ComponentModel.DisplayName("Usuario")]
         public string IdUsuario { get; set; }
+
+        [System.ComponentModel.DisplayName("Estado")]
         public int IdEstado { get; set; }
+        [System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public System.DateTime Fecha { get; set; }
+        [System.ComponentModel.DisplayName("Total Pagar")]
         public double TotalPagar { get; set; }
+        [System.ComponentModel.DisplayName("Total Descuento")]
         public double TotalDescuento { get; set; }
+        [System.ComponentModel.DisplayName("Total Impuesto")]
         public double TotalImpuesto { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
