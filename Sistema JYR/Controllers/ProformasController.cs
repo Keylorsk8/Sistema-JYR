@@ -17,6 +17,10 @@ namespace Sistema_JYR.Controllers
         // GET: Proformas
         public ActionResult Index()
         {
+            if (TempData.ContainsKey("mensaje"))
+            {
+                ViewBag.Mensaje = TempData["mensaje"].ToString();
+            }
             var proformas = db.Proformas.Include(p => p.AspNetUsers).Include(p => p.EstadoProforma).Where(x => x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
             return View(proformas.ToList());
         }
@@ -26,14 +30,22 @@ namespace Sistema_JYR.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData["mensaje"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
             }
+
+
             Proformas proformas = db.Proformas.Find(id);
-            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
-           proformas.ProformaDetalle = detalles;
+            if (proformas != null)
+            {
+                List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+                proformas.ProformaDetalle = detalles;
+            }
+             
             if (proformas == null)
             {
-                return HttpNotFound();
+                TempData["mensaje"] = "No existe la proforma";
+                return RedirectToAction("Index");
             }
             return View(proformas);
         }
@@ -70,13 +82,16 @@ namespace Sistema_JYR.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData["mensaje"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
             }
             Proformas proformas = db.Proformas.Find(id);
             if (proformas == null)
             {
-                return HttpNotFound();
+                TempData["mensaje"] = "No existe la proforma";
+                return RedirectToAction("Index");
             }
+            ViewBag.Id = proformas.Id;
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
@@ -125,14 +140,29 @@ namespace Sistema_JYR.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+       
 
-        protected override void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+        public ActionResult filtrarProformasAjax(string terminoBusqueda)
+        {
+            if (terminoBusqueda != null)
+            {
+                var lista = db.Proformas.Where(x => x.AspNetUsers.Nombre.Contains(terminoBusqueda)
+                || x.EstadoProforma.Descripcion.Contains(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
+                return PartialView("_ListaProformas", lista.ToList());
+            }
+
+
+            return View();
         }
     }
 }

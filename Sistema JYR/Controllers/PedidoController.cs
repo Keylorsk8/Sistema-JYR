@@ -17,6 +17,10 @@ namespace Sistema_JYR.Controllers
         // GET: Pedido
         public ActionResult Index()
         {
+            if (TempData.ContainsKey("mensaje"))
+            {
+                ViewBag.Mensaje = TempData["mensaje"].ToString();
+            }
             var pedidos = db.Pedidos.Include(p => p.EstadoPedido);
             return View(pedidos.ToList());
         }
@@ -26,16 +30,25 @@ namespace Sistema_JYR.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData["mensaje"] = "Pedido inválido. Especifique un pedido";
+                return RedirectToAction("Index");
             }
+          
             Pedidos pedido = db.Pedidos.Find(id);
+            if (pedido != null)
+            {
+                List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == id).ToList();
+                pedido.PedidoDetalle = detalles;
+            }
+               
 
-           List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == id).ToList();
-            pedido.PedidoDetalle = detalles;
             if (pedido == null)
             {
-                return HttpNotFound();
+                TempData["mensaje"] = "No existe el pedido";
+                return RedirectToAction("Index");
             }
+
+           
             return View(pedido);
         }
 
@@ -71,14 +84,17 @@ namespace Sistema_JYR.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                TempData["mensaje"] = "Pedido inválido. Especifique un pedido";
+                return RedirectToAction("Index");
             }
           
             Pedidos pedidos = db.Pedidos.Find(id);
             if (pedidos == null)
             {
-                return HttpNotFound();
+                TempData["mensaje"] = "No existe el pedido";
+                return RedirectToAction("Index");
             }
+            ViewBag.Id = pedidos.Id;
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
@@ -137,5 +153,19 @@ namespace Sistema_JYR.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult filtrarPedidosAjax(string terminoBusqueda)
+        {
+            if (terminoBusqueda != null)
+            {
+                var lista = db.Pedidos.Where(x => x.AspNetUsers.Nombre.Contains(terminoBusqueda)
+                || x.EstadoPedido.Descripcion.Contains(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
+                return PartialView("_ListaPedidos", lista.ToList());
+            }
+
+        
+            return View();
+        }
+     
     }
 }

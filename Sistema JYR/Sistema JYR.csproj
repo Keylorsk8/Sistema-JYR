@@ -492,6 +492,10 @@
     <Content Include="Views\Proformas\Details.cshtml" />
     <Content Include="Views\Proformas\Edit.cshtml" />
     <Content Include="Views\Proformas\Index.cshtml" />
+    <Content Include="Views\Pedido\_ListaPedidos.cshtml" />
+    <Content Include="Views\Usuarios\_ListaUsuarios.cshtml" />
+    <Content Include="Views\CategoriasProducto\_ListaCategorias.cshtml" />
+    <Content Include="Views\Proformas\_ListaProformas.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

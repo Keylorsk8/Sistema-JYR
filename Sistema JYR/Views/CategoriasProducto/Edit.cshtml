@@ -20,10 +20,13 @@
     <div class="form-horizontal">
         <div class="row">
             <div class="col col-md-6">
-                <h2>Editar categoría</h2>
+                <h2>Editar Categoría</h2>
             </div>
             <div class="col col-md-6">
-                @Html.ActionLink("Volver al listado", "Index", new { }, new { @class = "btn btn-outline-dark btn-block" })
+             
+                <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                    <i class="fa fa-arrow-left"></i> Volver al listado
+                </a>
             </div>
         </div>
         <hr />
@@ -38,9 +41,9 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-12">
-                <input type="submit" value="Guardar" class="btn btn-success btn-block" />
+        <div class="row">
+            <div class="col col-lg-12">
+                <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
             </div>
         </div>
     </div>

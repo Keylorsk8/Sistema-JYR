@@ -4,23 +4,45 @@
     ViewBag.Title = "Editar Pedido";
 }
 
-    <ol class="breadcrumb container-fluid">
-        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">Mantenimientos</li>
-        <li class="breadcrumb-item active">Pedidos</li>
-        <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
-        <li class="breadcrumb-item active">Editar</li>
-    </ol>
+<ol class="breadcrumb container-fluid">
+    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+    <li class="breadcrumb-item active">Mantenimientos</li>
+    <li class="breadcrumb-item active">Pedidos</li>
+    <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
+    <li class="breadcrumb-item active">Editar</li>
+</ol>
+<h4>Editar Pedido No.  @ViewBag.Id</h4>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+<div class="form-horizontal" style="margin-bottom: 100px">
+
+    <div class="row">
+        <div class="col col-lg-6">
+            <p>Actualiza la información de la proforma</p>
+        </div>
+        <div class="col col-lg-6">
+            <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                <i class="fa fa-arrow-left"></i> Volver
+            </a>
+
+        </div>
+    </div>
     <div class="form-horizontal">
-        <h4>Pedidos</h4>
+
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-2" })
@@ -38,13 +60,6 @@
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.TotalPagar, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -78,27 +93,19 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div>
-                <input type="submit" value="Guardar" class="btn btn-dark btn-block" />
-        
-
-              
+        <div class="row">
+            <div class="col col-lg-12">
+                <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
             </div>
         </div>
+
     </div>
-}
-
-<div>
-    <p>
-
-        <a class="btn btn-dark btn-block" href="@Url.Action("Index",new {})">
-            <i class="fa fa-undo" style="margin-right:5px"></i>Volver
-        </a>
-    </p>
-   
 </div>
+    }
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+
+
+
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }

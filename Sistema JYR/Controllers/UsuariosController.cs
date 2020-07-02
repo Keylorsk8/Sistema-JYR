@@ -196,5 +196,18 @@ namespace Sistema_JYR.Controllers
             }
             base.Dispose(disposing);
         }
-    }
+
+        public ActionResult filtrarUsuariosAjax(string terminoBusqueda)
+        {
+            if (terminoBusqueda != null)
+            {
+                var lista = db.AspNetUsers.Where(x => x.Nombre.Contains(terminoBusqueda)
+                || x.Apellido1.Contains(terminoBusqueda)|| x.Apellido2.Contains(terminoBusqueda)
+               ).Where(x=> x.Rol==2);
+                return PartialView("_ListaUsuarios", lista.ToList());
+            }
+            return View();
+        }
+    
+}
 }
