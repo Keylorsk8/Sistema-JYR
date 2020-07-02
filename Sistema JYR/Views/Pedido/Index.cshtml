@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Mantenimiento Pedidos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <ol class="breadcrumb container-fluid">
@@ -12,7 +13,8 @@
 </ol>
 
 
-@using (Ajax.BeginForm("filtrarPedidosAjax", "Pedido", new AjaxOptions
+@using (Ajax.BeginForm("filtrarPedidosAjax","Pedido", new AjaxOptions
+
 {
     HttpMethod = "GET",
     UpdateTargetId = "divPedidos",
@@ -20,33 +22,37 @@
 
 }))
 {
-    <div class="container">
+<div class="container">
 
-        <div class="row">
-            <div class="col-lg-6">
-                <h2>Mantenimiento Pedidos</h2>
-            </div>
-            <div class="col-lg-6">
-                <a class="btn btn-dark btn-block" href="@Url.Action("",new {})">
-                    <i class="fa fa-plus" style="margin-right:5px"></i>Crear Nuevo Pedido
-                </a>
-              
-            </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Mantenimiento Pedidos</h2>
         </div>
-        <div class="row" style="margin: 2%">
-            <div class="col-md-1">
-                Filtro:
-            </div>
-            <div class="col-md-9">
-               
-                @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
-            </div>
-            <div class="col-md-2">
-                <input type="submit" value="Buscar" class="btn btn-dark btn-block" />
+        <div class="col-lg-6">
+            <a class="btn btn-dark btn-block" href="@Url.Action("",new {})">
+                <i class="fa fa-plus" style="margin-right:5px"></i>Crear Nuevo Pedido
+            </a>
 
-            </div>
         </div>
-    </div>}
+    </div>
+    <div class="row" style="margin: 2%">
+        <div class="col-md-1">
+            Filtro:
+        </div>
+        <div class="col-md-7">
+            @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
+        </div>
+     
+        <div class="col-md-2">
+            <button type="submit" value="Buscar" class="btn btn-dark btn-block"><i class="fa fa-search"></i></button>
+        </div>
+        <div class="col-md-2">
+            <a class="btn btn-danger btn-block" href="@Url.Action("Index")">
+                <i class="fa fa-trash-o"></i>
+            </a>
+        </div>
+    </div>
+</div>}
 
 <hr />
 
@@ -54,87 +60,93 @@
 
 </div>
 
+<div class="container" style="text-align: center" id="divPedidos">
+    <table class="table table-striped table-hover table-bordered table-responsive-lg">
 
-<div class="container" style="text-align: center">
-
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Fecha)
-        </th>
-
-        <th>
-            Usuario
-        </th>
-
-        <th>
-            @Html.DisplayNameFor(model => model.TotalDescuento)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TotalImpuesto)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TotalPagar)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NumeroProforma)
-        </th>
-        <th>
-            Estado
-        </th>
-        <th>
-            Acciones
-        </th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.Fecha)
-    </td>
-
-    <td>
-        @Html.DisplayFor(modelItem => item.AspNetUsers.Nombre)
- 
        
-    </td>
-
-    <td>
-        @Html.DisplayFor(modelItem => item.TotalDescuento)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.TotalImpuesto)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.TotalPagar)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.NumeroProforma)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.EstadoPedido.Descripcion)
-    </td>
-    <td>
-        <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
-            <i class="fa fa-pencil-square-o"></i>Editar
-        </a>
-        <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
-            <i class="fa fa-info-circle"></i>Detalles
-        </a>
-
-    </td>
-</tr>
-    }
-
-    @if (Model.Count() == 0)
-    {
         <tr>
-            <td colspan="9">
-                No hay elementos
-            </td>
-        </tr>
-    }
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
 
-</table>
+            <th>
+                Usuario
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.TotalDescuento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalImpuesto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalPagar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumeroProforma)
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+
+            @foreach (var item in Model)
+            {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fecha)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.AspNetUsers.Nombre)
+
+
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalDescuento)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalImpuesto)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalPagar)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumeroProforma)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EstadoPedido.Descripcion)
+        </td>
+        <td>
+            <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
+                <i class="fa fa-pencil-square-o"></i>Editar
+            </a>
+            <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
+                <i class="fa fa-info-circle"></i>Detalles
+            </a>
+
+        </td>
+    </tr>
+            }
+
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="9">
+                        No hay elementos
+                    </td>
+                </tr>
+            }
+
+        </table>
 </div>

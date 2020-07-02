@@ -4,13 +4,13 @@
     ViewBag.Title = "Detalle Proforma";
 }
 
-    <ol class="breadcrumb container-fluid">
-        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">Mantenimientos</li>
-        <li class="breadcrumb-item active">Proforma</li>
-        <li class="breadcrumb-item active">Mantenimiento Proforma</li>
-        <li class="breadcrumb-item active">Detalle</li>
-    </ol>
+<ol class="breadcrumb container-fluid">
+    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+    <li class="breadcrumb-item active">Mantenimientos</li>
+    <li class="breadcrumb-item active">Proforma</li>
+    <li class="breadcrumb-item active">Mantenimiento Proforma</li>
+    <li class="breadcrumb-item active">Detalle</li>
+</ol>
 
 <div>
     <h4>Proformas</h4>
@@ -27,7 +27,7 @@
 
 
         <dt>
-           Usuario
+            Usuario
         </dt>
 
         <dd>
@@ -60,7 +60,7 @@
         </dd>
 
         <dt>
-     Estado
+            Estado
         </dt>
 
         <dd>
@@ -112,12 +112,14 @@
         </table>
     </div>
 </div>
-<p>
 
-    <a class="btn btn-dark btn-block" href="@Url.Action("Edit",new {id = Model.Id })">
-        <i class="fa fa-pencil-square-o" style="margin-right:5px"></i>Editar
+<p>
+    <a class="btn btn-dark " href="@Url.Action("Edit", new { id = Model.Id })">
+        <i class="fa fa-pencil-square-o"></i> Editar
     </a>
-    <a class="btn btn-dark btn-block" href="@Url.Action("Index",new {})">
-        <i class="fa fa-undo" style="margin-right:5px"></i>Volver
+    |
+    <a class="btn btn-dark" href="@Url.Action("Index")">
+        <i class="fa fa-arrow-left"></i> Volver
     </a>
 </p>
+

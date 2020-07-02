@@ -91,20 +91,20 @@
 
             @foreach (var c in Model.PedidoDetalle)
             {
-        <tr>
-            <td>
-                @c.Productos.Nombre
-            </td>
-            <td>
-                @c.PrecioUnitario
-            </td>
-            <td>
-                @c.Descuento
-            </td>
-            <td>
-                @c.CantidadEnviada
-            </td>
-        </tr>
+                <tr>
+                    <td>
+                        @c.Productos.Nombre
+                    </td>
+                    <td>
+                        @c.PrecioUnitario
+                    </td>
+                    <td>
+                        @c.Descuento
+                    </td>
+                    <td>
+                        @c.CantidadEnviada
+                    </td>
+                </tr>
 
 
             }
@@ -113,11 +113,11 @@
     </div>
 </div>
 <p>
-
-    <a class="btn btn-dark btn-block" href="@Url.Action("Edit",new {id = Model.Id })">
-        <i class="fa fa-pencil-square-o" style="margin-right:5px"></i>Editar
+    <a class="btn btn-dark " href="@Url.Action("Edit", new { id = Model.Id })">
+        <i class="fa fa-pencil-square-o"></i> Editar
     </a>
-    <a class="btn btn-dark btn-block" href="@Url.Action("Index",new {})">
-        <i class="fa fa-undo" style="margin-right:5px"></i>Volver
+    |
+    <a class="btn btn-dark" href="@Url.Action("Index")">
+        <i class="fa fa-arrow-left"></i> Volver
     </a>
 </p>

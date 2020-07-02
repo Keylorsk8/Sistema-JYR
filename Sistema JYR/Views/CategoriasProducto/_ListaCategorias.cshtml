@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Sistema_JYR.Models.CategoriasProducto>
+@using Sistema_JYR.Models;
+@{
+    List<Productos> products = new List<Productos>();
+    SistemaJYREntities db = new SistemaJYREntities();
+}
+
+    <div class="container" style="text-align: center" id="divCategorias">
+        <table class="table table-striped table-hover table-bordered table-responsive-lg">
+            <tr class="thead-dark">
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Número de ítems
+                </th>
+                <th>
+                    Acciones
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Descripcion)
+                    </td>
+                    <td>
+                        @{products = db.Productos.Where(x => x.IdCategoria == item.Id).ToList();}
+                        @products.Count
+                    </td>
+                    <td>
+                        <a class="btn btn-dark" href="@Url.Action("Edit", new { id = item.Id })">
+                            <i class="fa fa-pencil-square-o"></i>  Editar
+                        </a>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>

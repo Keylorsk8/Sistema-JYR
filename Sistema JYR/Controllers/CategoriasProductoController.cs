@@ -87,5 +87,15 @@ namespace Sistema_JYR.Controllers
             }
             base.Dispose(disposing);
         }
+        public ActionResult filtrarCategoriasAjax(string terminoBusqueda)
+        {
+            if (terminoBusqueda != null)
+            {
+                var lista = db.CategoriasProducto.Where(x => x.Descripcion.Contains(terminoBusqueda)
+               );
+                return PartialView("_ListaCategorias", lista.ToList());
+            }
+            return View();
+        }
     }
 }
