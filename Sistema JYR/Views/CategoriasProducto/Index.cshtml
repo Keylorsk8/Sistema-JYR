@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<Sistema_JYR.Models.CategoriasProducto>
-@using Sistema_JYR.Models; 
+@using Sistema_JYR.Models;
 
 @{
     ViewBag.Title = "Mantenimiento Categorías de Productos";
@@ -15,9 +15,9 @@
 </ol>
 
 
-<div class="row">
+<div class="row container">
     <div class="col-lg-6">
-        <h2>Mantenimiento Categorías</h2>
+        <h2><i class="fa fa-list-ul" style="margin-right: 2px"></i>Mantenimiento de Categorías</h2>
     </div>
     <div class="col-lg-6">
         <a class="btn btn-dark btn-block" href="@Url.Action("Create")">
@@ -25,6 +25,8 @@
         </a>
     </div>
 </div>
+
+<hr />
 
 <div class="container" style="text-align: center">
     <table class="table table-striped table-hover table-bordered table-responsive-lg">
@@ -42,21 +44,60 @@
 
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descripcion)
-            </td>
-            <td>
-                @{products = db.Productos.Where(x => x.IdCategoria == item.Id).ToList();}
-                @products.Count
-            </td>
-            <td>
-                <a class="btn btn-dark" href="@Url.Action("Edit", new { id = item.Id })">
-                    <i class="fa fa-pencil-square-o"></i>  Editar
-                </a>
-            </td>
-        </tr>
-                        }
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+                <td>
+                    @{products = db.Productos.Where(x => x.IdCategoria == item.Id).ToList();}
+                    @products.Count
+                </td>
+                <td>
+                    <a class="btn btn-dark" href="@Url.Action("Edit", new { id = item.Id })">
+                        <i class="fa fa-pencil-square-o"></i>  Editar
+                    </a>
+                </td>
+            </tr>
+        }
 
     </table>
 </div>
+
+@if (Session["Categoria"] != null)
+{
+    switch (Session["Categoria"])
+    {
+        case "¡La Categoria ha sido creada con éxito!":
+            <script type="text/javascript">
+                function CreacionCategoria() {
+                    Swal.fire({
+                        title: '¡La Categoria ha sido creada con éxito!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CreacionCategoria();
+            </script>
+            Session["Categoria"] = null;
+            break;
+        case "La Categoria ha sido actualizada correctamente!":
+            <script type="text/javascript">
+                function EdicionCategoria() {
+                    Swal.fire({
+                        title: '¡La Categoria ha sido actualizada correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionCategoria();
+            </script>
+            Session["Categoria"] = null;
+            break;
+        default:
+            break;
+    }
+}

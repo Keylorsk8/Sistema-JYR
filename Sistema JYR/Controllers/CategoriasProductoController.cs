@@ -15,27 +15,14 @@ namespace Sistema_JYR.Controllers
         private SistemaJYREntities db = new SistemaJYREntities();
 
         // GET: CategoriasProducto
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             return View(db.CategoriasProducto.ToList());
         }
 
-        // GET: CategoriasProducto/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CategoriasProducto categoriasProducto = db.CategoriasProducto.Find(id);
-            if (categoriasProducto == null)
-            {
-                return HttpNotFound();
-            }
-            return View(categoriasProducto);
-        }
-
         // GET: CategoriasProducto/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -52,6 +39,7 @@ namespace Sistema_JYR.Controllers
             {
                 db.CategoriasProducto.Add(categoriasProducto);
                 db.SaveChanges();
+                Session["Categoria"] = "¡La Categoria ha sido creada con éxito!";
                 return RedirectToAction("Index");
             }
 
@@ -59,6 +47,7 @@ namespace Sistema_JYR.Controllers
         }
 
         // GET: CategoriasProducto/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -84,35 +73,10 @@ namespace Sistema_JYR.Controllers
             {
                 db.Entry(categoriasProducto).State = EntityState.Modified;
                 db.SaveChanges();
+                Session["Categoria"] = "La Categoria ha sido actualizada correctamente!";
                 return RedirectToAction("Index");
             }
             return View(categoriasProducto);
-        }
-
-        // GET: CategoriasProducto/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CategoriasProducto categoriasProducto = db.CategoriasProducto.Find(id);
-            if (categoriasProducto == null)
-            {
-                return HttpNotFound();
-            }
-            return View(categoriasProducto);
-        }
-
-        // POST: CategoriasProducto/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            CategoriasProducto categoriasProducto = db.CategoriasProducto.Find(id);
-            db.CategoriasProducto.Remove(categoriasProducto);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

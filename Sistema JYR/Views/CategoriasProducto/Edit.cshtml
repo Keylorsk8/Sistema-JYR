@@ -8,7 +8,7 @@
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
         <li class="breadcrumb-item active">Mantenimientos</li>
         <li class="breadcrumb-item active">Inventario</li>
-        <li class="breadcrumb-item">@Html.ActionLink("Categorías de Producto", "Index", "CategoriasProducto")</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Mantenimiento Categorías de Producto", "Index", "CategoriasProducto")</li>
         <li class="breadcrumb-item active">Editar Categoría</li>
     </ol>
 
@@ -23,7 +23,9 @@
                 <h2>Editar categoría</h2>
             </div>
             <div class="col col-md-6">
-                @Html.ActionLink("Volver al listado", "Index", new { }, new { @class = "btn btn-outline-dark btn-block" })
+                <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                    <i class="fa fa-arrow-left"></i> Volver
+                </a>
             </div>
         </div>
         <hr />
@@ -40,7 +42,9 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-12">
-                <input type="submit" value="Guardar" class="btn btn-success btn-block" />
+                <button type="submit" value="Crear" class="btn btn-success btn-block">
+                    <i class="fa fa-save"></i> Guardar
+                </button>
             </div>
         </div>
     </div>

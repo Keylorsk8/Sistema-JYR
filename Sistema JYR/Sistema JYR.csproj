@@ -469,16 +469,12 @@
     <Content Include="Views\Usuarios\Details.cshtml" />
     <Content Include="Views\Usuarios\Create.cshtml" />
     <Content Include="Views\Usuarios\Edit.cshtml" />
-    <Content Include="Views\Usuarios\Delete.cshtml" />
     <Content Include="Views\Usuarios\ChangePassword.cshtml" />
     <Content Include="Views\Sweet\Alert.cshtml" />
     <Content Include="Views\CategoriasProducto\Create.cshtml" />
-    <Content Include="Views\CategoriasProducto\Delete.cshtml" />
-    <Content Include="Views\CategoriasProducto\Details.cshtml" />
     <Content Include="Views\CategoriasProducto\Edit.cshtml" />
     <Content Include="Views\CategoriasProducto\Index.cshtml" />
     <Content Include="Views\Productos\Create.cshtml" />
-    <Content Include="Views\Productos\Delete.cshtml" />
     <Content Include="Views\Productos\Details.cshtml" />
     <Content Include="Views\Productos\Edit.cshtml" />
     <Content Include="Views\Productos\Index.cshtml" />

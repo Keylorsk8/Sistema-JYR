@@ -161,33 +161,6 @@ namespace Sistema_JYR.Controllers
             return View(model);
         }
 
-        // GET: Usuarios/Delete/5
-        [Authorize(Roles = "Admin")]
-        public ActionResult Delete(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            AspNetUsers aspNetUsers = db.AspNetUsers.Find(id);
-            if (aspNetUsers == null)
-            {
-                return HttpNotFound();
-            }
-            return View(aspNetUsers);
-        }
-
-        // POST: Usuarios/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
-        {
-            AspNetUsers aspNetUsers = db.AspNetUsers.Find(id);
-            db.AspNetUsers.Remove(aspNetUsers);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

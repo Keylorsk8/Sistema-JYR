@@ -100,32 +100,6 @@ namespace Sistema_JYR.Controllers
             return View(proformas);
         }
 
-        // GET: Proformas/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Proformas proformas = db.Proformas.Find(id);
-            if (proformas == null)
-            {
-                return HttpNotFound();
-            }
-            return View(proformas);
-        }
-
-        // POST: Proformas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Proformas proformas = db.Proformas.Find(id);
-            db.Proformas.Remove(proformas);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

@@ -8,7 +8,7 @@
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
         <li class="breadcrumb-item active">Mantenimientos</li>
         <li class="breadcrumb-item active">Inventario</li>
-        <li class="breadcrumb-item">@Html.ActionLink("Categorías de Producto", "Index", "CategoriasProducto")</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Mantenimiento Categorías de Producto", "Index", "CategoriasProducto")</li>
         <li class="breadcrumb-item active">Crear Categoría</li>
     </ol>
 
@@ -17,7 +17,9 @@
         <h2>Crear nueva categoría</h2>
     </div>
     <div class="col col-md-6">
-        @Html.ActionLink("Volver al listado", "Index", new { }, new { @class = "btn btn-outline-dark btn-block" })
+        <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+            <i class="fa fa-arrow-left"></i> Volver
+        </a>
     </div>
 </div>
 
@@ -31,7 +33,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("Nombre de la Categoría", htmlAttributes: new { @class = "control-label col-md-12" })
             <div class="col-md-12">
                 @Html.EditorFor(model => model.Descripcion, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
@@ -40,7 +42,9 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-12">
-                <input type="submit" value="Crear" class="btn btn-success btn-block" />
+                <button type="submit" value="Crear" class="btn btn-success btn-block">
+                    <i class="fa fa-save"></i> Crear
+                </button>
             </div>
         </div>
     </div>

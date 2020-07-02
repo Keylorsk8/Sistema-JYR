@@ -64,6 +64,7 @@ namespace Sistema_JYR.Controllers
             {
                 db.Productos.Add(producto);
                 db.SaveChanges();
+                Session["Producto"] = "¡Producto Creado Correctamente!";
                 return RedirectToAction("Index");
             }
 
@@ -98,6 +99,7 @@ namespace Sistema_JYR.Controllers
             {
                 db.Entry(productos).State = EntityState.Modified;
                 db.SaveChanges();
+                Session["Producto"] = "¡Información del producto actualizada correctamente!";
                 return RedirectToAction("Index");
             }
             ViewBag.IdCategoria = new SelectList(db.CategoriasProducto, "Id", "Descripcion", productos.IdCategoria);
