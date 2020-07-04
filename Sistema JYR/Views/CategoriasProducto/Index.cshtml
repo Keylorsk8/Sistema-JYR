@@ -23,12 +23,12 @@
 }))
 {
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6">
-                <h2>Mantenimiento Categorías</h2>
+            <div class="col-lg-8">
+                <h2><i class="fa fa-list-ul" style="margin-right: 2px"></i>Mantenimiento Categorías</h2>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <a class="btn btn-dark btn-block" href="@Url.Action("Create")">
                     <i class="fa fa-plus"></i>  Crear Nueva
                 </a>
@@ -38,20 +38,23 @@
             <div class="col-md-1">
                 Filtro:
             </div>
-            <div class="col-md-7">
+            <div class="col-md-9">
                 @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <button type="submit" value="Buscar" class="btn btn-dark btn-block"><i class="fa fa-search"></i></button>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <a class="btn btn-danger btn-block" href="@Url.Action("Index")">
                     <i class="fa fa-trash-o"></i>
                 </a>
             </div>
         </div>
-    </div>}
-<div class="container" style="text-align: center" id="divCategorias">
+    </div>
+    
+    }
+<hr/>
+<div class="container-fluid" style="text-align: center" id="divCategorias">
     <table class="table table-striped table-hover table-bordered table-responsive-lg">
         <tr class="thead-dark">
             <th>

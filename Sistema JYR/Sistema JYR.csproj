@@ -276,6 +276,7 @@
     <Content Include="Content\imagenes\logoC.png" />
     <Content Include="Content\imagenes\logoN.png" />
     <Content Include="Content\imagenes\scroll.png" />
+    <Content Include="Content\imagenes\Sin_Imagen.jpg" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\sweetalert\bootstrap-sweetalert.png" />
     <Content Include="Content\sweetalert\docs.css" />

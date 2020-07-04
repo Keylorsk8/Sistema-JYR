@@ -19,12 +19,14 @@ namespace Sistema_JYR.Controllers
         private SistemaJYREntities db = new SistemaJYREntities();
 
         // GET: Productos
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Index()
         {
             var productos = db.Productos.Include(p => p.CategoriasProducto);
             return View(productos.ToList());
         }
 
+        [Authorize(Roles = "Admin,Vendedor")]
         // GET: Productos/Details/5
         public ActionResult Details(int? id)
         {
@@ -41,6 +43,7 @@ namespace Sistema_JYR.Controllers
         }
 
         // GET: Productos/Create
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Create()
         {
             ViewBag.IdCategoria = new SelectList(db.CategoriasProducto, "Id", "Descripcion");
@@ -52,14 +55,21 @@ namespace Sistema_JYR.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Nombre,Descripcion,UnidadDeMedida,Precio,CantidadEnInventario,IdCategoria,FechaVencimiento,Impuesto,Estado,imagen")] Productos producto)
+        public ActionResult Create([Bind(Include = "Nombre,Descripcion,UnidadDeMedida,Precio,CantidadEnInventario,IdCategoria,FechaVencimiento,Impuesto,Estado,imagen")] Productos producto)
         {
             HttpPostedFileBase FileBase = Request.Files[0];
 
+            try
+            {
                 WebImage image = new WebImage(FileBase.InputStream);
                 producto.imagen = image.GetBytes();
+            }
+            catch (Exception)
+            {
+                WebImage image = new WebImage("~/Content/imagenes/Sin_Imagen.jpg");
+                producto.imagen = image.GetBytes();  
+            }
 
-            
             if (ModelState.IsValid)
             {
                 db.Productos.Add(producto);
@@ -73,6 +83,7 @@ namespace Sistema_JYR.Controllers
         }
 
         // GET: Productos/Edit/5
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -93,8 +104,21 @@ namespace Sistema_JYR.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Descripcion,UnidadDeMedida,Precio,CantidadEnInventario,IdCategoria,FechaVencimiento,Impuesto,Estado")] Productos productos)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Descripcion,UnidadDeMedida,Precio,CantidadEnInventario,IdCategoria,FechaVencimiento,Impuesto,Estado,imagen")] Productos productos)
         {
+            byte[] imageActual = null;
+
+            HttpPostedFileBase FileBase = Request.Files[0];
+
+            if (FileBase == null)
+            {
+                imageActual = db.Productos.SingleOrDefault(t => t.Id == productos.Id).imagen;
+            }
+            else
+            {
+                WebImage image = new WebImage(FileBase.InputStream);
+                productos.imagen = image.GetBytes();
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(productos).State = EntityState.Modified;
