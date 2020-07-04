@@ -1,5 +1,7 @@
 ﻿@model Sistema_JYR.Models.Pedidos
 
+
+
 @{
     ViewBag.Title = "Editar Pedido";
 }
@@ -11,101 +13,220 @@
     <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
     <li class="breadcrumb-item active">Editar</li>
 </ol>
-<h4>Editar Pedido No.  @ViewBag.Id</h4>
+<div class="container">
+    <h4>Editar Pedido No.  @ViewBag.Id</h4>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-<div class="form-horizontal" style="margin-bottom: 100px">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal" style="margin-bottom: 100px">
 
-    <div class="row">
-        <div class="col col-lg-6">
-            <p>Actualiza la información de la proforma</p>
-        </div>
-        <div class="col col-lg-6">
-            <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
-                <i class="fa fa-arrow-left"></i> Volver
-            </a>
+            <div class="row">
+                <div class="col col-lg-6">
+                    <p>Actualiza la información de la proforma</p>
+                </div>
+                <div class="col col-lg-6">
+                    <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                        <i class="fa fa-arrow-left"></i> Volver
+                    </a>
 
-        </div>
-    </div>
-    <div class="form-horizontal">
+                </div>
+            </div>
+            <div class="form-horizontal">
 
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
-        <div class="form-group">
-            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.NumeroProforma)
+                @Html.HiddenFor(model => model.Fecha)
+                <div class="row">
+                    <div class="col col-md-6">
 
-                @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
-                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-12">
 
+                                @Html.TextBoxFor(model => model.Fecha, "{0:yyyy/MM/dd}", new { @class = "form-control", @readonly = true })
+                                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col col-md-6">
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+                <div class="container">
+
+                    <div id="carritoAjax">
+                        <div class="card bg-light mb-12">
+                            <div class="card-header">Materiales en la Orden</div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tr>
+                                        <th>
+                                            Producto
+                                        </th>
+                                        <th>
+                                            Cantidad
+                                        </th>
+                                        <th>
+                                            Cantidad Enviada
+                                        </th>
+                                        <th>
+                                            Precio Unitario
+                                        </th>
+                                        <th>
+                                            Descuento
+                                        </th>
+
+                                        <th>Subtotal</th>
+                                        <th></th>
+                                    </tr>
+
+                                    @foreach (var item in Model.PedidoDetalle)
+                                    {
+                                <tr>
+                                    <td>
+                                        @item.Productos.Nombre
+                                    </td>
+                                    <td>
+                                        @*Otra posible y mejor forma de hacerlo*@
+                                        <input type="text" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
+                                        <script>
+                                            function CambiarCantidadPedida(id) {
+                                        var cantidad = $('#' + id).val();
+                                        //alert(id + ' ' + cantidad);
+                                        //De acá hacer metodo ajax con jquery
+
+                                        var dataObject = JSON.stringify({
+                                            'terminoBusqueda': cantidad,
+                                            'id':id
+                                        })
+                                        var objeto = new Object();
+                                        objeto.terminoBusqueda = cantidad;
+                                        objeto.id = id;
+
+                                        var url = "@Url.Action("CambiarCantidadPedida", "Pedido")";
+                                        var data = {terminoBusqueda: cantidad, id: id};
+                                        $.post(url, data).done(function (data) {
+                                            $("#carritoAjax").html(data);
+                                        })
+                                    }
+                                        </script>
+                                    </td>
+                                    <td>
+                                        @*Otra posible y mejor forma de hacerlo*@
+                                        <input type="text" id="@item.IdProducto" value="@item.CantidadEnviada" class="form-control" onchange="CambiarCantidad(@item.IdProducto)" />
+                                        <script>
+                                            function CambiarCantidad(id) {
+                                        var cantidad = $('#' + id).val();
+                                        //alert(id + ' ' + cantidad);
+                                        //De acá hacer metodo ajax con jquery
+
+                                        var dataObject = JSON.stringify({
+                                            'terminoBusqueda': cantidad,
+                                            'id':id
+                                        })
+                                        var objeto = new Object();
+                                        objeto.terminoBusqueda = cantidad;
+                                        objeto.id = id;
+
+                                        var url = "@Url.Action("CambiarCantidad", "Pedido")";
+                                        var data = {terminoBusqueda: cantidad, id: id};
+                                        $.post(url, data).done(function (data) {
+                                            $("#carritoAjax").html(data);
+                                        })
+                                    }
+                                        </script>
+                                    </td>
+
+                                    <td>
+                                        @item.PrecioUnitario
+                                    </td>
+                                    <td>
+                                        @item.Descuento
+                                    </td>
+                                    <td>
+                                        ₡@(item.PrecioUnitario * item.Cantidad)
+                                    </td>
+                                    <td>
+
+                                        @Ajax.ActionLink("Eliminar", "EliminarCarrito", "Pedido", new { idD = item.Id, idPedido = item.IdPedido }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
+                                    </td>
+                                </tr>
+
+                                    }
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <th>
+                                            <label>Total Descuento</label>
+                                        </th>
+                                        <th>
+                                            <label>₡@ViewBag.TotalDescuento</label>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <th>
+                                            <label>Total Impuesto</label>
+                                        </th>
+                                        <th>
+                                            <label>₡@ViewBag.TotalImpuesto</label>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <th>
+                                            <label>Total Pagar</label>
+                                        </th>
+                                        <th>
+                                            <label>₡@ViewBag.TotalPagar</label>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col col-lg-12">
+                            <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.TotalPagar, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TotalPagar, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TotalPagar, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.TotalDescuento, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TotalDescuento, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TotalDescuento, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.TotalImpuesto, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TotalImpuesto, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TotalImpuesto, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.NumeroProforma, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.NumeroProforma, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.NumeroProforma, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col col-lg-12">
-                <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
-            </div>
-        </div>
-
-    </div>
-</div>
     }
 
+</div>
 
 
 
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
