@@ -17,10 +17,7 @@ namespace Sistema_JYR.Controllers
         // GET: Proformas
         public ActionResult Index()
         {
-            if (TempData.ContainsKey("mensaje"))
-            {
-                ViewBag.Mensaje = TempData["mensaje"].ToString();
-            }
+       
             var proformas = db.Proformas.Include(p => p.AspNetUsers).Include(p => p.EstadoProforma).Where(x => x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
             return View(proformas.ToList());
         }
@@ -30,7 +27,7 @@ namespace Sistema_JYR.Controllers
         {
             if (id == null)
             {
-                TempData["mensaje"] = "Proforma inválida. Especifique una proforma";
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
                 return RedirectToAction("Index");
             }
 
@@ -40,11 +37,12 @@ namespace Sistema_JYR.Controllers
             {
                 List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
                 proformas.ProformaDetalle = detalles;
+                ViewBag.Id = proformas.Id;
             }
              
             if (proformas == null)
             {
-                TempData["mensaje"] = "No existe la proforma";
+                Session["Proforma"] = "No existe la proforma";
                 return RedirectToAction("Index");
             }
             return View(proformas);
@@ -71,7 +69,7 @@ namespace Sistema_JYR.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
+            ViewBag.Id = proformas.Id;
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
@@ -81,14 +79,14 @@ namespace Sistema_JYR.Controllers
         public ActionResult Edit(int? id)
         {
             if (id == null)
-            {
-                TempData["mensaje"] = "Proforma inválida. Especifique una proforma";
+            {    
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
                 return RedirectToAction("Index");
             }
             Proformas proformas = db.Proformas.Find(id);
             if (proformas == null)
             {
-                TempData["mensaje"] = "No existe la proforma";
+                Session["Proforma"] = "No existe la proforma";            
                 return RedirectToAction("Index");
             }
             ViewBag.Id = proformas.Id;

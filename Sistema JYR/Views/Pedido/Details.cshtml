@@ -9,115 +9,118 @@
     <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
     <li class="breadcrumb-item active">Mantenimientos</li>
     <li class="breadcrumb-item active">Pedidos</li>
-    <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
-    <li class="breadcrumb-item active">Detalle</li>
+    <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Pedidos", "Index", "Pedidos")</li>
+    <li class="breadcrumb-item active">Detalle Pedido</li>
 </ol>
-<div>
-    <h4>Pedidos</h4>
-    <hr />
-    <dl class="dl-horizontal">
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Fecha)
-        </dt>
+    <div class="container">
+        <h4>Pedido No. @ViewBag.Id</h4>
+        <hr />
+        <dl class="dl-horizontal">
 
-        <dd>
-            @Html.DisplayFor(model => model.Fecha)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </dt>
 
-
-
-        <dt>
-            Usuario
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AspNetUsers.Nombre)
-            @Html.DisplayFor(model => model.AspNetUsers.Apellido1)
-            @Html.DisplayFor(model => model.AspNetUsers.Apellido2)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Fecha)
+            </dd>
 
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalDescuento)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TotalDescuento)
-        </dd>
+            <dt>
+                Usuario
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalImpuesto)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.AspNetUsers.Nombre)
+                @Html.DisplayFor(model => model.AspNetUsers.Apellido1)
+                @Html.DisplayFor(model => model.AspNetUsers.Apellido2)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.TotalImpuesto)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalPagar)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TotalPagar)
-        </dd>
-        <dt>
-            Estado
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.TotalDescuento)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.EstadoPedido.Descripcion)
-        </dd>
-    </dl>
-</div>
-<div class="panel panel-default">
-    <div class="panel-heading" style="font-weight:bold; margin-bottom:7px">Detalle</div>
+            <dd>
+                ₡@Html.DisplayFor(model => model.TotalDescuento)
+            </dd>
 
+            <dt>
+                @Html.DisplayNameFor(model => model.TotalImpuesto)
+            </dt>
+
+            <dd>
+                ₡@Html.DisplayFor(model => model.TotalImpuesto)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.TotalPagar)
+            </dt>
+
+            <dd>
+                ₡@Html.DisplayFor(model => model.TotalPagar)
+            </dd>
+            <dt>
+                Estado
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.EstadoPedido.Descripcion)
+            </dd>
+            <dd>
+                <b>Detalle</b>
+            </dd>
+        </dl>
     <div class="container" style="text-align: center">
-        <table class="table table-striped table-hover table-bordered table-responsive-lg">
-            <tr>
-                <th>
-                    Producto
-                </th>
-                <th>
-                    Precio Unitario
-                </th>
-                <th>
-                    Descuento
-                </th>
-                <th>
-                    Cantidad Enviada
-                </th>
-            </tr>
-
-            @foreach (var c in Model.PedidoDetalle)
-            {
+        <div class="panel panel-default">
+     
+            <table class="table table-striped table-hover table-bordered table-responsive-lg">
                 <tr>
-                    <td>
-                        @c.Productos.Nombre
-                    </td>
-                    <td>
-                        @c.PrecioUnitario
-                    </td>
-                    <td>
-                        @c.Descuento
-                    </td>
-                    <td>
-                        @c.CantidadEnviada
-                    </td>
+                    <th>
+                        Producto
+                    </th>
+                    <th>
+                        Precio Unitario
+                    </th>
+                    <th>
+                        Descuento
+                    </th>
+                    <th>
+                        Cantidad Enviada
+                    </th>
                 </tr>
 
+                @foreach (var c in Model.PedidoDetalle)
+                {
+                    <tr>
+                        <td>
+                            @c.Productos.Nombre
+                        </td>
+                        <td>
+                            ₡@c.PrecioUnitario
+                        </td>
+                        <td>
+                            ₡@c.Descuento
+                        </td>
+                        <td>
+                            @c.CantidadEnviada
+                        </td>
+                    </tr>
 
-            }
 
-        </table>
+                }
+
+            </table>
+        </div>
     </div>
+    <p>
+        <a class="btn btn-dark " href="@Url.Action("Edit", new { id = Model.Id })">
+            <i class="fa fa-pencil-square-o"></i> Editar
+        </a>
+        |
+        <a class="btn btn-dark" href="@Url.Action("Index")">
+            <i class="fa fa-arrow-left"></i> Volver
+        </a>
+    </p>
 </div>
-<p>
-    <a class="btn btn-dark " href="@Url.Action("Edit", new { id = Model.Id })">
-        <i class="fa fa-pencil-square-o"></i> Editar
-    </a>
-    |
-    <a class="btn btn-dark" href="@Url.Action("Index")">
-        <i class="fa fa-arrow-left"></i> Volver
-    </a>
-</p>
