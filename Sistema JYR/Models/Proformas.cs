@@ -11,7 +11,9 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Proformas
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -21,18 +23,22 @@ namespace Sistema_JYR.Models
         }
     
         public int Id { get; set; }
-        [System.ComponentModel.DisplayName("Usuario")]
-        public string IdUsuario { get; set; }
 
-        [System.ComponentModel.DisplayName("Estado")]
+        [DisplayName("Usuario")]
+        public string IdUsuario { get; set; }
+        [DisplayName("Estado")]
         public int IdEstado { get; set; }
-        [System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
         public System.DateTime Fecha { get; set; }
-        [System.ComponentModel.DisplayName("Total Pagar")]
+
+        [DisplayName("Total Pagar")]
         public double TotalPagar { get; set; }
-        [System.ComponentModel.DisplayName("Total Descuento")]
+
+        [DisplayName("Total Descuento")]
         public double TotalDescuento { get; set; }
-        [System.ComponentModel.DisplayName("Total Impuesto")]
+
+        [DisplayName("Total Impuesto")]
         public double TotalImpuesto { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }

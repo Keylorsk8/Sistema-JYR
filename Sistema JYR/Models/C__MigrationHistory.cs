@@ -12,18 +12,11 @@ namespace Sistema_JYR.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class EstadoPedido
+    public partial class C__MigrationHistory
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public EstadoPedido()
-        {
-            this.Pedidos = new HashSet<Pedidos>();
-        }
-    
-        public int Id { get; set; }
-        public string Descripcion { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Pedidos> Pedidos { get; set; }
+        public string MigrationId { get; set; }
+        public string ContextKey { get; set; }
+        public byte[] Model { get; set; }
+        public string ProductVersion { get; set; }
     }
 }

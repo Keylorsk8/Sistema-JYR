@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a8aa0c95027d4bc0be4abdd45cd1ef78" Name="Diagram1" ZoomLevel="116">
+      <Diagram DiagramId="a8aa0c95027d4bc0be4abdd45cd1ef78" Name="Diagram1" ZoomLevel="97">
         <EntityTypeShape EntityType="SistemaJYRModel.AspNetRoles" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SistemaJYRModel.AspNetUserClaims" Width="1.5" PointX="5.25" PointY="1.25" IsExpanded="true" />
         <EntityTypeShape EntityType="SistemaJYRModel.AspNetUserLogins" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
@@ -36,6 +36,8 @@
         <AssociationConnector Association="SistemaJYRModel.FK_ProformaDetalle_Proformas" />
         <AssociationConnector Association="SistemaJYRModel.UsuariosDirecciones" />
         <AssociationConnector Association="SistemaJYRModel.UsuariosTelefonos" />
+        <EntityTypeShape EntityType="SistemaJYRModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="8.75" />
+        <EntityTypeShape EntityType="SistemaJYRModel.sysdiagrams" Width="1.5" PointX="2.75" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

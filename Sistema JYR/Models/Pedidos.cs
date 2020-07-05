@@ -11,6 +11,7 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     public partial class Pedidos
     {
@@ -19,23 +20,22 @@ namespace Sistema_JYR.Models
         {
             this.PedidoDetalle = new HashSet<PedidoDetalle>();
         }
-
+    
         public int Id { get; set; }
-
-        [System.ComponentModel.DisplayName("Usuario")]
+        [Display(Name = "Usuario")]
         public string IdUsuario { get; set; }
-        [System.ComponentModel.DisplayName("Estado")]
+        [Display(Name = "Estado")]
         public int IdEstado { get; set; }
-        [System.ComponentModel.DataAnnotations.DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
-        public System.DateTime Fecha { get; set; }
 
-        [System.ComponentModel.DisplayName("Total Pagar")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
+        public System.DateTime Fecha { get; set; }
+        [Display(Name = "Total Pagar")]
         public double TotalPagar { get; set; }
-        [System.ComponentModel.DisplayName("Total Descuento")]
+        [Display(Name = "Total Descuento")]
         public double TotalDescuento { get; set; }
-        [System.ComponentModel.DisplayName("Total Impuesto")]
+        [Display(Name = "Total Impuesto")]
         public double TotalImpuesto { get; set; }
-        [System.ComponentModel.DisplayName("Número Proforma")]
+        [Display(Name = "Número Proforma")]
         public Nullable<int> NumeroProforma { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
