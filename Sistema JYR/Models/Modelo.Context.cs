@@ -40,5 +40,7 @@ namespace Sistema_JYR.Models
         public virtual DbSet<ProformaDetalle> ProformaDetalle { get; set; }
         public virtual DbSet<Proformas> Proformas { get; set; }
         public virtual DbSet<Telefonos> Telefonos { get; set; }
+        public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
     }
 }

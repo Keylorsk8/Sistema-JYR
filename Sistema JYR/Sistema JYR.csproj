@@ -200,6 +200,9 @@
     <Compile Include="Models\CategoriasProducto.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\C__MigrationHistory.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Direcciones.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -245,6 +248,9 @@
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RoleViewModels.cs" />
+    <Compile Include="Models\sysdiagrams.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Telefonos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -493,7 +499,7 @@
     <Content Include="Views\Usuarios\_ListaUsuarios.cshtml" />
     <Content Include="Views\CategoriasProducto\_ListaCategorias.cshtml" />
     <Content Include="Views\Proformas\_ListaProformas.cshtml" />
-    <Content Include="Views\Pedido\_ListaCarrito.cshtml" />
+    <Content Include="Views\Pedido\_ListaPedidoCarrito.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
