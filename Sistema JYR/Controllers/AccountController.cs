@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -14,13 +17,13 @@ namespace Sistema_JYR.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private ApplicationRoleManager _roleManager; 
+        private ApplicationRoleManager _roleManager;
 
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ApplicationRoleManager roleManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager, ApplicationRoleManager roleManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -45,9 +48,9 @@ namespace Sistema_JYR.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -84,25 +87,43 @@ namespace Sistema_JYR.Controllers
                 return View(model);
             }
 
+            // Require the user to have a confirmed email before they can log on.
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user != null)
+            {
+                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                {
+
+                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta-Reenviado",1);
+                    ViewBag.errorMessage = "Debe confirmar su correo para iniciar sesión."
+                        + "La confirmación ha sido reenviada a su correo electrónico.";
+                    return View("Error");
+                }
+                else
+                {
+                    Session["usuario"] = user;
+                }
+            }
+
             // No cuenta los errores de inicio de sesión para el bloqueo de la cuenta
             // Para permitir que los errores de contraseña desencadenen el bloqueo de la cuenta, cambie a shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
             switch (result)
             {
                 case SignInStatus.Success:
                     Models.SistemaJYREntities en = new SistemaJYREntities();
-                    ApplicationUser user = new ApplicationUser();
-                    AspNetUsers us =  en.AspNetUsers.Where(x => x.Email == model.Email).First();
-                    user.Nombre = us.Nombre;
-                    user.Apellido1 = us.Apellido1;
-                    user.Apellido2 = us.Apellido2;
-                    user.Cedula = us.Cedula;
-                    user.Email = us.Email;
-                    user.UserName = us.UserName;
-                    user.Rol = us.Rol;
-                    user.Estado = us.Estado;
-                    Session["usuario"] = user;
-                    
+                    ApplicationUser userr = new ApplicationUser();
+                    AspNetUsers us = en.AspNetUsers.Where(x => x.Email == model.Email).First();
+                    userr.Nombre = us.Nombre;
+                    userr.Apellido1 = us.Apellido1;
+                    userr.Apellido2 = us.Apellido2;
+                    userr.Cedula = us.Cedula;
+                    userr.Email = us.Email;
+                    userr.UserName = us.UserName;
+                    userr.Rol = us.Rol;
+                    userr.Estado = us.Estado;
+                    Session["usuario"] = userr;
+
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -144,7 +165,7 @@ namespace Sistema_JYR.Controllers
             // Si un usuario introduce códigos incorrectos durante un intervalo especificado de tiempo, la cuenta del usuario 
             // se bloqueará durante un período de tiempo especificado. 
             // Puede configurar el bloqueo de la cuenta en IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -175,21 +196,22 @@ namespace Sistema_JYR.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Rol = 3, Estado = true};
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Rol = 3, Estado = true };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    result = await UserManager.AddToRoleAsync(user.Id, "Cliente" );
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    result = await UserManager.AddToRoleAsync(user.Id, "Cliente");
+                    //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     Session["usuario"] = user;
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-                    Session["Registro"] = "Exitoso";
-                    return RedirectToAction("Index", "Home");
+                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta",1) ;
+
+                    ViewBag.Message = "Revisa tú correo y confirma la cuenta, debe ser confirmada para finalizar el registro";
+
+                    //return RedirectToAction("Index", "Home");
+                    return View("Info");
                 }
                 AddErrors(result);
             }
@@ -208,7 +230,15 @@ namespace Sistema_JYR.Controllers
                 return View("Error");
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            if (result.Succeeded)
+            {
+                Session["Registro"] = "Exitoso";
+                return View("ConfirmEmail");
+            }
+            else
+            {
+                return View("Error");
+            }
         }
 
         //
@@ -237,10 +267,9 @@ namespace Sistema_JYR.Controllers
 
                 // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                 // Enviar correo electrónico con este vínculo
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+
+                string callbackUrl = await EnviarCorreoAsync(user.Id, "Restablecer contraseña", 2);
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
@@ -393,7 +422,7 @@ namespace Sistema_JYR.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Estado = model.Estado ,Rol = model.Rol };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Estado = model.Estado, Rol = model.Rol };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -451,6 +480,100 @@ namespace Sistema_JYR.Controllers
         }
 
         #region Aplicaciones auxiliares
+
+        private async Task<string> EnviarCorreoAsync(string userID, string subject, int tipo)
+        {
+            string code = "";
+            string callbackUrl = "";
+            var user = await UserManager.FindByIdAsync(userID);
+            if (tipo == 1)
+            {
+                code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
+                callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userID, code = code }, protocol: Request.Url.Scheme);
+            } else
+            {
+                code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+            }
+            
+            string text = "";
+            string html = "<!DOCTYPE html>";
+            html += "<html lang='en'>";
+            html += "<head>";
+            html += "<meta charset='UTF-8'>";
+            html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+            html += "</head>";
+            html += "<body style='background-color: lightgrey; padding: 1px;'>";
+            html += "<div style='background-color: white;'>";
+            html += "<div style='display:flex;align-items: center;justify-content: center; background-color: #002f3f; width: 100%; padding:1px ; text-align: center'>";
+            html += "<img style='padding:3px;width: 80px; height:60px; display: inline-block;' src='https://scontent.fsjo9-1.fna.fbcdn.net/v/t1.0-9/89285644_1717326001743786_4731412217533038592_n.jpg?_nc_cat=105&_nc_sid=09cbfe&_nc_ohc=JU5DJunai8sAX9rvEL3&_nc_ht=scontent.fsjo9-1.fna&oh=a651db2a91ad73b41bc9114543292741&oe=5F25066B'>";
+            html += "<h1 style='font-weight: 200;display: inline-block; color: white;'>"+ subject +"</h1>";
+            html += "</div>";
+            html += "<div style='padding: 20px;'>";
+            html += "<h4 style='color: black;font-weight: 200'>Hola " + user.Nombre + " " + user.Apellido1 + ",</h4>";
+            if (tipo == 1)
+            {
+                html += "<p style='color: black;font-weight: 200'>Hay un paso más antes de iniciar sesión.</p>";
+                html += "<p style='color: black;font-weight: 200'>Has clic en el siguiente botón para confirmar tú cuenta y completar el registro. </p>";
+                html += "<div style='text-align: center;margin-top: 30px;'>";
+            }
+            else
+            {
+                html += "<p style='color: black;font-weight: 200'>Solicitaste recuperar tú contraseña.</p>";
+                html += "<p style='color: black;font-weight: 200'>Has clic en el siguiente botón para recuperar tú contraseña. </p>";
+                html += "<div style='text-align: center;margin-top: 30px;'>";
+            }
+            html += "<a href='" + callbackUrl + "' class='btn btn-info' style='padding: 20px 70px 20px 70px;font-weight: 200;width: 50px ; color: white; text-decoration: none; background-color: #002f3f;'>"+ (tipo == 1? "Confirmar":"Cambiar contraseña") +"</a>";
+            html += "</div>";
+            html += "<br>";
+            html += "<p style='color: black;font-weight: 200'>¡Muchas gracias por confiar en nosotros!</p>";
+            html += "<p style='color: black;font-weight: 200'>Ferretería y Materíales JYR S.A</p>";
+            html += "<hr>";
+            if (tipo == 1)
+            {
+                html += "<p style='color: black;font-weight: 200;font-size:smaller;text-align: center'>Si recibiste este correo por error solamente eliminalo, no te inscribirás si no das clic en el link de arriba.</p>";
+            }
+            else
+            {
+                html += "<p style='color: black;font-weight: 200;font-size:smaller;text-align: center'>Si no fuiste tú, alguien intentó cambiar tú contraseña, considera cambiarla </p>";
+            }
+            
+            html += "</div>";
+            html += "</div>";
+            html += "</body>";
+            html += "</html>";
+
+            MailMessage msg = new MailMessage();
+            msg.From = new MailAddress("ferreteriaymaterialesjyr@gmail.com");
+            msg.To.Add(new MailAddress(user.UserName));
+            msg.Subject = subject;
+            msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
+            msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
+
+            using (SmtpClient client = new SmtpClient())
+            {
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Credentials = new System.Net.NetworkCredential("ferreteriaymaterialesjyr@gmail.com", "ferre24301131");
+                client.Host = "smtp.gmail.com";
+                client.Port = 587;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.Send(msg);
+            }
+            return "Correcto";
+        }
+
+        private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject)
+        {
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account",
+               new { userId = userID, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(userID, subject,
+               "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+            return callbackUrl;
+        }
+
         // Se usa para la protección XSRF al agregar inicios de sesión externos
         private const string XsrfKey = "XsrfId";
 

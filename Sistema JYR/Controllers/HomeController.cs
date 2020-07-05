@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace Sistema_JYR.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         public ActionResult Index()

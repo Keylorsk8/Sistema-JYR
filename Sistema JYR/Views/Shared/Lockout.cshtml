@@ -4,7 +4,12 @@
     ViewBag.Title = "Bloqueado";
 }
 
-<hgroup>
-    <h1 class="text-danger">Bloqueado.</h1>
-    <h2 class="text-danger">Esta cuenta se ha bloqueado, inténtelo de nuevo más tarde.</h2>
-</hgroup>
+    <div div class="container" style="margin-top: 10%; margin-bottom: 10%; border: 2px solid black; padding: 100px; border-radius: 50px;text-align: center">
+        <hgroup>
+            <h1 class="text-danger">Bloqueado.</h1>
+            <h2>Esta cuenta se ha bloqueado, inténtelo de nuevo más tarde.</h2>
+            <a href="@Url.Action("Index","Home")" class="btn btn-outline-dark">
+                <i class="fa fa-arrow-left" style="margin-right: 5px"></i> Volver al Inicio
+            </a>
+        </hgroup>
+    </div>
