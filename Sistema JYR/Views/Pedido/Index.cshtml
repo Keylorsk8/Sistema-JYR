@@ -96,64 +96,64 @@
 
         @foreach (var item in Model)
         {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Id)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Fecha)
-        </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.AspNetUsers.Nombre)
+                <td>
+                    @Html.DisplayFor(modelItem => item.AspNetUsers.Nombre)
 
 
-        </td>
+                </td>
 
-        <td>
-            ₡@Html.DisplayFor(modelItem => item.TotalDescuento)
-        </td>
-        <td>
-            ₡@Html.DisplayFor(modelItem => item.TotalImpuesto)
-        </td>
-        <td>
-            ₡@Html.DisplayFor(modelItem => item.TotalPagar)
-        </td>
+                <td>
+                    ₡@Html.DisplayFor(modelItem => item.TotalDescuento)
+                </td>
+                <td>
+                    ₡@Html.DisplayFor(modelItem => item.TotalImpuesto)
+                </td>
+                <td>
+                    ₡@Html.DisplayFor(modelItem => item.TotalPagar)
+                </td>
 
-        @if (item.NumeroProforma == null)
-        {
+                @if (item.NumeroProforma == null)
+                {
 
-            <td>
-                N/A
-            </td>
+                    <td>
+                        N/A
+                    </td>
 
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumeroProforma)
+                    </td>
+                }
+
+
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.EstadoPedido.Descripcion)
+                </td>
+                <td>
+                    <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
+                        <i class="fa fa-pencil-square-o"></i>Editar
+                    </a>
+                    <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
+                        <i class="fa fa-info-circle"></i>Detalles
+                    </a>
+                    <a class="btn btn-dark" href="@Url.Action("DuplicarPedido",new { id = item.Id })">
+                        <i class="fa fa-files-o"></i>Duplicar
+                    </a>
+                </td>
+            </tr>
         }
-        else
-        {
-            <td>
-                @Html.DisplayFor(modelItem => item.NumeroProforma)
-            </td>
-        }
-
-
-
-
-        <td>
-            @Html.DisplayFor(modelItem => item.EstadoPedido.Descripcion)
-        </td>
-        <td>
-            <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
-                <i class="fa fa-pencil-square-o"></i>Editar
-            </a>
-            <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
-                <i class="fa fa-info-circle"></i>Detalles
-            </a>
-            <a class="btn btn-dark" href="@Url.Action("DuplicarPedido",new { id = item.Id })">
-                <i class="fa fa-info-circle"></i>Duplicar
-            </a>
-        </td>
-    </tr>
-     }
 
         @if (Model.Count() == 0)
         {
@@ -187,15 +187,7 @@
             </script>
             Session["Pedido"] = null;
             break;
-        default:
-            break;
-    }
-}
 
-@if (Session["Pedido"] != null)
-{
-    switch (Session["Pedido"])
-    {
         case "No existe el pedido":
             <script type="text/javascript">
                 function ExistenciaPed() {
@@ -212,7 +204,55 @@
             Session["Pedido"] = null;
             break;
 
+        case "¡Pedido creado con éxito!":
+            <script type="text/javascript">
+                function CrearPed() {
+                    Swal.fire({
+                        title: '¡Pedido creado con éxito!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CrearPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "¡Pedido actualizado correctamente!":
+            <script type="text/javascript">
+                function ActualizarPed() {
+                    Swal.fire({
+                        title: '¡Pedido actualizado correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ActualizarPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "¡Pedido duplicado correctamente!":
+            <script type="text/javascript">
+                function DuplicarPed() {
+                    Swal.fire({
+                        title: '¡Pedido duplicado correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                DuplicarPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        
         default:
             break;
     }
 }
+
+

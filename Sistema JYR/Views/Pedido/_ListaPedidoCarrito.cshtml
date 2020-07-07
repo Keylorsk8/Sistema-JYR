@@ -155,4 +155,72 @@
 
 
 </div>
-        
+@if (Session["Pedido"] != null)
+{
+    switch (Session["Pedido"])
+    {
+
+        case "Debe digitar una cantidad menor a la cantidad":
+            <script type="text/javascript">
+                function CantidadMayor() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad menor a la cantidad',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CantidadMayor();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a la cantidad enviada":
+            <script type="text/javascript">
+                function CantidadMenor() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a la cantidad enviada',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CantidadMenor();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Producto es inválido. Digite un código de producto nuevamente":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'Producto es inválido. Digite un código de producto nuevamente',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a 0":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a 0',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        default:
+            break;
+    }
+}
