@@ -4,95 +4,266 @@
     ViewBag.Title = "Editar Proforma";
 }
 
-    <div class="container">
-        <h4>Editar Proforma No.  @ViewBag.Id</h4>
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
+<div class="container">
+    <h4>Editar Proforma No.  @ViewBag.Id</h4>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-            <div class="form-horizontal" style="margin-bottom: 100px">
+        <div class="form-horizontal" style="margin-bottom: 100px">
 
+            <div class="row">
+                <div class="col col-lg-6">
+                    <p>Actualiza la información de la proforma</p>
+                </div>
+                <div class="col col-lg-6">
+                    <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                        <i class="fa fa-arrow-left"></i> Volver
+                    </a>
+
+                </div>
+            </div>
+            <hr />
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
                 <div class="row">
-                    <div class="col col-lg-6">
-                        <p>Actualiza la información de la proforma</p>
-                    </div>
-                    <div class="col col-lg-6">
-                        <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
-                            <i class="fa fa-arrow-left"></i> Volver
-                        </a>
+                    <div class="col col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextBoxFor(model => model.Fecha, "{0:yyyy/MM/dd}", new { @class = "form-control", @readonly = true })
+                                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col col-lg-12">
+                        <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
+                        <hr />
                     </div>
                 </div>
-                <hr />
-                <div class="form-horizontal">
 
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                    @Html.HiddenFor(model => model.Id)
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.Fecha, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
-                            @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+
+                <div id="detalleAjax" class="row container">
+                    <div class="col col-md-4">
+                        <div class="form-group">
+                            @Html.Label("", "Agregar Producto", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" id="nuevoId" placeholder="Código Producto" />
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                    <div class="col col-md-4">
+                        <div class="form-group">
+
+                            @Html.Label("", "Cantidad", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                <input type="number" min="0" class="form-control" id="cant" placeholder="Cantidad" />
+
+                                @Html.Hidden("IdProforma", Model.Id)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-4">
+
+                        <div class="col-md-12">
+                            <input type="button" id="agregar" style="margin-top:32px; background-color:#043443; color:white" value="Agregar" class="form-control" />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="container">
+
+                    <div id="carritoAjax">
+                        <div class="card bg-light mb-12">
+                            <div class="card-header">Materiales en la Proforma</div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <tr style="text-align:center">
+                                        <th style="text-align:center">
+                                            Id
+                                        </th>
+                                        <th style="text-align:center">
+                                            Producto
+                                        </th>
+                                        <th>
+                                            Cantidad
+                                        </th>
+                                    
+                                        <th>
+                                            Precio Unitario
+                                        </th>
+                                        <th>
+                                            Descuento
+                                        </th>
+
+                                        <th>Subtotal</th>
+                                        <th></th>
+                                    </tr>
+
+                                    @foreach (var item in Model.ProformaDetalle)
+                                    {
+                                        <tr>
+                                            <td style="text-align:center">
+                                                @item.Productos.Id
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.Productos.Nombre
+                                            </td>
+                                            <td style="text-align:center">
+                                                @*Otra posible y mejor forma de hacerlo*@
+                                                <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
+                                                <input type="hidden" value="@item.IdProforma" id="idProforma" />
+                                                <script>
+                                            function CambiarCantidadPedida(id) {
+                                                var cantidad = $('#' + id).val();
+                                                var idProforma = $("#idProforma").val();
+
+                                                var dataObject = JSON.stringify({
+                                                    'terminoBusqueda': cantidad,
+                                                    'id': id,
+                                                    'idProforma': idProforma
+
+                                        })
+                                                var objeto = new Object();
+                                                objeto.terminoBusqueda = cantidad;
+                                                objeto.id = id;
+                                                objeto.idProforma = idProforma
+
+                                                var url = "@Url.Action("CambiarCantidadPedida", "Proformas")";
+                                                var data = { terminoBusqueda: cantidad, id: id, idProforma: idProforma };
+                                        $.post(url, data).done(function (data) {
+                                            $("#carritoAjax").html(data);
+
+                                        })
+                                    }
+                                                </script>
+                                            </td>
+
+                                      
+                                            <td style="text-align:center">
+                                                ₡@item.PrecioUnitario
+                                            </td>
+                                            <td style="text-align:center">
+                                                ₡@item.Descuento
+                                            </td>
+                                            <td style="text-align:center">
+                                                ₡@(item.PrecioUnitario * item.Cantidad)
+                                            </td>
+                                            <td style="text-align:center">
+
+                                                @Ajax.ActionLink("Eliminar", "EliminarProdProforma", "Proformas", new { idD = item.Id, idProforma = item.IdProforma}, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
+                                            </td>
+                                        </tr>
+
+                                    }
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <th>
+                                            <label>Total Descuento</label>
+                                        </th>
+                                        <th>
+                                            <label>₡@ViewBag.TotalDescuento</label>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <th>
+                                            <label>Total Impuesto</label>
+                                        </th>
+                                        <th>
+                                            <label>₡@ViewBag.TotalImpuesto</label>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <th>
+                                            <label>Total Pagar</label>
+                                        </th>
+                                        <th>
+                                            <label>₡@ViewBag.TotalPagar</label>
+                                        </th>
+                                    </tr>
+
+
+                                </table>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.TotalPagar, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.TotalPagar, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.TotalPagar, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.TotalDescuento, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.TotalDescuento, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.TotalDescuento, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.TotalImpuesto, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(model => model.TotalImpuesto, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.TotalImpuesto, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col col-lg-12">
-                            <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
-                        </div>
-                    </div>
 
 
                 </div>
+
 
             </div>
 
+        </div>
 
-        }
-    </div>
-        
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
+
+    }
+</div>
+
+@section Scripts {
+
+    <script>
+        $(function () {
+            $("#agregar").click(function () {
+                var cantidad = $("#cant").val();
+                var idProforma = $("#IdProforma").val();
+                var idProducto = $("#nuevoId").val();
+
+                var dataObject = JSON.stringify({
+                    'cantidad': cant,
+                    'idProforma': idProforma,
+                    'idProducto': idProducto,
+                })
+                var objeto = new Object();
+                objeto.cantidad = cantidad;
+                objeto.idProforma = idProforma;
+                objeto.idProducto = idProducto;
+
+                var url = "@Url.Action("AgregarDetalle","Proformas")";
+                var data = { idProforma, idProducto, cantidad };
+
+                $.post(url, data).done(function (data) {
+                    $("#carritoAjax").html(data);
+                    $("#cant").val("");
+                    $("#nuevoId").val("");
+
+                })
+            })
+        })
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}

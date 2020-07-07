@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -51,7 +52,7 @@ namespace Sistema_JYR.Controllers
         // GET: Proformas/Create
         public ActionResult Create()
         {
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre");
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1), "Id", "Nombre");
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion");
             return View();
         }
@@ -63,6 +64,9 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto")] Proformas proformas)
         {
+            proformas.TotalDescuento = 0;
+            proformas.TotalImpuesto = 0;
+            proformas.TotalPagar = 0;
             if (ModelState.IsValid)
             {
                 db.Proformas.Add(proformas);
@@ -70,7 +74,7 @@ namespace Sistema_JYR.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.Id = proformas.Id;
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", proformas.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
         }
@@ -90,7 +94,16 @@ namespace Sistema_JYR.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.Id = proformas.Id;
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", proformas.IdUsuario);
+            ViewBag.TotalPagar = proformas.TotalPagar;
+            ViewBag.TotalDescuento = proformas.TotalDescuento;
+            ViewBag.TotalImpuesto = proformas.TotalImpuesto;
+          
+           
+            ViewBag.Fecha = proformas.Fecha;
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            proformas.ProformaDetalle = detalles;
+
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
         }
@@ -102,15 +115,88 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto")] Proformas proformas)
         {
+            double descuento = 0;
+            double desc = 0;
+            double impuesto = 0;
+            double imp = 0;
+            double totalPagar = 0;
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proformas.Id).ToList();
+
+            foreach (var item in detalles)
+            {
+                 
+                    descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                    desc += descuento;
+                    impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                    imp += impuesto;
+                    totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
+                }
+
+                proformas.TotalDescuento = desc;
+                proformas.TotalImpuesto = imp;
+                proformas.TotalPagar = totalPagar;
+           
+
             if (ModelState.IsValid)
             {
                 db.Entry(proformas).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", proformas.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x=> x.Rol == 2 || x.Rol==1), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
+        }
+
+        
+            public ActionResult DuplicarProforma(int? id)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
+            }
+
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            proformas.ProformaDetalle = detalles;
+
+
+            Proformas proformaDuplicado = new Proformas();
+            proformaDuplicado.IdUsuario = proformas.IdUsuario;
+            proformaDuplicado.IdEstado = proformas.IdEstado;
+            proformaDuplicado.Fecha = proformas.Fecha;
+            proformaDuplicado.TotalPagar = proformas.TotalPagar;
+            proformaDuplicado.TotalDescuento = proformas.TotalDescuento;
+            proformaDuplicado.TotalImpuesto = proformas.TotalImpuesto;
+            
+            db.Proformas.Add(proformaDuplicado);
+            db.SaveChanges();
+
+            ProformaDetalle detalleDuplicado = new ProformaDetalle();
+
+            foreach (var item in detalles)
+            {
+                detalleDuplicado.IdProforma = proformaDuplicado.Id;
+                detalleDuplicado.IdProducto = item.IdProducto;
+                detalleDuplicado.Cantidad = item.Cantidad;
+                detalleDuplicado.PrecioUnitario = item.PrecioUnitario;
+                detalleDuplicado.Descuento = item.Descuento;
+             
+                db.ProformaDetalle.Add(detalleDuplicado);
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+
+
         }
 
         // GET: Proformas/Delete/5
@@ -150,17 +236,251 @@ namespace Sistema_JYR.Controllers
         }
 
 
+     
+
+        public ActionResult EliminarProdProforma(int? idD, int IdProforma)
+        {
+            Proformas proforma = db.Proformas.Find(IdProforma);
+            ProformaDetalle detalles = db.ProformaDetalle.Find(idD);
+            var prod = db.Productos.Where(x => x.Id == detalles.IdProducto);
+            double totalPagar = 0;
+            double impuesto = 0;
+            double descuento = 0;
+            double desc = 0;
+            double imp = 0;
+
+            db.ProformaDetalle.Remove(detalles);
+            db.SaveChanges();
+            List<ProformaDetalle> detallesPedido = db.ProformaDetalle.Where(x => x.IdProforma == IdProforma).ToList();
+            proforma.Id = proforma.Id;
+            proforma.IdUsuario = proforma.IdUsuario;
+            proforma.IdEstado = proforma.IdEstado;
+            proforma.Fecha = proforma.Fecha;
+
+            foreach (var item in detallesPedido)
+            {
+
+                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
+            }
+
+            proforma.TotalDescuento = desc;
+            proforma.TotalImpuesto = imp;
+            proforma.TotalPagar = totalPagar;
+            db.Entry(proforma).State = EntityState.Modified;
+            db.SaveChanges();
+
+            ViewBag.TotalPagar = proforma.TotalPagar;
+            ViewBag.TotalDescuento = proforma.TotalDescuento;
+            ViewBag.TotalImpuesto = proforma.TotalImpuesto;
+            proforma.ProformaDetalle = detallesPedido;
+            return PartialView("_ListaProformaCarrito", proforma);
+        }
+
+
+        //Cambiar la cantidad del producto
+        public ActionResult CambiarCantidadPedida(Ajax objeto)
+        {
+            int idProforma= Convert.ToInt32(objeto.idProforma);
+            int id = Convert.ToInt32(objeto.id);
+            int cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
+
+            double totalPagar = 0;
+            double impuesto = 0;
+            double descuento = 0;
+            double desc = 0;
+            double imp = 0;
+            Proformas proforma = db.Proformas.Find(idProforma);
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == idProforma).ToList();
+            foreach (var item in detalles)
+            {
+
+                if (item.IdProducto == id)
+                {
+                    ProformaDetalle detalle = db.ProformaDetalle.Find(item.Id);
+                    if (cantidadCambio == 0)
+                    {
+                        db.ProformaDetalle.Remove(detalle);
+
+                    }
+
+                    detalle.Id = item.Id;
+                    detalle.Cantidad = cantidadCambio;
+                    detalle.IdProforma = item.IdProforma;
+                    detalle.IdProducto = item.IdProducto;
+                    detalle.PrecioUnitario = item.PrecioUnitario;
+                    detalle.Descuento = item.Descuento;        
+                    db.Entry(detalle).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                }
+                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+            }
+
+            proforma.TotalDescuento = desc;
+            proforma.TotalImpuesto = imp;
+            proforma.TotalPagar = totalPagar;
+            db.Entry(proforma).State = EntityState.Modified;
+            db.SaveChanges();
+            proforma.ProformaDetalle = detalles;
+
+            ViewBag.TotalPagar = proforma.TotalPagar;
+            ViewBag.TotalDescuento = proforma.TotalDescuento;
+            ViewBag.TotalImpuesto = proforma.TotalImpuesto;
+            return PartialView("_ListaProformaCarrito", proforma);
+        }
+
+
+        //Agregar un nuevo producto en la página editar
+        public ActionResult AgregarDetalle(AjaxDetalle objeto)
+        {
+            int idProforma = Convert.ToInt32(objeto.idProforma);
+            int nuevoId = Convert.ToInt32(objeto.idProducto);
+            int cant = Convert.ToInt32(objeto.cantidad);
+
+
+            Proformas ped = db.Proformas.Find(idProforma);
+            double totalPagar = 0;
+            double impuesto = 0;
+            double descuento = 0;
+            double desc = 0;
+            double imp = 0;
+
+            ProformaDetalle validacion = null;
+
+            try
+            {
+                validacion = db.ProformaDetalle.Where(x => x.IdProforma == idProforma && x.IdProducto == nuevoId).First();
+            }
+            catch (Exception)
+            {
+
+                validacion = null;
+            }
+
+            if (validacion != null)
+            {
+
+                validacion.Cantidad += cant;
+                db.Entry(validacion).State = EntityState.Modified;
+                db.SaveChanges();
+
+            }
+            else
+            {
+                try
+                {
+
+                    ProformaDetalle detalle = new ProformaDetalle();
+                    detalle.IdProforma = idProforma;
+                    detalle.IdProducto = nuevoId;
+                    detalle.Productos = db.Productos.Where(x => x.Id == detalle.IdProducto).First();
+                    detalle.Cantidad = cant;
+                    detalle.PrecioUnitario = detalle.Productos.Precio;
+                    detalle.Descuento = 0;
+                    db.ProformaDetalle.Add(detalle);
+                    db.SaveChanges();
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+            }
+
+            List<ProformaDetalle> detallesProforma = db.ProformaDetalle.Where(x => x.IdProforma == idProforma).ToList();
+      
+            foreach (var item in detallesProforma)
+            {
+                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
+            }
+
+            ped.TotalDescuento = desc;
+            ped.TotalImpuesto = imp;
+            ped.TotalPagar = totalPagar;
+            db.Entry(ped).State = EntityState.Modified;
+            db.SaveChanges();
+            ped.ProformaDetalle = detallesProforma;
+            ViewBag.TotalPagar = ped.TotalPagar;
+            ViewBag.TotalDescuento = ped.TotalDescuento;
+            ViewBag.TotalImpuesto = ped.TotalImpuesto;
+            return PartialView("_ListaProformaCarrito", ped);
+
+        }
+
+        //Filtros de la página
         public ActionResult filtrarProformasAjax(string terminoBusqueda)
         {
             if (terminoBusqueda != null)
             {
                 var lista = db.Proformas.Where(x => x.AspNetUsers.Nombre.Contains(terminoBusqueda)
-                || x.EstadoProforma.Descripcion.Contains(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
+                || x.EstadoProforma.Descripcion.Contains(terminoBusqueda)|| x.Id == Convert.ToInt32(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
                 return PartialView("_ListaProformas", lista.ToList());
             }
 
 
             return View();
         }
+
+
+        public class Ajax
+        {
+            public string terminoBusqueda
+            {
+                get;
+                set;
+            }
+            public string id
+            {
+                get;
+                set;
+            }
+
+            public string idProforma
+            {
+                get;
+                set;
+            }
+
+
+        }
+        public class AjaxDetalle
+        {
+            public string cantidad
+            {
+                get;
+                set;
+            }
+            public string idProforma
+            {
+                get;
+                set;
+            }
+
+            public string idProducto
+            {
+                get;
+                set;
+            }
+
+        }
+
+       
+
     }
 }

@@ -1,11 +1,10 @@
-﻿@model Sistema_JYR.Models.Pedidos
-
+﻿@model Sistema_JYR.Models.Proformas
 
 <div class="container">
 
     <div id="carritoAjax">
         <div class="card bg-light mb-12">
-            <div class="card-header">Materiales en la Orden</div>
+            <div class="card-header">Materiales en la Proforma</div>
             <div class="card-body">
                 <table class="table">
                     <tr style="text-align:center">
@@ -18,9 +17,7 @@
                         <th>
                             Cantidad
                         </th>
-                        <th>
-                            Cantidad Enviada
-                        </th>
+
                         <th>
                             Precio Unitario
                         </th>
@@ -32,7 +29,7 @@
                         <th></th>
                     </tr>
 
-                    @foreach (var item in Model.PedidoDetalle)
+                    @foreach (var item in Model.ProformaDetalle)
                     {
                         <tr>
                             <td style="text-align:center">
@@ -44,24 +41,25 @@
                             <td style="text-align:center">
                                 @*Otra posible y mejor forma de hacerlo*@
                                 <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
-
+                                <input type="hidden" value="@item.IdProforma" id="idProforma" />
                                 <script>
                                             function CambiarCantidadPedida(id) {
                                                 var cantidad = $('#' + id).val();
-
+                                                var idProforma = $("#idProforma").val();
 
                                                 var dataObject = JSON.stringify({
                                                     'terminoBusqueda': cantidad,
                                                     'id': id,
+                                                    'idProforma': idProforma
 
                                         })
                                                 var objeto = new Object();
                                                 objeto.terminoBusqueda = cantidad;
                                                 objeto.id = id;
+                                                objeto.idProforma = idProforma
 
-
-                                                var url = "@Url.Action("CambiarCantidadPedida", "Pedido")";
-                                                var data = { terminoBusqueda: cantidad, id: id};
+                                                var url = "@Url.Action("CambiarCantidadPedida", "Proformas")";
+                                                var data = { terminoBusqueda: cantidad, id: id, idProforma: idProforma };
                                         $.post(url, data).done(function (data) {
                                             $("#carritoAjax").html(data);
 
@@ -70,35 +68,6 @@
                                 </script>
                             </td>
 
-                            <td style="text-align:center">
-                                <input type="number" min="0" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
-
-
-                                <script>
-                                                function x(e, id) {
-                                                    var cantidadEnviada = e;
-                                                    var productoId = id;
-
-
-                                                        var dataObjeto = JSON.stringify({
-                                                            'cantidadEnviada': cantidadEnviada,
-                                                            'productoId': productoId
-                                                        })
-
-                                                        var objeto = new Object();
-                                                        objeto.productoId = productoId;
-                                                        objeto.cantidadEnviada = cantidadEnviada;
-
-                                                        var url = "@Url.Action("CambiarCantidadEnviada","Pedido")";
-                                                        var datos = { productoId: productoId, cantidadEnviada: cantidadEnviada };
-
-                                                        $.post(url, datos).done(function (datos) {
-                                                            $("#carritoAjax").html(datos);
-                                                        })
-
-                                                }
-                                </script>
-                            </td>
 
                             <td style="text-align:center">
                                 @item.PrecioUnitario
@@ -111,7 +80,7 @@
                             </td>
                             <td style="text-align:center">
 
-                                @Ajax.ActionLink("Eliminar", "EliminarCarrito", "Pedido", new { idD = item.Id, idPedido = item.IdPedido }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
+                                @Ajax.ActionLink("Eliminar", "EliminarProdProforma", "Proformas", new { idD = item.Id, idProforma = item.IdProforma }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
                             </td>
                         </tr>
 
@@ -143,6 +112,8 @@
                             <label>₡@ViewBag.TotalPagar</label>
                         </th>
                     </tr>
+
+
                 </table>
             </div>
         </div>

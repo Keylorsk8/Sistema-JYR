@@ -55,7 +55,8 @@ namespace Sistema_JYR.Controllers
         // GET: Pedido/Create
         public ActionResult Create()
         {
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre");
+            ViewBag.NumeroProforma= "N/A";
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol ==1 || x.Rol == 2), "Id", "Nombre");
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion");
             return View();
         }
@@ -65,8 +66,11 @@ namespace Sistema_JYR.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto")] Pedidos pedidos)
+        public ActionResult Create([Bind(Include = "IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto")] Pedidos pedidos)
         {
+            pedidos.TotalDescuento = 0;
+            pedidos.TotalImpuesto = 0;
+            pedidos.TotalPagar = 0;
             if (ModelState.IsValid)
             {
                 db.Pedidos.Add(pedidos);
@@ -74,10 +78,12 @@ namespace Sistema_JYR.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", pedidos.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2), "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
         }
+
+      
 
         // GET: Pedido/Edit/5
         public ActionResult Edit(int? id)
@@ -95,15 +101,7 @@ namespace Sistema_JYR.Controllers
                 return RedirectToAction("Index");
             }
 
-            if(pedidos.NumeroProforma == null)
-            {
-                ViewBag.NumeroProforma = "N/A";
-            }
-
-            else
-            {
-                ViewBag.NumeroProforma = pedidos.NumeroProforma;
-            }
+           
 
             ViewBag.TotalPagar = pedidos.TotalPagar;
             ViewBag.TotalDescuento = pedidos.TotalDescuento;
@@ -113,7 +111,7 @@ namespace Sistema_JYR.Controllers
             ViewBag.Fecha = pedidos.Fecha;
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == id).ToList();
             pedidos.PedidoDetalle = detalles;
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", pedidos.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2), "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
         }
@@ -125,6 +123,29 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto, NumeroProforma")] Pedidos pedidos)
         {
+
+            double descuento = 0;
+            double desc = 0;
+            double impuesto = 0;
+            double imp = 0;
+            double totalPagar = 0;
+            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidos.Id).ToList();
+
+            foreach (var item in detalles)
+            {
+
+                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
+            }
+
+            pedidos.TotalDescuento = desc;
+            pedidos.TotalImpuesto = imp;
+            pedidos.TotalPagar = totalPagar;
+
             if (ModelState.IsValid)
             {
 
@@ -133,11 +154,66 @@ namespace Sistema_JYR.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers, "Id", "Nombre", pedidos.IdUsuario);
 
+            ViewBag.Id = pedidos.Id;
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2), "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
         }
+
+
+
+
+        public ActionResult DuplicarPedido(int? id)
+        {
+            if (id == null)
+            {
+                Session["Pedido"] = "Pedido inválido. Especifique un pedido";
+                return RedirectToAction("Index");
+            }
+
+            Pedidos pedidos = db.Pedidos.Find(id);
+            if (pedidos == null)
+            {
+                Session["Pedido"] = "No existe el pedido";
+                return RedirectToAction("Index");
+            }
+
+            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == id).ToList();
+            pedidos.PedidoDetalle = detalles;
+
+
+            Pedidos pedidoDuplicado = new Pedidos();
+            pedidoDuplicado.IdUsuario = pedidos.IdUsuario;
+            pedidoDuplicado.IdEstado = pedidos.IdEstado;
+            pedidoDuplicado.Fecha = pedidos.Fecha;
+            pedidoDuplicado.TotalPagar = pedidos.TotalPagar;
+            pedidoDuplicado.TotalDescuento = pedidos.TotalDescuento;
+            pedidoDuplicado.TotalImpuesto = pedidos.TotalImpuesto;
+            pedidoDuplicado.NumeroProforma = pedidos.NumeroProforma;
+            db.Pedidos.Add(pedidoDuplicado);
+            db.SaveChanges();
+
+            PedidoDetalle detalleDuplicado = new PedidoDetalle();
+
+            foreach (var item in detalles)
+            {
+                detalleDuplicado.IdPedido = pedidoDuplicado.Id;
+                detalleDuplicado.IdProducto = item.IdProducto;
+                detalleDuplicado.Cantidad = item.Cantidad;
+                detalleDuplicado.PrecioUnitario = item.PrecioUnitario;
+                detalleDuplicado.Descuento = item.Descuento;
+                detalleDuplicado.CantidadEnviada = item.CantidadEnviada;
+                db.PedidoDetalle.Add(detalleDuplicado);
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+
+            
+        }
+
+  
 
         // GET: Pedido/Delete/5
         public ActionResult Delete(int? id)
@@ -179,7 +255,7 @@ namespace Sistema_JYR.Controllers
             if (terminoBusqueda != null)
             {
                 var lista = db.Pedidos.Where(x => x.AspNetUsers.Nombre.Contains(terminoBusqueda)
-                || x.EstadoPedido.Descripcion.Contains(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
+                || x.EstadoPedido.Descripcion.Contains(terminoBusqueda) || x.Id == Convert.ToInt32(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
                 return PartialView("_ListaPedidos", lista.ToList());
             }
 
@@ -202,13 +278,14 @@ namespace Sistema_JYR.Controllers
             db.SaveChanges();
 
 
-            List<PedidoDetalle> det = db.PedidoDetalle.ToList();
+            List<PedidoDetalle> detallesPedido = db.PedidoDetalle.Where(x => x.IdPedido == IdPedido).ToList();
+         
             pedidos.Id = pedidos.Id;
             pedidos.IdUsuario = pedidos.IdUsuario;
             pedidos.IdEstado = pedidos.IdEstado;
             pedidos.Fecha = pedidos.Fecha;
 
-            foreach (var item in det)
+            foreach (var item in detallesPedido)
             {
 
                 descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
@@ -229,31 +306,26 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalPagar = pedidos.TotalPagar;
             ViewBag.TotalDescuento = pedidos.TotalDescuento;
             ViewBag.TotalImpuesto = pedidos.TotalImpuesto;
-            db.Entry(pedidos).State = EntityState.Modified;
-            db.SaveChanges();
-
-
-            ViewBag.TotalPagar = pedidos.TotalPagar;
-            ViewBag.TotalDescuento = pedidos.TotalDescuento;
-            ViewBag.TotalImpuesto = pedidos.TotalImpuesto;
-            return PartialView("_ListaPedidoCarrito");
+            pedidos.PedidoDetalle = detallesPedido;
+            return PartialView("_ListaPedidoCarrito", pedidos);
     }
 
 
 
         public ActionResult CambiarCantidadEnviada(AjaxCambio objet)
         {
-
+         
+            int pedidoId = Convert.ToInt32(objet.pedidoId);
             int id = Convert.ToInt32(objet.productoId);
             int cantidad = Convert.ToInt32(objet.cantidadEnviada);
-            List<PedidoDetalle> detalles = db.PedidoDetalle.ToList();
-
-
+           
+            Pedidos ped = db.Pedidos.Find(pedidoId);
+            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x=> x.IdPedido == pedidoId).ToList();
             foreach (var item in detalles)
             {
                 PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
 
-                Pedidos ped = db.Pedidos.Find(item.IdPedido);
+               
          
                 if (item.IdProducto == id)
                 {
@@ -267,9 +339,7 @@ namespace Sistema_JYR.Controllers
                     detalle.CantidadEnviada = cantidad;
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
-                    ViewBag.TotalPagar = ped.TotalPagar;
-                    ViewBag.TotalDescuento = ped.TotalDescuento;
-                    ViewBag.TotalImpuesto = ped.TotalImpuesto;
+                    
 
                 }
                 {
@@ -277,25 +347,30 @@ namespace Sistema_JYR.Controllers
                
             }
 
-            return PartialView("_ListaPedidoCarrito");
+            ped.PedidoDetalle = detalles;
+            ViewBag.TotalPagar = ped.TotalPagar;
+            ViewBag.TotalDescuento = ped.TotalDescuento;
+            ViewBag.TotalImpuesto = ped.TotalImpuesto;
+            return PartialView("_ListaPedidoCarrito", ped);
         }
 
 
         public ActionResult CambiarCantidadPedida(Ajax objeto)
         {
-
+            int idPedido = Convert.ToInt32(objeto.idPedido);
             int id = Convert.ToInt32(objeto.id);
             int cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
-            List<PedidoDetalle> detalles = db.PedidoDetalle.ToList();
+            
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
             double desc = 0;
             double imp = 0;
-            Pedidos pedidos = null;
+            Pedidos pedidos = db.Pedidos.Find(idPedido);
+            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x=> x.IdPedido == idPedido).ToList();
             foreach (var item in detalles)
             {
-                pedidos = db.Pedidos.Find(item.IdPedido);
+                
                 if (item.IdProducto == id)
                 {
                     PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
@@ -328,11 +403,12 @@ namespace Sistema_JYR.Controllers
             pedidos.TotalPagar = totalPagar;
             db.Entry(pedidos).State = EntityState.Modified;
             db.SaveChanges();
+            pedidos.PedidoDetalle = detalles;
 
             ViewBag.TotalPagar = pedidos.TotalPagar;
             ViewBag.TotalDescuento = pedidos.TotalDescuento;
             ViewBag.TotalImpuesto = pedidos.TotalImpuesto;
-            return PartialView("_ListaPedidoCarrito");
+            return PartialView("_ListaPedidoCarrito", pedidos);
         }
 
 
@@ -350,7 +426,17 @@ namespace Sistema_JYR.Controllers
             double desc = 0;
             double imp = 0;
 
-            var validacion = db.PedidoDetalle.Where(x => x.IdPedido == idPedido && x.IdProducto == nuevoId).First();
+            PedidoDetalle validacion = null;
+
+            try
+            {
+                validacion = db.PedidoDetalle.Where(x => x.IdPedido == idPedido && x.IdProducto == nuevoId).First();
+            }
+            catch (Exception)
+            {
+
+                validacion = null;
+            }
 
             if (validacion != null)
             {
@@ -385,10 +471,11 @@ namespace Sistema_JYR.Controllers
                 }
 
             }
-           
-            List<PedidoDetalle> pedD = db.PedidoDetalle.ToList();
 
-            foreach (var item in pedD)
+            List<PedidoDetalle> detallesPedido = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
+            ped.PedidoDetalle = detallesPedido;
+
+            foreach (var item in detallesPedido)
             {
                 descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
                 desc += descuento;
@@ -407,7 +494,7 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalPagar = ped.TotalPagar;
             ViewBag.TotalDescuento = ped.TotalDescuento;
             ViewBag.TotalImpuesto = ped.TotalImpuesto;
-            return PartialView("_ListaPedidoCarrito");
+            return PartialView("_ListaPedidoCarrito", ped);
 
         }
 
@@ -425,6 +512,12 @@ namespace Sistema_JYR.Controllers
                 set;
             }
 
+            public string idPedido
+            {
+                get;
+                set;
+            }
+
 
         }
 
@@ -436,6 +529,12 @@ namespace Sistema_JYR.Controllers
                 set;
             }
             public string cantidadEnviada
+            {
+                get;
+                set;
+            }
+
+            public string pedidoId
             {
                 get;
                 set;

@@ -502,6 +502,7 @@
     <Content Include="Views\CategoriasProducto\_ListaCategorias.cshtml" />
     <Content Include="Views\Proformas\_ListaProformas.cshtml" />
     <Content Include="Views\Pedido\_ListaPedidoCarrito.cshtml" />
+    <Content Include="Views\Proformas\_ListaProformaCarrito.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

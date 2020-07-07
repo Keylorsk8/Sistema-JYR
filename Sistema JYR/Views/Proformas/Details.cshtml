@@ -79,6 +79,9 @@
             <table class="table table-striped table-hover table-bordered table-responsive-lg">
                 <tr>
                     <th>
+                        Id
+                    </th>
+                    <th>
                         Producto
                     </th>
                     <th>
@@ -94,20 +97,23 @@
 
                 @foreach (var c in Model.ProformaDetalle)
                 {
-                    <tr>
-                        <td>
-                            @c.Productos.Nombre
-                        </td>
-                        <td>
-                            ₡@c.PrecioUnitario
-                        </td>
-                        <td>
-                            @c.Descuento
-                        </td>
-                        <td>
-                            @c.Cantidad
-                        </td>
-                    </tr>
+            <tr>
+                <td>
+                    @c.Productos.Id
+                </td>
+                <td>
+                    @c.Productos.Nombre
+                </td>
+                <td>
+                    ₡@c.PrecioUnitario
+                </td>
+                <td>
+                    ₡@c.Descuento
+                </td>
+                <td>
+                    @c.Cantidad
+                </td>
+            </tr>
 
 
                 }
