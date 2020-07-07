@@ -95,9 +95,10 @@ namespace Sistema_JYR.Controllers
                 {
 
                     string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta-Reenviado",1);
+                    Session["MensajeIndex"] = "Confirma tú cuenta-Reenviado";
                     ViewBag.errorMessage = "Debe confirmar su correo para iniciar sesión."
                         + "La confirmación ha sido reenviada a su correo electrónico.";
-                    return View("Error");
+                    return RedirectToAction("Index","Home") ;
                 }
                 else
                 {
@@ -126,12 +127,13 @@ namespace Sistema_JYR.Controllers
 
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                    Session["MensajeIndex"] = "Lockout";
+                    return RedirectToAction("Index","Home") ;
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Intento de inicio de sesión no válido.");
+                    ModelState.AddModelError("", "Usuario o contraseña incorrectos, intentelo de nuevo.");
                     return View(model);
             }
         }
@@ -171,7 +173,8 @@ namespace Sistema_JYR.Controllers
                 case SignInStatus.Success:
                     return RedirectToLocal(model.ReturnUrl);
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                    Session["MensajeIndex"] = "Lockout";
+                    return RedirectToAction("Index", "Home");
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Código no válido.");
@@ -208,10 +211,8 @@ namespace Sistema_JYR.Controllers
                     // Enviar correo electrónico con este vínculo
                     string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta",1) ;
 
-                    ViewBag.Message = "Revisa tú correo y confirma la cuenta, debe ser confirmada para finalizar el registro";
-
-                    //return RedirectToAction("Index", "Home");
-                    return View("Info");
+                    Session["MensajeIndex"] = "Confirma tú cuenta";
+                    return RedirectToAction("Index","Home");
                 }
                 AddErrors(result);
             }
@@ -227,17 +228,21 @@ namespace Sistema_JYR.Controllers
         {
             if (userId == null || code == null)
             {
-                return View("Error");
+                string callbackUrl = await EnviarCorreoAsync(userId, "Confirma tú cuenta-Reenviado", 1);
+                Session["MensajeIndex"] = "Error Confirmar Cuenta";
+                return RedirectToAction("Index", "Home");
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
             if (result.Succeeded)
             {
-                Session["Registro"] = "Exitoso";
-                return View("ConfirmEmail");
+                Session["MensajeIndex"] = "Exito Confirma Prueba";
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                return View("Error");
+                string callbackUrl = await EnviarCorreoAsync(userId, "Confirma tú cuenta-Reenviado", 1);
+                Session["MensajeIndex"] = "Error Confirmar Cuenta";
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -262,14 +267,18 @@ namespace Sistema_JYR.Controllers
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // No revelar que el usuario no existe o que no está confirmado
-                    return View("ForgotPasswordConfirmation");
+                    Session["MensajeIndex"] = "Recuperacion de Contraseña";
+                    return RedirectToAction("Index", "Home");
+                    //return View("ForgotPasswordConfirmation");
                 }
 
                 // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                 // Enviar correo electrónico con este vínculo
 
                 string callbackUrl = await EnviarCorreoAsync(user.Id, "Restablecer contraseña", 2);
-                return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                Session["MensajeIndex"] = "Recuperacion de Contraseña";
+                return RedirectToAction("Index", "Home");
+                //return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
@@ -307,12 +316,14 @@ namespace Sistema_JYR.Controllers
             if (user == null)
             {
                 // No revelar que el usuario no existe
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                Session["MensajeIndex"] = "Recuperacion de Contraseña Exitosa";
+                return RedirectToAction("Index", "Home");
             }
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                Session["MensajeIndex"] = "Recuperacion de Contraseña";
+                return RedirectToAction("Index", "Home");
             }
             AddErrors(result);
             return View();
@@ -390,7 +401,8 @@ namespace Sistema_JYR.Controllers
                 case SignInStatus.Success:
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
-                    return View("Lockout");
+                    Session["MensajeIndex"] = "Lockout";
+                    return RedirectToAction("Index", "Home");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
                 case SignInStatus.Failure:
