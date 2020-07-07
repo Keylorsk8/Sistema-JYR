@@ -7,50 +7,51 @@
     <div class="container">
         <h2>Detalles</h2>
 
-        <div>
-            <hr />
-            <dl class="dl-horizontal">
-                <dt>
-                    @Html.DisplayNameFor(model => model.Nombre)
-                </dt>
+        <div class="row">
+            <div class="col-md-6">
+                <hr />
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nombre)
+                    </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Nombre)
-                </dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.Nombre)
+                    </dd>
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.Descripcion)
-                </dt>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Descripcion)
+                    </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Descripcion)
-                </dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.Descripcion)
+                    </dd>
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.UnidadDeMedida)
-                </dt>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.UnidadDeMedida)
+                    </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.UnidadDeMedida)
-                </dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.UnidadDeMedida)
+                    </dd>
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.Precio)
-                </dt>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Precio)
+                    </dt>
 
-                <dd>
-                    @String.Format("{0:C}",Model.Precio)
-                </dd>
+                    <dd>
+                        @String.Format("{0:C}", Model.Precio)
+                    </dd>
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.CantidadEnInventario)
-                </dt>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.CantidadEnInventario)
+                    </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.CantidadEnInventario)
-                </dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.CantidadEnInventario)
+                    </dd>
 
-                @*<dt>
+                    @*<dt>
                     @Html.DisplayNameFor(model => model.FechaVencimiento)
                 </dt>
 
@@ -65,38 +66,42 @@
                     }
                 </dd>*@
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.Impuesto)
-                </dt>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Impuesto)
+                    </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Impuesto)%
-                </dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.Impuesto)%
+                    </dd>
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.Estado)
-                </dt>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Estado)
+                    </dt>
 
-                <dd>
-                    @if (Model.Estado)
-                    {
-                        @Html.Label("Habilitado")
-                    }
-                    else
-                    {
-                        @Html.Label("Deshabilitado")
-                    }
-                </dd>
+                    <dd>
+                        @if (Model.Estado)
+                        {
+                            @Html.Label("Habilitado")
+                        }
+                        else
+                        {
+                            @Html.Label("Deshabilitado")
+                        }
+                    </dd>
 
-                <dt>
-                    @Html.DisplayName("Categoria")
-                </dt>
+                    <dt>
+                        @Html.DisplayName("Categoria")
+                    </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.CategoriasProducto.Descripcion)
-                </dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.CategoriasProducto.Descripcion)
+                    </dd>
 
-            </dl>
+                </dl>
+            </div>
+            <div class="col-md-6" style="display: flex; align-items: center">
+                <center><img style="border: 1px solid black; width: 50%" src="@Url.Action("getImage", "Productos", new { id = Model.Id })"></center>
+            </div>
         </div>
         <p>
             <a class="btn btn-dark" href="@Url.Action("Edit", new { id = Model.Id })">

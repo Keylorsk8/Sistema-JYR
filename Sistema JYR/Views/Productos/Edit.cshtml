@@ -1,11 +1,11 @@
 ﻿@model Sistema_JYR.Models.Productos
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Editar Producto";
 }
 
 <div class="container">
-    @using (Html.BeginForm("Edit", "Productos", FormMethod.Post, new { enctype = "multipart/form-data" }) )
+    @using (Html.BeginForm("Edit", "Productos", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
 
@@ -28,7 +28,7 @@
             @Html.HiddenFor(model => model.Id)
 
             <div class="row">
-                <div class="col col-lg-6">
+                <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-12" })
                         <div class="col-md-12">
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col col-lg-6">
+                <div class="col-md-6">
                     <div class="form-group">
                         @Html.LabelFor(model => model.IdCategoria, "Categoria", htmlAttributes: new { @class = "control-label col-md-12" })
                         <div class="col-md-12">
@@ -96,6 +96,7 @@
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "control-label col-md-12" })
+                        <p class="control-label col-md-12">Habilitado o deshabilitado</p>
                         <div class="col-md-12">
                             <div class="checkbox">
                                 @Html.EditorFor(model => model.Estado)
@@ -103,13 +104,14 @@
                             </div>
                         </div>
                     </div>
-
+                </div>
+                <div class="offset-1 col-md-10" style="border: 1px lightgrey solid; border-radius: 15px;padding:15px; margin-bottom: 2%">
                     <div class="form-group">
-                        @Html.LabelFor(model => model.imagen, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
+                        <label class="control-label col-md-2">Imagen</label>
+                        <div class="col-md-12">
                             <center><img width="200" style="border: 1px solid black " src="@Url.Action("getImage", "Productos", new { id = Model.Id })"></center>
-                            <hr/>
-                            <input name="imgLoad" type="file" />
+                            <hr />
+                            <input name="imgLoad" type="file" style="width:100%;" />
                             @Html.ValidationMessageFor(model => model.imagen, "", new { @class = "text-danger" })
                         </div>
                     </div>

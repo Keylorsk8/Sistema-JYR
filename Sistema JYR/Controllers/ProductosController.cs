@@ -26,6 +26,13 @@ namespace Sistema_JYR.Controllers
             return View(productos.ToList());
         }
 
+        //GET: Productos/ListaProductos
+        public ActionResult ListaProductos()
+        {
+            var listaProductos = db.Productos.Where(x => x.Estado == true).ToList();
+            return View(listaProductos);
+        }
+
         [Authorize(Roles = "Admin,Vendedor")]
         // GET: Productos/Details/5
         public ActionResult Details(int? id)
@@ -110,18 +117,26 @@ namespace Sistema_JYR.Controllers
 
             HttpPostedFileBase FileBase = Request.Files[0];
 
-            if (FileBase == null)
+            if (FileBase.ContentLength == 0)
             {
                 imageActual = db.Productos.SingleOrDefault(t => t.Id == productos.Id).imagen;
             }
             else
             {
-                WebImage image = new WebImage(FileBase.InputStream);
-                productos.imagen = image.GetBytes();
+                imageActual = new WebImage(FileBase.InputStream).GetBytes();
+
             }
             if (ModelState.IsValid)
             {
-                db.Entry(productos).State = EntityState.Modified;
+                Productos pro = db.Productos.Where(x => x.Id == productos.Id).First();
+                pro.imagen = imageActual;
+                pro.IdCategoria = productos.IdCategoria;
+                pro.Impuesto = productos.Impuesto;
+                pro.Nombre = productos.Nombre;
+                pro.Precio = productos.Precio;
+                pro.UnidadDeMedida = productos.UnidadDeMedida;
+                pro.Estado = productos.Estado;
+                db.Entry(pro).State = EntityState.Modified;
                 db.SaveChanges();
                 Session["Producto"] = "¡Información del producto actualizada correctamente!";
                 return RedirectToAction("Index");
