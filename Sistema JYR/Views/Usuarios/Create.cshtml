@@ -61,9 +61,9 @@
                     </div>
                     <div class="col col-md-6">
                         <div class="form-group">
-                            @Html.LabelFor(model => model.Cedula, htmlAttributes: new { @class = "control-label col-md-12" })
+                            @Html.LabelFor(model=> model.Cedula, htmlAttributes: new { @class = "control-label col-md-12" })
                             <div class="col-md-12">
-                                @Html.EditorFor(model => model.Cedula, new { htmlAttributes = new { @class = "form-control", @min = "100000000", @max = "999999999", @required = "required" } })
+                                @Html.EditorFor(model => model.Cedula, new { htmlAttributes = new { @class = "form-control" } })
                                 @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "text-danger" })
                             </div>
                         </div>

@@ -11,7 +11,9 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public partial class AspNetUsers
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -28,13 +30,28 @@ namespace Sistema_JYR.Models
         }
     
         public string Id { get; set; }
+        [Required]
         public string Nombre { get; set; }
+
+        [Required]
+        [DisplayName("Primer Apellido")]
         public string Apellido1 { get; set; }
+        [DisplayName("Segundo Apellido")]
         public string Apellido2 { get; set; }
+        [Required(ErrorMessage = "El campo Cédula es requerido")]
+        [DisplayName("Cédula")]
+        [StringLength(9, ErrorMessage = "El campo Cédula debe contener 9 dígitos",
+                      MinimumLength = 9)]
         public int Cedula { get; set; }
         public int Rol { get; set; }
+        [Required]
+        [DisplayName("Correo Electrónico")]
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
+        [Required(ErrorMessage = "El campo Contraseña es requerido." +
+            "Las contraseñas deben tener al menos un carácter que no sea una letra ni un dígito. " +
+            "Las contraseñas deben tener al menos una letra en minúscula ('a'-'z'). " +
+            "Las contraseñas deben tener al menos una letra en mayúscula ('A'-'Z').")]
         public string PasswordHash { get; set; }
         public string SecurityStamp { get; set; }
         public string PhoneNumber { get; set; }
