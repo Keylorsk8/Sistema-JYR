@@ -22,7 +22,7 @@
 
             <div class="row">
                 <div class="col col-lg-6">
-                    <p>Actualiza la información de la proforma</p>
+                    <p>Actualiza la información del pedido</p>
                 </div>
                 <div class="col col-lg-6">
                     <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
@@ -45,7 +45,6 @@
                         <div class="form-group">
                             @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-12">
-
                                 @Html.TextBoxFor(model => model.Fecha, "{0:yyyy/MM/dd}", new { @class = "form-control", @readonly = true })
                                 @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
 
@@ -54,7 +53,15 @@
                         <div class="form-group">
                             @Html.LabelFor(model => model.NumeroProforma, htmlAttributes: new { @class = "control-label col-md-12" })
                             <div class="col-md-12">
-                                <input type="text" class="form-control" value="@ViewBag.NumeroProforma" readonly="readonly">
+
+                                @if (Model.NumeroProforma == null)
+                                {
+                                    <input type="text" class="form-control" value="N/A" readonly="readonly">
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(model => model.NumeroProforma, "", new { @class = "form-control", @readonly = true })
+                                }
 
                             </div>
 
@@ -94,7 +101,7 @@
                 <div id="detalleAjax" class="row container" >
                     <div class="col col-md-4">
                         <div class="form-group">
-                            @Html.Label("", "Agregar", htmlAttributes: new { @class = "control-label col-md-12" })
+                            @Html.Label("", "Agregar Producto", htmlAttributes: new { @class = "control-label col-md-12" })
                             <div class="col-md-12">
                                 <input type="text" class="form-control" id="nuevoId" placeholder="Código Producto" />
                             </div>
@@ -130,11 +137,11 @@
                             <div class="card-header">Materiales en la Orden</div>
                             <div class="card-body">
                                 <table class="table">
-                                    <tr  style="text-align:center">
-                                        <th  style="text-align:center">
+                                    <tr style="text-align:center">
+                                        <th style="text-align:center">
                                             Id
                                         </th>
-                                        <th  style="text-align:center">
+                                        <th style="text-align:center">
                                             Producto
                                         </th>
                                         <th>
@@ -156,87 +163,89 @@
 
                                     @foreach (var item in Model.PedidoDetalle)
                                     {
-                                <tr>
-                                    <td  style="text-align:center">
-                                        @item.Productos.Id
-                                    </td>
-                                    <td  style="text-align:center">
-                                        @item.Productos.Nombre
-                                    </td>
-                                    <td  style="text-align:center">
-                                        @*Otra posible y mejor forma de hacerlo*@
-                                        <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
-
-                                        <script>
+                                        <tr>
+                                            <td style="text-align:center">
+                                                @item.Productos.Id
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.Productos.Nombre
+                                            </td>
+                                            <td style="text-align:center">
+                                                @*Otra posible y mejor forma de hacerlo*@
+                                                <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
+                                                <input type="hidden" value="@item.IdPedido" id="idPedido"/>
+                                                <script>
                                             function CambiarCantidadPedida(id) {
                                                 var cantidad = $('#' + id).val();
-
+                                                var idPedido = $("#idPedido").val();
 
                                                 var dataObject = JSON.stringify({
                                                     'terminoBusqueda': cantidad,
                                                     'id': id,
+                                                    'idPedido': idPedido
 
                                         })
                                                 var objeto = new Object();
                                                 objeto.terminoBusqueda = cantidad;
                                                 objeto.id = id;
-
+                                                objeto.idPedido = idPedido
 
                                                 var url = "@Url.Action("CambiarCantidadPedida", "Pedido")";
-                                                var data = { terminoBusqueda: cantidad, id: id};
+                                                var data = { terminoBusqueda: cantidad, id: id, idPedido: idPedido };
                                         $.post(url, data).done(function (data) {
                                             $("#carritoAjax").html(data);
 
                                         })
                                     }
-                                        </script>
-                                    </td>
+                                                </script>
+                                            </td>
 
-                                    <td  style="text-align:center">
-                                        <input type="number" min="0" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
+                                            <td style="text-align:center">
+                                                <input type="number" min="0" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
 
 
-                                        <script>
+                                                <script>
                                                 function x(e, id) {
                                                     var cantidadEnviada = e;
                                                     var productoId = id;
-
+                                                    var pedidoId = $("#idPedido").val();
 
                                                         var dataObjeto = JSON.stringify({
                                                             'cantidadEnviada': cantidadEnviada,
-                                                            'productoId': productoId
+                                                            'productoId': productoId,
+                                                            'pedidoId': pedidoId
                                                         })
 
                                                         var objeto = new Object();
                                                         objeto.productoId = productoId;
-                                                        objeto.cantidadEnviada = cantidadEnviada;
-
-                                                        var url = "@Url.Action("CambiarCantidadEnviada","Pedido")";
-                                                        var datos = { productoId: productoId, cantidadEnviada: cantidadEnviada };
+                                                    objeto.cantidadEnviada = cantidadEnviada;
+                                                    objeto.pedidoId = pedidoId;
+                                                    var url = "@Url.Action("CambiarCantidadEnviada","Pedido")";
+                                                    var datos = { productoId: productoId, cantidadEnviada: cantidadEnviada, pedidoId: pedidoId };
 
                                                         $.post(url, datos).done(function (datos) {
                                                             $("#carritoAjax").html(datos);
                                                         })
 
                                                 }
-                                        </script>
-                                    </td>
+                                                </script>
+                                            </td>
 
-                                    <td style="text-align:center">
-                                        @item.PrecioUnitario
-                                    </td>
-                                    <td style="text-align:center">
-                                        @item.Descuento
-                                    </td>
-                                    <td style="text-align:center">
-                                        ₡@(item.PrecioUnitario * item.Cantidad)
-                                    </td>
-                                    <td style="text-align:center">
+                                            <td style="text-align:center">
+                                                @item.PrecioUnitario
+                                            </td>
+                                            <td style="text-align:center">
+                                                @item.Descuento
+                                            </td>
+                                            <td style="text-align:center">
+                                                ₡@(item.PrecioUnitario * item.Cantidad)
+                                            </td>
+                                            <td style="text-align:center">
 
-                                        @Ajax.ActionLink("Eliminar", "EliminarCarrito", "Pedido", new { idD = item.Id, idPedido = item.IdPedido }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
-                                    </td>
-                                </tr>
-
+                                                @Ajax.ActionLink("Eliminar", "EliminarCarrito", "Pedido", new { idD = item.Id, idPedido = item.IdPedido }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
+                                            </td>
+                                        </tr>
+                                        
                                     }
                                     <tr>
                                         <td colspan="3"></td>
@@ -265,6 +274,8 @@
                                             <label>₡@ViewBag.TotalPagar</label>
                                         </th>
                                     </tr>
+
+
                                 </table>
                             </div>
                         </div>
