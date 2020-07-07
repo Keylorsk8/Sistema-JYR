@@ -10,6 +10,7 @@ using System.Data.Entity;
 using System.Net;
 using Sistema_JYR.Models;
 using Microsoft.Owin.Security.Provider;
+using System;
 
 namespace Sistema_JYR.Controllers
 {
@@ -68,6 +69,7 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(AspNetUsers model)
         {
+   
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Rol = 2, Estado = true };
@@ -121,6 +123,7 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nombre,Apellido1,Apellido2,Cedula,Rol,Email,EmailConfirmed,Estado,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] AspNetUsers aspNetUsers)
         {
+           
             if (ModelState.IsValid)
             {
                 db.Entry(aspNetUsers).State = EntityState.Modified;

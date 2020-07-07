@@ -40,8 +40,7 @@ namespace Sistema_JYR.Models
         public string Apellido2 { get; set; }
         [Required(ErrorMessage = "El campo Cédula es requerido")]
         [DisplayName("Cédula")]
-        [StringLength(9, ErrorMessage = "El campo Cédula debe contener 9 dígitos",
-                      MinimumLength = 9)]
+    
         public int Cedula { get; set; }
         public int Rol { get; set; }
         [Required]
