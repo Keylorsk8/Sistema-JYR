@@ -52,7 +52,8 @@ namespace Sistema_JYR.Controllers
         // GET: Proformas/Create
         public ActionResult Create()
         {
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1), "Id", "Nombre");
+            ViewBag.Fecha = DateTime.Now.ToShortDateString();
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1 && x.Estado == true), "Id", "Nombre");
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion");
             return View();
         }
@@ -64,6 +65,7 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto")] Proformas proformas)
         {
+            proformas.Fecha = DateTime.Now;
             proformas.TotalDescuento = 0;
             proformas.TotalImpuesto = 0;
             proformas.TotalPagar = 0;
@@ -71,10 +73,11 @@ namespace Sistema_JYR.Controllers
             {
                 db.Proformas.Add(proformas);
                 db.SaveChanges();
+                Session["Proforma"] = "¡Proforma creada con éxito!";
                 return RedirectToAction("Index");
             }
             ViewBag.Id = proformas.Id;
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1), "Id", "Nombre", proformas.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1 && x.Estado == true), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
         }
@@ -98,12 +101,11 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalDescuento = proformas.TotalDescuento;
             ViewBag.TotalImpuesto = proformas.TotalImpuesto;
           
-           
-            ViewBag.Fecha = proformas.Fecha;
+   
             List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
             proformas.ProformaDetalle = detalles;
 
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1), "Id", "Nombre", proformas.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1 && x.Estado == true), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
         }
@@ -120,6 +122,7 @@ namespace Sistema_JYR.Controllers
             double impuesto = 0;
             double imp = 0;
             double totalPagar = 0;
+           
             List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proformas.Id).ToList();
 
             foreach (var item in detalles)
@@ -136,15 +139,15 @@ namespace Sistema_JYR.Controllers
                 proformas.TotalDescuento = desc;
                 proformas.TotalImpuesto = imp;
                 proformas.TotalPagar = totalPagar;
-           
 
             if (ModelState.IsValid)
             {
                 db.Entry(proformas).State = EntityState.Modified;
                 db.SaveChanges();
+                Session["Proforma"] = "¡Proforma actualizada correctamente!";
                 return RedirectToAction("Index");
             }
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x=> x.Rol == 2 || x.Rol==1), "Id", "Nombre", proformas.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x=> x.Rol == 2 || x.Rol==1 && x.Estado== true), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
         }
@@ -192,6 +195,7 @@ namespace Sistema_JYR.Controllers
              
                 db.ProformaDetalle.Add(detalleDuplicado);
                 db.SaveChanges();
+                Session["Proforma"] = "¡Proforma duplicada correctamente!";
             }
 
             return RedirectToAction("Index");
@@ -304,7 +308,19 @@ namespace Sistema_JYR.Controllers
                     ProformaDetalle detalle = db.ProformaDetalle.Find(item.Id);
                     if (cantidadCambio == 0)
                     {
+                        proforma.TotalDescuento = desc;
+                        proforma.TotalImpuesto = imp;
+                        proforma.TotalPagar = totalPagar;
+                        db.Entry(proforma).State = EntityState.Modified;
+                        db.SaveChanges();
+                        proforma.ProformaDetalle = detalles;
+                        ViewBag.TotalPagar = proforma.TotalPagar;
+                        ViewBag.TotalDescuento = proforma.TotalDescuento;
+                        ViewBag.TotalImpuesto = proforma.TotalImpuesto;
                         db.ProformaDetalle.Remove(detalle);
+                        db.SaveChanges();
+                        return PartialView("_ListaProformaCarrito", proforma);
+                       
 
                     }
 
@@ -354,6 +370,15 @@ namespace Sistema_JYR.Controllers
             double desc = 0;
             double imp = 0;
 
+            if (cant == 0)
+            {
+                ViewBag.TotalPagar = ped.TotalPagar;
+                ViewBag.TotalDescuento = ped.TotalDescuento;
+                ViewBag.TotalImpuesto = ped.TotalImpuesto;
+                Session["Proforma"] = "Debe digitar una cantidad mayor a 0";
+                return PartialView("_ListaProformaCarrito", ped);
+            }
+
             ProformaDetalle validacion = null;
 
             try
@@ -393,7 +418,11 @@ namespace Sistema_JYR.Controllers
                 catch (Exception)
                 {
 
-                    throw;
+                    ViewBag.TotalPagar = ped.TotalPagar;
+                    ViewBag.TotalDescuento = ped.TotalDescuento;
+                    ViewBag.TotalImpuesto = ped.TotalImpuesto;
+                    Session["Proforma"] = "Producto es inválido. Digite un código de producto nuevamente";
+                    return PartialView("_ListaProformaCarrito", ped);
                 }
 
             }

@@ -4,91 +4,96 @@
     ViewBag.Title = "Crear Proforma";
 }
 
-    <ol class="breadcrumb container-fluid">
-        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">Mantenimientos</li>
-        <li class="breadcrumb-item active">Proformas</li>
-        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
-        <li class="breadcrumb-item active">Crear Proforma</li>
-    </ol>
+<ol class="breadcrumb container-fluid">
+    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+    <li class="breadcrumb-item active">Mantenimientos</li>
+    <li class="breadcrumb-item active">Proformas</li>
+    <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
+    <li class="breadcrumb-item active">Crear Proforma</li>
+</ol>
 
-    <div class="container">
-        <h4>Crear Proforma</h4>
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
+<div class="container">
+    <h4>Crear Proforma</h4>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
+        <div class="form-horizontal">
 
-        <hr />
-  
-        <div class="form-horizontal" style="margin-bottom: 100px">
-            <div class="row">
-                <div class="col col-lg-6">
-                    <p>Digite la información de la proforma</p>
+            <hr />
+
+            <div class="form-horizontal" style="margin-bottom: 100px">
+                <div class="row">
+                    <div class="col col-lg-6">
+                        <p>Digite la información de la proforma</p>
+                    </div>
+                    <div class="col col-lg-6">
+                        <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                            <i class="fa fa-arrow-left"></i> Volver
+                        </a>
+
+                    </div>
+
                 </div>
-                <div class="col col-lg-6">
-                    <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
-                        <i class="fa fa-arrow-left"></i> Volver
-                    </a>
+                <div class="form-horizontal">
+                    <hr />
 
-                </div>
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
 
-            </div>
-            <div class="form-horizontal">
-                <hr />
+                                    <div class="form-group has-feedback">
+                                        <i class="fa fa-calendar-o form-control-feedback"></i>
+                                        <input type="text" class="fa form-control" value="@ViewBag.Fecha" readonly="readonly">
+                                    </div>
 
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="row">
-                <div class="col col-md-6">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.TextBoxFor(model => model.Fecha, "{0:yyyy/MM/dd}", new { @class = "form-control", type = "date" })
-                            @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col col-md-6">
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                        <div class="col col-md-6">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
+                        <div class="col col-md-12">
+                            <button type="submit" value="Crear" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Crear </button>
+                            <hr />
                         </div>
+
                     </div>
 
-                </div>
-            
-                    <div class="col col-md-12">
-                        <button type="submit" value="Crear" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Crear </button>
-                        <hr />
-                    </div>
-                
-            </div>
-                      
-
-                       
 
 
 
 
-                
-                    </div>
+
+
+
                 </div>
             </div>
-        }
-    </div>
-      
+        </div>
+    }
+</div>
 
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

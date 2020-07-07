@@ -37,7 +37,7 @@
             <div class="col-md-1">
                 Filtro:
             </div>
-         
+
             <div class="col-md-9">
                 @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
 
@@ -122,7 +122,7 @@
                         <i class="fa fa-info-circle"></i>Detalles
                     </a>
                     <a class="btn btn-dark" href="@Url.Action("DuplicarProforma",new { id = item.Id })">
-                        <i class="fa fa-info-circle"></i>Duplicar
+                        <i class="fa fa-files-o"></i>Duplicar
                     </a>
 
                 </td>
@@ -139,11 +139,35 @@
 </div>
 
 
+
+
+
+@section Scripts {
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
 @if (Session["Proforma"] != null)
 {
     switch (Session["Proforma"])
     {
-
+        case "No existe la proforma":
+            <script type="text/javascript">
+                function ProformaNull() {
+                    Swal.fire({
+                        title: 'No existe la proforma',
+                        icon: 'warning',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProformaNull();
+            </script>
+            Session["Proforma"] = null;
+            break;
         case "Proforma inválida. Especifique una proforma":
             <script type="text/javascript">
                 function EdicionProforma() {
@@ -159,41 +183,53 @@
             </script>
             Session["Proforma"] = null;
             break;
-        default:
-            break;
-    }
-}
-
-
-@section Scripts {
-
-    
-    @Scripts.Render("~/bundles/jqueryval")
-}
-
-
-
-@if (Session["Proforma"] != null)
-{
-    switch (Session["Proforma"])
-    {
-        case "No existe la proforma":
+        case "¡Proforma creada con éxito!":
             <script type="text/javascript">
-                function ExistenciaProdforma() {
+                function CreacionProforma() {
                     Swal.fire({
-                        title: 'No existe la proforma',
-                        icon: 'warning',
+                        title: '¡Proforma creada con éxito!',
+                        icon: 'success',
                         toast: false,
                         timer: 4000,
                         timerProgressBar: true
                     });
                 };
-                ExistenciaProdforma();
+                CreacionProforma();
             </script>
             Session["Proforma"] = null;
             break;
-
+        case "¡Proforma actualizada correctamente!":
+            <script type="text/javascript">
+                function ActualizarProforma() {
+                    Swal.fire({
+                        title: '¡Proforma actualizada correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ActualizarProforma();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "¡Proforma duplicada correctamente!":
+            <script type="text/javascript">
+                function DuplicarProforma() {
+                    Swal.fire({
+                        title: '¡Proforma duplicada correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                DuplicarProforma();
+            </script>
+            Session["Proforma"] = null;
+            break;
         default:
             break;
     }
 }
+

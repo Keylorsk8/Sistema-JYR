@@ -122,3 +122,43 @@
 
 
 </div>
+
+@if (Session["Proforma"] != null)
+{
+    switch (Session["Proforma"])
+    {
+
+        case "Producto es inválido. Digite un código de producto nuevamente":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'Producto es inválido. Digite un código de producto nuevamente',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a 0":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a 0',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        default:
+            break;
+    }
+}

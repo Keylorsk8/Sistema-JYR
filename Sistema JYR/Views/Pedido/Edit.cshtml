@@ -38,15 +38,20 @@
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 @Html.HiddenFor(model => model.Id)
                 @Html.HiddenFor(model => model.NumeroProforma)
-                @Html.HiddenFor(model => model.Fecha)
+
                 <div class="row">
                     <div class="col col-md-6">
 
                         <div class="form-group">
                             @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-12">
-                                @Html.TextBoxFor(model => model.Fecha, "{0:yyyy/MM/dd}", new { @class = "form-control", @readonly = true })
-                                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+                                <div class="form-group has-feedback">
+                                    <i class="fa fa-calendar-o form-control-feedback"></i>
+                                    @Html.HiddenFor(model => model.Fecha)
+
+                                    <input type="text" class="form-control" value="@ViewBag.Fecha" readonly="readonly" />
+                                </div>
+
 
                             </div>
                         </div>
@@ -98,7 +103,7 @@
                 </div>
 
 
-                <div id="detalleAjax" class="row container" >
+                <div id="detalleAjax" class="row container">
                     <div class="col col-md-4">
                         <div class="form-group">
                             @Html.Label("", "Agregar Producto", htmlAttributes: new { @class = "control-label col-md-12" })
@@ -173,7 +178,7 @@
                                             <td style="text-align:center">
                                                 @*Otra posible y mejor forma de hacerlo*@
                                                 <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
-                                                <input type="hidden" value="@item.IdPedido" id="idPedido"/>
+                                                <input type="hidden" value="@item.IdPedido" id="idPedido" />
                                                 <script>
                                             function CambiarCantidadPedida(id) {
                                                 var cantidad = $('#' + id).val();
@@ -245,7 +250,7 @@
                                                 @Ajax.ActionLink("Eliminar", "EliminarCarrito", "Pedido", new { idD = item.Id, idPedido = item.IdPedido }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
                                             </td>
                                         </tr>
-                                        
+
                                     }
                                     <tr>
                                         <td colspan="3"></td>
@@ -326,7 +331,7 @@
         })
     </script>
 
-   
+
 
 }
 
@@ -336,18 +341,63 @@
     switch (Session["Pedido"])
     {
 
-        case "Producto inválido. Especifique un producto":
+        case "Debe digitar una cantidad menor a la cantidad":
             <script type="text/javascript">
-                function EdicionPed() {
+                function CantidadMayor() {
                     Swal.fire({
-                        title: 'Producto inválido. Especifique un producto',
-                        icon: 'warning',
+                        title: 'Debe digitar una cantidad menor a la cantidad',
+                        icon: 'error',
                         toast: false,
                         timer: 4000,
                         timerProgressBar: true
                     });
                 };
-                EdicionPed();
+                CantidadMayor();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a la cantidad enviada":
+            <script type="text/javascript">
+                function CantidadMenor() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a la cantidad enviada',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CantidadMenor();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Producto es inválido. Digite un código de producto nuevamente":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'Producto es inválido. Digite un código de producto nuevamente',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a 0":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a 0',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
             </script>
             Session["Pedido"] = null;
             break;
@@ -355,3 +405,4 @@
             break;
     }
 }
+

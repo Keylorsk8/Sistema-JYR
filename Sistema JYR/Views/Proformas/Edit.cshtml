@@ -40,8 +40,13 @@
                         <div class="form-group">
                             @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-10">
-                                @Html.TextBoxFor(model => model.Fecha, "{0:yyyy/MM/dd}", new { @class = "form-control", @readonly = true })
-                                @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+
+                                <div class="form-group has-feedback">
+                                    <i class="fa fa-calendar-o form-control-feedback"></i>
+                                    @Html.HiddenFor(model => model.Fecha)
+                                    @Html.TextBoxFor(model => model.Fecha, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = true })
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -119,7 +124,7 @@
                                         <th>
                                             Cantidad
                                         </th>
-                                    
+
                                         <th>
                                             Precio Unitario
                                         </th>
@@ -170,7 +175,7 @@
                                                 </script>
                                             </td>
 
-                                      
+
                                             <td style="text-align:center">
                                                 ₡@item.PrecioUnitario
                                             </td>
@@ -182,7 +187,7 @@
                                             </td>
                                             <td style="text-align:center">
 
-                                                @Ajax.ActionLink("Eliminar", "EliminarProdProforma", "Proformas", new { idD = item.Id, idProforma = item.IdProforma}, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
+                                                @Ajax.ActionLink("Eliminar", "EliminarProdProforma", "Proformas", new { idD = item.Id, idProforma = item.IdProforma }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
                                             </td>
                                         </tr>
 
@@ -266,4 +271,45 @@
         })
     </script>
     @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+@if (Session["Proforma"] != null)
+{
+    switch (Session["Proforma"])
+    {
+
+        case "Producto es inválido. Digite un código de producto nuevamente":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'Producto es inválido. Digite un código de producto nuevamente',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a 0":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a 0',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        default:
+            break;
+    }
 }

@@ -55,8 +55,9 @@ namespace Sistema_JYR.Controllers
         // GET: Pedido/Create
         public ActionResult Create()
         {
+            ViewBag.Fecha = DateTime.Now.ToShortDateString();
             ViewBag.NumeroProforma= "N/A";
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol ==1 || x.Rol == 2), "Id", "Nombre");
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol ==1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre");
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion");
             return View();
         }
@@ -68,6 +69,7 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto")] Pedidos pedidos)
         {
+            pedidos.Fecha = DateTime.Now;
             pedidos.TotalDescuento = 0;
             pedidos.TotalImpuesto = 0;
             pedidos.TotalPagar = 0;
@@ -75,10 +77,11 @@ namespace Sistema_JYR.Controllers
             {
                 db.Pedidos.Add(pedidos);
                 db.SaveChanges();
+                Session["Pedido"] = "¡Pedido creado con éxito!";
                 return RedirectToAction("Index");
             }
 
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2), "Id", "Nombre", pedidos.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
         }
@@ -108,10 +111,10 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalImpuesto = pedidos.TotalImpuesto;
             ViewBag.NumeroProforma = pedidos.NumeroProforma;
             ViewBag.Id = pedidos.Id;
-            ViewBag.Fecha = pedidos.Fecha;
+            ViewBag.Fecha = pedidos.Fecha.ToShortDateString();
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == id).ToList();
             pedidos.PedidoDetalle = detalles;
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2), "Id", "Nombre", pedidos.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
         }
@@ -152,11 +155,12 @@ namespace Sistema_JYR.Controllers
                 db.Entry(pedidos).State = EntityState.Modified;
 
                 db.SaveChanges();
+                Session["Pedido"] = "¡Pedido actualizado correctamente!";
                 return RedirectToAction("Index");
             }
 
             ViewBag.Id = pedidos.Id;
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2), "Id", "Nombre", pedidos.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado== true), "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
         }
@@ -206,6 +210,7 @@ namespace Sistema_JYR.Controllers
                 detalleDuplicado.CantidadEnviada = item.CantidadEnviada;
                 db.PedidoDetalle.Add(detalleDuplicado);
                 db.SaveChanges();
+                Session["Pedido"] = "¡Pedido duplicado correctamente!";
             }
 
             return RedirectToAction("Index");
@@ -318,17 +323,44 @@ namespace Sistema_JYR.Controllers
             int pedidoId = Convert.ToInt32(objet.pedidoId);
             int id = Convert.ToInt32(objet.productoId);
             int cantidad = Convert.ToInt32(objet.cantidadEnviada);
-           
+            double totalPagar = 0;
+            double impuesto = 0;
+            double descuento = 0;
+            double desc = 0;
+            double imp = 0;
+            double total = 0;
+            double impuestoVenta = 0;
+            double descuentoCant = 0;
+            double impuestoC = 0;
+            double descCant = 0;
             Pedidos ped = db.Pedidos.Find(pedidoId);
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x=> x.IdPedido == pedidoId).ToList();
+
             foreach (var item in detalles)
             {
+                descuentoCant = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                descCant += descuentoCant;
+                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                impuestoC += impuestoVenta;
+                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
+            
+             }
+                foreach (var item in detalles)
+            {
                 PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
-
                
-         
+
                 if (item.IdProducto == id)
                 {
+                    if (cantidad > item.Cantidad)
+                    {
+
+                        ViewBag.TotalPagar = total;
+                        ViewBag.TotalDescuento = descCant;
+                        ViewBag.TotalImpuesto = impuestoC;
+                        Session["Pedido"] = "Debe digitar una cantidad menor a la cantidad";
+                        return PartialView("_ListaPedidoCarrito", ped);
+                    }
 
                     detalle.Id = item.Id;
                     detalle.Cantidad = item.Cantidad;
@@ -344,7 +376,12 @@ namespace Sistema_JYR.Controllers
                 }
                 {
                 }
-               
+                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
             }
 
             ped.PedidoDetalle = detalles;
@@ -366,18 +403,54 @@ namespace Sistema_JYR.Controllers
             double descuento = 0;
             double desc = 0;
             double imp = 0;
+            double total = 0;
+            double impuestoVenta = 0;
+            double descuentoCant = 0;
+            double impuestoC = 0;
+            double descCant = 0;
             Pedidos pedidos = db.Pedidos.Find(idPedido);
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x=> x.IdPedido == idPedido).ToList();
+
+            foreach (var item in detalles)
+            {
+                descuentoCant = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                descCant += descuentoCant;
+                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                impuestoC += impuestoVenta;
+                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
+            }
             foreach (var item in detalles)
             {
                 
                 if (item.IdProducto == id)
                 {
                     PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
+
                     if (cantidadCambio == 0)
                     {
+                        pedidos.TotalDescuento = desc;
+                        pedidos.TotalImpuesto = imp;
+                        pedidos.TotalPagar = totalPagar;
+                        db.Entry(pedidos).State = EntityState.Modified;
+                        db.SaveChanges();
+                        pedidos.PedidoDetalle = detalles;
+                        ViewBag.TotalPagar = pedidos.TotalPagar;
+                        ViewBag.TotalDescuento = pedidos.TotalDescuento;
+                        ViewBag.TotalImpuesto = pedidos.TotalImpuesto;
                         db.PedidoDetalle.Remove(detalle);
+                        db.SaveChanges();
+                        return PartialView("_ListaPedidoCarrito", pedidos);
+                    }
 
+                    if (cantidadCambio < item.CantidadEnviada)
+                    {
+                     
+                        ViewBag.TotalPagar = total;
+                        ViewBag.TotalDescuento = descCant;
+                        ViewBag.TotalImpuesto = impuestoC;
+                        Session["Pedido"] = "Debe digitar una cantidad mayor a la cantidad enviada";
+                 
+                        return PartialView("_ListaPedidoCarrito", pedidos);
                     }
 
                     detalle.Id = item.Id;
@@ -419,12 +492,22 @@ namespace Sistema_JYR.Controllers
             int cant = Convert.ToInt32(objeto.cantidad);
 
 
+
             Pedidos ped = db.Pedidos.Find(idPedido);
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
             double desc = 0;
             double imp = 0;
+
+            if(cant == 0)
+            {
+                ViewBag.TotalPagar = ped.TotalPagar;
+                ViewBag.TotalDescuento = ped.TotalDescuento;
+                ViewBag.TotalImpuesto = ped.TotalImpuesto;
+                Session["Pedido"] = "Debe digitar una cantidad mayor a 0";
+                return PartialView("_ListaPedidoCarrito", ped);
+            }
 
             PedidoDetalle validacion = null;
 
@@ -466,8 +549,12 @@ namespace Sistema_JYR.Controllers
                 }
                 catch (Exception)
                 {
-
-                    throw;
+                    ViewBag.TotalPagar = ped.TotalPagar;
+                    ViewBag.TotalDescuento = ped.TotalDescuento;
+                    ViewBag.TotalImpuesto = ped.TotalImpuesto;
+                    Session["Pedido"] = "Producto es inválido. Digite un código de producto nuevamente";
+                    return PartialView("_ListaPedidoCarrito", ped);
+                   
                 }
 
             }

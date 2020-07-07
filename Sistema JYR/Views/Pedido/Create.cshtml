@@ -42,8 +42,10 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-12">
-                    @Html.TextBoxFor(model => model.Fecha, "{0:yyyy/MM/dd}", new { @class = "form-control", type = "date" })
-                    @Html.ValidationMessageFor(model => model.Fecha, "", new { @class = "text-danger" })
+                    <div class="form-group has-feedback">
+                        <i class="fa fa-calendar-o form-control-feedback"></i>
+                        <input type="text" class="fa form-control" value="@ViewBag.Fecha" readonly="readonly">
+                    </div>
 
                 </div>
             </div>
