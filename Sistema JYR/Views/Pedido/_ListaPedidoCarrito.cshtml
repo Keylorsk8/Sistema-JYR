@@ -44,24 +44,25 @@
                             <td style="text-align:center">
                                 @*Otra posible y mejor forma de hacerlo*@
                                 <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
-
+                                <input type="hidden" value="@item.IdPedido" id="idPedido" />
                                 <script>
                                             function CambiarCantidadPedida(id) {
                                                 var cantidad = $('#' + id).val();
-
+                                                var idPedido = $("#idPedido").val();
 
                                                 var dataObject = JSON.stringify({
                                                     'terminoBusqueda': cantidad,
                                                     'id': id,
+                                                    'idPedido': idPedido
 
                                         })
                                                 var objeto = new Object();
                                                 objeto.terminoBusqueda = cantidad;
                                                 objeto.id = id;
-
+                                                objeto.idPedido = idPedido
 
                                                 var url = "@Url.Action("CambiarCantidadPedida", "Pedido")";
-                                                var data = { terminoBusqueda: cantidad, id: id};
+                                                var data = { terminoBusqueda: cantidad, id: id, idPedido: idPedido };
                                         $.post(url, data).done(function (data) {
                                             $("#carritoAjax").html(data);
 
@@ -78,19 +79,20 @@
                                                 function x(e, id) {
                                                     var cantidadEnviada = e;
                                                     var productoId = id;
-
+                                                    var pedidoId = $("#idPedido").val();
 
                                                         var dataObjeto = JSON.stringify({
                                                             'cantidadEnviada': cantidadEnviada,
-                                                            'productoId': productoId
+                                                            'productoId': productoId,
+                                                            'pedidoId': pedidoId
                                                         })
 
                                                         var objeto = new Object();
                                                         objeto.productoId = productoId;
-                                                        objeto.cantidadEnviada = cantidadEnviada;
-
-                                                        var url = "@Url.Action("CambiarCantidadEnviada","Pedido")";
-                                                        var datos = { productoId: productoId, cantidadEnviada: cantidadEnviada };
+                                                    objeto.cantidadEnviada = cantidadEnviada;
+                                                    objeto.pedidoId = pedidoId;
+                                                    var url = "@Url.Action("CambiarCantidadEnviada","Pedido")";
+                                                    var datos = { productoId: productoId, cantidadEnviada: cantidadEnviada, pedidoId: pedidoId };
 
                                                         $.post(url, datos).done(function (datos) {
                                                             $("#carritoAjax").html(datos);
@@ -143,6 +145,8 @@
                             <label>₡@ViewBag.TotalPagar</label>
                         </th>
                     </tr>
+
+
                 </table>
             </div>
         </div>
@@ -151,3 +155,4 @@
 
 
 </div>
+        
