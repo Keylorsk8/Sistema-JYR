@@ -11,7 +11,9 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public partial class AspNetUsers
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -29,11 +31,18 @@ namespace Sistema_JYR.Models
         }
     
         public string Id { get; set; }
+        [Required]
         public string Nombre { get; set; }
+
+        [Required]
+        [DisplayName("Primer Apellido")]
         public string Apellido1 { get; set; }
+        [DisplayName("Segundo Apellido")]
         public string Apellido2 { get; set; }
         public int Cedula { get; set; }
         public int Rol { get; set; }
+        [Required]
+        [DisplayName("Correo Electrónico")]
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
