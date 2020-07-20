@@ -12,13 +12,13 @@ namespace Sistema_JYR.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Telefonos
+    public partial class Documentos
     {
         public int Id { get; set; }
-        public string Telefono { get; set; }
-        public string Propietario { get; set; }
-        public string IdUsuario { get; set; }
+        public string Descripcion { get; set; }
+        public byte[] Documento { get; set; }
+        public int IdProforma { get; set; }
     
-        public virtual AspNetUsers AspNetUsers1 { get; set; }
+        public virtual Proformas Proformas { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class CategoriasProducto
     {
@@ -19,8 +20,11 @@ namespace Sistema_JYR.Models
         {
             this.Productos = new HashSet<Productos>();
         }
-    
+        
         public int Id { get; set; }
+        
+        [Required]
+        [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -11,20 +11,15 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class PedidoDetalle
     {
         public int Id { get; set; }
-        [Display(Name = "Pedido")]
         public int IdPedido { get; set; }
-        [Display(Name = "Producto")]
         public int IdProducto { get; set; }
         public double Cantidad { get; set; }
-        [Display(Name = "Precio Unitario")]
         public double PrecioUnitario { get; set; }
         public double Descuento { get; set; }
-        [Display(Name = "Cantidad Enviada")]
         public Nullable<double> CantidadEnviada { get; set; }
     
         public virtual Pedidos Pedidos { get; set; }

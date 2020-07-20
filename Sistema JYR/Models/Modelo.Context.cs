@@ -42,5 +42,6 @@ namespace Sistema_JYR.Models
         public virtual DbSet<Telefonos> Telefonos { get; set; }
         public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
+        public virtual DbSet<Documentos> Documentos { get; set; }
     }
 }

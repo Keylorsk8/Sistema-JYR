@@ -54,7 +54,7 @@ namespace Sistema_JYR.Controllers
         {
             ViewBag.Fecha = DateTime.Now.ToShortDateString();
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1 && x.Estado == true), "Id", "Nombre");
-            ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion");
+            ViewBag.IdEstado = new SelectList(db.EstadoProforma.Where(x => x.Descripcion.Equals("Nueva")), "Id", "Descripcion");
             return View();
         }
 

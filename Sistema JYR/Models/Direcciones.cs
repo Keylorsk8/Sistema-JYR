@@ -22,8 +22,11 @@ namespace Sistema_JYR.Models
     
         public int Id { get; set; }
         public string Direccion { get; set; }
+        public string Provincia { get; set; }
+        public string IdUsuario { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUsers> AspNetUsers { get; set; }
+        public virtual AspNetUsers AspNetUsers1 { get; set; }
     }
 }

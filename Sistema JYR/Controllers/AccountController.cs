@@ -526,13 +526,13 @@ namespace Sistema_JYR.Controllers
             if (tipo == 1)
             {
                 html += "<p style='color: black;font-weight: 200'>Hay un paso más antes de iniciar sesión.</p>";
-                html += "<p style='color: black;font-weight: 200'>Has clic en el siguiente botón para confirmar tú cuenta y completar el registro. </p>";
+                html += "<p style='color: black;font-weight: 200'>Has clic en el siguiente botón para confirmar tu cuenta y completar el registro. </p>";
                 html += "<div style='text-align: center;margin-top: 30px;'>";
             }
             else
             {
-                html += "<p style='color: black;font-weight: 200'>Solicitaste recuperar tú contraseña.</p>";
-                html += "<p style='color: black;font-weight: 200'>Has clic en el siguiente botón para recuperar tú contraseña. </p>";
+                html += "<p style='color: black;font-weight: 200'>Solicitaste recuperar tu contraseña.</p>";
+                html += "<p style='color: black;font-weight: 200'>Has clic en el siguiente botón para recuperar tu contraseña. </p>";
                 html += "<div style='text-align: center;margin-top: 30px;'>";
             }
             html += "<a href='" + callbackUrl + "' class='btn btn-info' style='padding: 20px 70px 20px 70px;font-weight: 200;width: 50px ; color: white; text-decoration: none; background-color: #002f3f;'>"+ (tipo == 1? "Confirmar":"Cambiar contraseña") +"</a>";
@@ -547,7 +547,7 @@ namespace Sistema_JYR.Controllers
             }
             else
             {
-                html += "<p style='color: black;font-weight: 200;font-size:smaller;text-align: center'>Si no fuiste tú, alguien intentó cambiar tú contraseña, considera cambiarla </p>";
+                html += "<p style='color: black;font-weight: 200;font-size:smaller;text-align: center'>Si no fuiste tú, alguien intentó cambiar tu contraseña, considera cambiarla </p>";
             }
             
             html += "</div>";
@@ -643,5 +643,13 @@ namespace Sistema_JYR.Controllers
             }
         }
         #endregion
+
+        public ResetPasswordViewModel ResetPasswordViewModel
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }

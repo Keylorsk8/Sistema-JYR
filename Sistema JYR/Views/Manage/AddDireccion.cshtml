@@ -1,0 +1,48 @@
+﻿@model Sistema_JYR.Models.AddDireccionViewModel
+
+@{
+    ViewBag.Title = "Dirección";
+}
+
+<div class="container">
+    @using (Html.BeginForm("AddDireccion", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>@ViewBag.Title.</h2>
+                <h4>Agregar una dirección de entrega</h4>
+            </div>
+            <div class="col-sm-6">
+                <h1></h1>
+                <a href="@Url.Action("Index","Manage")" class="btn btn-outline-dark btn-block">
+                    <i class="fa fa-arrow-left" style="margin-right: 5px"></i> Volver
+                </a>
+            </div>
+        </div>
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Provincia, new { @class = "col-md-12 control-label" })
+            <div class="col-md-12">
+                @Html.DropDownList("Provincia", (List<SelectListItem>)ViewBag.Provincias, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Direccion, new { @class = "col-md-12 control-label" })
+            <div class="col-md-12">
+                @Html.TextBoxFor(m => m.Direccion, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-12">
+                <input type="submit" class="btn btn-dark btn-block" value="Enviar" />
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

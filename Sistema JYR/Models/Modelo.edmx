@@ -86,19 +86,30 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Direccion" Type="nchar" MaxLength="500" Nullable="false" />
+          <Property Name="Provincia" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Documentos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descripcion" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Documento" Type="varbinary(max)" Nullable="false" />
+          <Property Name="IdProforma" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="EstadoPedido">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Descripcion" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="EstadoProforma">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Descripcion" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="PedidoDetalle">
@@ -125,6 +136,9 @@
           <Property Name="TotalDescuento" Type="float" Nullable="false" />
           <Property Name="TotalImpuesto" Type="float" Nullable="false" />
           <Property Name="NumeroProforma" Type="int" />
+          <Property Name="IdCliente" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="DireccionEntrega" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="NombrePedido" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Productos">
           <Key>
@@ -173,6 +187,9 @@
           <Property Name="TotalPagar" Type="float" Nullable="false" />
           <Property Name="TotalDescuento" Type="float" Nullable="false" />
           <Property Name="TotalImpuesto" Type="float" Nullable="false" />
+          <Property Name="IdCliente" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="DireccionEntrega" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="NombreProforma" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -191,6 +208,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Telefono" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="Propietario" Type="nchar" MaxLength="25" Nullable="false" />
+          <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
         <EntityType Name="UsuariosDirecciones">
           <Key>
@@ -199,14 +217,6 @@
           </Key>
           <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="IdDireccion" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="UsuariosTelefonos">
-          <Key>
-            <PropertyRef Name="IdUsuario" />
-            <PropertyRef Name="IdTelefono" />
-          </Key>
-          <Property Name="IdUsuario" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="IdTelefono" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -261,6 +271,30 @@
             </Principal>
             <Dependent Role="AspNetUserRoles">
               <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Direcciones_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Direcciones" Type="Self.Direcciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Direcciones">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Documentos_Proformas">
+          <End Role="Proformas" Type="Self.Proformas" Multiplicity="1" />
+          <End Role="Documentos" Type="Self.Documentos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proformas">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Documentos">
+              <PropertyRef Name="IdProforma" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -396,6 +430,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Telefonos_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Telefonos" Type="Self.Telefonos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Telefonos">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UsuariosDirecciones_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="UsuariosDirecciones" Type="Self.UsuariosDirecciones" Multiplicity="*" />
@@ -420,30 +466,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_UsuariosTelefonos_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="UsuariosTelefonos" Type="Self.UsuariosTelefonos" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UsuariosTelefonos">
-              <PropertyRef Name="IdUsuario" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_UsuariosTelefonos_Telefonos">
-          <End Role="Telefonos" Type="Self.Telefonos" Multiplicity="1" />
-          <End Role="UsuariosTelefonos" Type="Self.UsuariosTelefonos" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Telefonos">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="UsuariosTelefonos">
-              <PropertyRef Name="IdTelefono" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="SistemaJYRModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -453,6 +475,7 @@
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CategoriasProducto" EntityType="Self.CategoriasProducto" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Direcciones" EntityType="Self.Direcciones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Documentos" EntityType="Self.Documentos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EstadoPedido" EntityType="Self.EstadoPedido" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EstadoProforma" EntityType="Self.EstadoProforma" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PedidoDetalle" EntityType="Self.PedidoDetalle" Schema="dbo" store:Type="Tables" />
@@ -464,7 +487,6 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Telefonos" EntityType="Self.Telefonos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsuariosDirecciones" EntityType="Self.UsuariosDirecciones" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="UsuariosTelefonos" EntityType="Self.UsuariosTelefonos" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -480,6 +502,14 @@
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Direcciones_AspNetUsers" Association="Self.FK_Direcciones_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Direcciones" EntitySet="Direcciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Documentos_Proformas" Association="Self.FK_Documentos_Proformas">
+            <End Role="Proformas" EntitySet="Proformas" />
+            <End Role="Documentos" EntitySet="Documentos" />
           </AssociationSet>
           <AssociationSet Name="FK_PedidoDetalle_Pedidos" Association="Self.FK_PedidoDetalle_Pedidos">
             <End Role="Pedidos" EntitySet="Pedidos" />
@@ -525,6 +555,10 @@
             <End Role="EstadoProforma" EntitySet="EstadoProforma" />
             <End Role="Proformas" EntitySet="Proformas" />
           </AssociationSet>
+          <AssociationSet Name="FK_Telefonos_AspNetUsers" Association="Self.FK_Telefonos_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Telefonos" EntitySet="Telefonos" />
+          </AssociationSet>
           <AssociationSet Name="FK_UsuariosDirecciones_AspNetUsers" Association="Self.FK_UsuariosDirecciones_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="UsuariosDirecciones" EntitySet="UsuariosDirecciones" />
@@ -532,14 +566,6 @@
           <AssociationSet Name="FK_UsuariosDirecciones_Direcciones" Association="Self.FK_UsuariosDirecciones_Direcciones">
             <End Role="Direcciones" EntitySet="Direcciones" />
             <End Role="UsuariosDirecciones" EntitySet="UsuariosDirecciones" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UsuariosTelefonos_AspNetUsers" Association="Self.FK_UsuariosTelefonos_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="UsuariosTelefonos" EntitySet="UsuariosTelefonos" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UsuariosTelefonos_Telefonos" Association="Self.FK_UsuariosTelefonos_Telefonos">
-            <End Role="Telefonos" EntitySet="Telefonos" />
-            <End Role="UsuariosTelefonos" EntitySet="UsuariosTelefonos" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -604,8 +630,9 @@
           <NavigationProperty Name="ProductosPrecioUsuarios" Relationship="SistemaJYRModel.FK_ProductosPrecioUsuarios_AspNetUsers" FromRole="AspNetUsers" ToRole="ProductosPrecioUsuarios" />
           <NavigationProperty Name="Proformas" Relationship="SistemaJYRModel.FK_Proformas_AspNetUsers" FromRole="AspNetUsers" ToRole="Proformas" />
           <NavigationProperty Name="Direcciones" Relationship="SistemaJYRModel.UsuariosDirecciones" FromRole="AspNetUsers" ToRole="Direcciones" />
-          <NavigationProperty Name="Telefonos" Relationship="SistemaJYRModel.UsuariosTelefonos" FromRole="AspNetUsers" ToRole="Telefonos" />
           <Property Name="Estado" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Direcciones1" Relationship="SistemaJYRModel.FK_Direcciones_AspNetUsers" FromRole="AspNetUsers" ToRole="Direcciones" />
+          <NavigationProperty Name="Telefonos1" Relationship="SistemaJYRModel.FK_Telefonos_AspNetUsers" FromRole="AspNetUsers" ToRole="Telefonos" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
@@ -715,12 +742,21 @@
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Direcciones" EntitySet="Direcciones" />
           </AssociationSet>
-          <AssociationSet Name="UsuariosTelefonos" Association="SistemaJYRModel.UsuariosTelefonos">
+          <EntitySet Name="C__MigrationHistory" EntityType="SistemaJYRModel.C__MigrationHistory" />
+          <EntitySet Name="sysdiagrams" EntityType="SistemaJYRModel.sysdiagrams" />
+          <EntitySet Name="Documentos" EntityType="SistemaJYRModel.Documentos" />
+          <AssociationSet Name="FK_Documentos_Proformas" Association="SistemaJYRModel.FK_Documentos_Proformas">
+            <End Role="Proformas" EntitySet="Proformas" />
+            <End Role="Documentos" EntitySet="Documentos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Direcciones_AspNetUsers" Association="SistemaJYRModel.FK_Direcciones_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Direcciones" EntitySet="Direcciones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Telefonos_AspNetUsers" Association="SistemaJYRModel.FK_Telefonos_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Telefonos" EntitySet="Telefonos" />
           </AssociationSet>
-          <EntitySet Name="C__MigrationHistory" EntityType="SistemaJYRModel.C__MigrationHistory" />
-          <EntitySet Name="sysdiagrams" EntityType="SistemaJYRModel.sysdiagrams" />
         </EntityContainer>
         <EntityType Name="CategoriasProducto">
           <Key>
@@ -737,6 +773,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Direccion" Type="String" Nullable="false" MaxLength="500" FixedLength="true" Unicode="true" />
           <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.UsuariosDirecciones" FromRole="Direcciones" ToRole="AspNetUsers" />
+          <Property Name="Provincia" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers1" Relationship="SistemaJYRModel.FK_Direcciones_AspNetUsers" FromRole="Direcciones" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="EstadoPedido">
           <Key>
@@ -783,6 +822,9 @@
           <NavigationProperty Name="EstadoPedido" Relationship="SistemaJYRModel.FK_Pedidos_EstadoPedido" FromRole="Pedidos" ToRole="EstadoPedido" />
           <NavigationProperty Name="PedidoDetalle" Relationship="SistemaJYRModel.FK_PedidoDetalle_Pedidos" FromRole="Pedidos" ToRole="PedidoDetalle" />
           <Property Name="NumeroProforma" Type="Int32" />
+          <Property Name="IdCliente" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="DireccionEntrega" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NombrePedido" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Productos">
           <Key>
@@ -842,6 +884,10 @@
           <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.FK_Proformas_AspNetUsers" FromRole="Proformas" ToRole="AspNetUsers" />
           <NavigationProperty Name="EstadoProforma" Relationship="SistemaJYRModel.FK_Proformas_EstadoProforma" FromRole="Proformas" ToRole="EstadoProforma" />
           <NavigationProperty Name="ProformaDetalle" Relationship="SistemaJYRModel.FK_ProformaDetalle_Proformas" FromRole="Proformas" ToRole="ProformaDetalle" />
+          <Property Name="IdCliente" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="DireccionEntrega" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Documentos" Relationship="SistemaJYRModel.FK_Documentos_Proformas" FromRole="Proformas" ToRole="Documentos" />
+          <Property Name="NombreProforma" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Telefonos">
           <Key>
@@ -850,7 +896,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Telefono" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="Propietario" Type="String" Nullable="false" MaxLength="25" FixedLength="true" Unicode="true" />
-          <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.UsuariosTelefonos" FromRole="Telefonos" ToRole="AspNetUsers" />
+          <Property Name="IdUsuario" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUsers1" Relationship="SistemaJYRModel.FK_Telefonos_AspNetUsers" FromRole="Telefonos" ToRole="AspNetUsers" />
         </EntityType>
         <Association Name="FK_Pedidos_AspNetUsers">
           <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
@@ -988,10 +1035,6 @@
           <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
           <End Type="SistemaJYRModel.Direcciones" Role="Direcciones" Multiplicity="*" />
         </Association>
-        <Association Name="UsuariosTelefonos">
-          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="*" />
-          <End Type="SistemaJYRModel.Telefonos" Role="Telefonos" Multiplicity="*" />
-        </Association>
         <EntityType Name="C__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -1012,6 +1055,52 @@
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
+        <EntityType Name="Documentos">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Documento" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="IdProforma" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Proformas" Relationship="SistemaJYRModel.FK_Documentos_Proformas" FromRole="Documentos" ToRole="Proformas" />
+        </EntityType>
+        <Association Name="FK_Documentos_Proformas">
+          <End Type="SistemaJYRModel.Proformas" Role="Proformas" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Documentos" Role="Documentos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proformas">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Documentos">
+              <PropertyRef Name="IdProforma" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Direcciones_AspNetUsers">
+          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Direcciones" Role="Direcciones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Direcciones">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Telefonos_AspNetUsers">
+          <End Type="SistemaJYRModel.AspNetUsers" Role="AspNetUsers" Multiplicity="1" />
+          <End Type="SistemaJYRModel.Telefonos" Role="Telefonos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Telefonos">
+              <PropertyRef Name="IdUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1089,6 +1178,8 @@
           <EntitySetMapping Name="Direcciones">
             <EntityTypeMapping TypeName="SistemaJYRModel.Direcciones">
               <MappingFragment StoreEntitySet="Direcciones">
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+                <ScalarProperty Name="Provincia" ColumnName="Provincia" />
                 <ScalarProperty Name="Direccion" ColumnName="Direccion" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -1126,6 +1217,9 @@
           <EntitySetMapping Name="Pedidos">
             <EntityTypeMapping TypeName="SistemaJYRModel.Pedidos">
               <MappingFragment StoreEntitySet="Pedidos">
+                <ScalarProperty Name="NombrePedido" ColumnName="NombrePedido" />
+                <ScalarProperty Name="DireccionEntrega" ColumnName="DireccionEntrega" />
+                <ScalarProperty Name="IdCliente" ColumnName="IdCliente" />
                 <ScalarProperty Name="NumeroProforma" ColumnName="NumeroProforma" />
                 <ScalarProperty Name="TotalImpuesto" ColumnName="TotalImpuesto" />
                 <ScalarProperty Name="TotalDescuento" ColumnName="TotalDescuento" />
@@ -1178,6 +1272,9 @@
           <EntitySetMapping Name="Proformas">
             <EntityTypeMapping TypeName="SistemaJYRModel.Proformas">
               <MappingFragment StoreEntitySet="Proformas">
+                <ScalarProperty Name="NombreProforma" ColumnName="NombreProforma" />
+                <ScalarProperty Name="DireccionEntrega" ColumnName="DireccionEntrega" />
+                <ScalarProperty Name="IdCliente" ColumnName="IdCliente" />
                 <ScalarProperty Name="TotalImpuesto" ColumnName="TotalImpuesto" />
                 <ScalarProperty Name="TotalDescuento" ColumnName="TotalDescuento" />
                 <ScalarProperty Name="TotalPagar" ColumnName="TotalPagar" />
@@ -1191,6 +1288,7 @@
           <EntitySetMapping Name="Telefonos">
             <EntityTypeMapping TypeName="SistemaJYRModel.Telefonos">
               <MappingFragment StoreEntitySet="Telefonos">
+                <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
                 <ScalarProperty Name="Propietario" ColumnName="Propietario" />
                 <ScalarProperty Name="Telefono" ColumnName="Telefono" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1200,14 +1298,6 @@
           <AssociationSetMapping Name="UsuariosDirecciones" TypeName="SistemaJYRModel.UsuariosDirecciones" StoreEntitySet="UsuariosDirecciones">
             <EndProperty Name="Direcciones">
               <ScalarProperty Name="Id" ColumnName="IdDireccion" />
-            </EndProperty>
-            <EndProperty Name="AspNetUsers">
-              <ScalarProperty Name="Id" ColumnName="IdUsuario" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <AssociationSetMapping Name="UsuariosTelefonos" TypeName="SistemaJYRModel.UsuariosTelefonos" StoreEntitySet="UsuariosTelefonos">
-            <EndProperty Name="Telefonos">
-              <ScalarProperty Name="Id" ColumnName="IdTelefono" />
             </EndProperty>
             <EndProperty Name="AspNetUsers">
               <ScalarProperty Name="Id" ColumnName="IdUsuario" />
@@ -1231,6 +1321,16 @@
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documentos">
+            <EntityTypeMapping TypeName="SistemaJYRModel.Documentos">
+              <MappingFragment StoreEntitySet="Documentos">
+                <ScalarProperty Name="IdProforma" ColumnName="IdProforma" />
+                <ScalarProperty Name="Documento" ColumnName="Documento" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -209,6 +209,9 @@
     <Compile Include="Models\Direcciones.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Documentos.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EstadoPedido.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -504,6 +507,8 @@
     <Content Include="Views\Pedido\_ListaPedidoCarrito.cshtml" />
     <Content Include="Views\Proformas\_ListaProformaCarrito.cshtml" />
     <Content Include="Views\Productos\ListaProductos.cshtml" />
+    <Content Include="Views\Manage\AddDireccion.cshtml" />
+    <Content Include="Views\Proformas\_BusquedaAvanzada.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

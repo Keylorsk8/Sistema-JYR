@@ -167,11 +167,10 @@
 
                                                 var url = "@Url.Action("CambiarCantidadPedida", "Proformas")";
                                                 var data = { terminoBusqueda: cantidad, id: id, idProforma: idProforma };
-                                        $.post(url, data).done(function (data) {
-                                            $("#carritoAjax").html(data);
-
-                                        })
-                                    }
+                                                $.post(url, data).done(function (data) {
+                                                    $("#carritoAjax").html(data);
+                                                })
+                                           }
                                                 </script>
                                             </td>
 
