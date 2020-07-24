@@ -41,6 +41,24 @@
                     @Html.ActionLink("Pedidos", "Index", "Pedido", new { }, new { @class = "dropdown-item" })
                 </div>
             </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" style="color: white !important" href="#" id="navbarDropdownMantenimientos" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Reportes
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <h6 class="dropdown-header">Usuarios</h6>
+                    @Html.ActionLink("Reporte de Ventas por Empleado", "reporteVentasPorEmpleado", "Pedido", new { }, new { @class = "dropdown-item" })
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">Inventario</h6>
+                    @Html.ActionLink("Reporte Top 10 Productos", "reporteTopProducto", "Pedido", new { }, new { @class = "dropdown-item" })
+                    <div class="dropdown-divider"></div>
+                    <h6 class="dropdown-header">Proforma</h6>
+                    @Html.ActionLink("Reporte de Pedidos", "reporteProformaAPedido", "Pedido", new { }, new { @class = "dropdown-item" })
+                    
+                </div>
+            </li>
         }
 
         <li class="nav-item dropdown">

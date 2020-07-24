@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Reporte de Proformas Convertidas en Pedidos";
+}
+
+<br />
+<ol class="breadcrumb container-fluid">
+    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+    <li class="breadcrumb-item active">Reportes</li>
+    <li class="breadcrumb-item active">Usuarios</li>
+    <li class="breadcrumb-item active">Reporte de Proformas Convertidas en Pedidos</li>
+</ol>
+
+
+
+    <div style="margin-top:30px; width:100%">
+
+        @using ReportViewerForMvc
+        @Html.ReportViewer(ViewBag.ReportViewer as
+    Microsoft.Reporting.WebForms.ReportViewer, htmlAttributes: new { @style = "margin-left:auto;margin-right:auto" })
+    </div>
+
+
+
+@if (Session["Pedido"] != null)
+{
+    switch (Session["Pedido"])
+    {
+
+        case "Seleccione una fecha válida":
+            <script type="text/javascript">
+                function EdicionPed() {
+                    Swal.fire({
+                        title: 'Seleccione una fecha válida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "No hay elementos":
+            <script type="text/javascript">
+                function EdicionPed() {
+                    Swal.fire({
+                        title: 'No hay elementos',
+                        icon: 'alert',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+
+        default:
+            break;
+    }
+}
