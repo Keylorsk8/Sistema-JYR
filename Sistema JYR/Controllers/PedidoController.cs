@@ -875,7 +875,7 @@ namespace Sistema_JYR.Controllers
                              Estado = g.Key.Descripcion,
                              g.Key.IdEstado,
                              TotalProformas = g.Count(),
-                             porcentaje = 100; 
+                             porcentaje = 100
                              };
 
 
