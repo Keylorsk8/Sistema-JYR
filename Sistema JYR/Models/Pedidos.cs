@@ -31,6 +31,7 @@ namespace Sistema_JYR.Models
         public string IdCliente { get; set; }
         public string DireccionEntrega { get; set; }
         public string NombrePedido { get; set; }
+        public string NombreCliente { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual EstadoPedido EstadoPedido { get; set; }

@@ -136,7 +136,8 @@
           <Property Name="TotalDescuento" Type="float" Nullable="false" />
           <Property Name="TotalImpuesto" Type="float" Nullable="false" />
           <Property Name="NumeroProforma" Type="int" />
-          <Property Name="IdCliente" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IdCliente" Type="nvarchar" MaxLength="128" />
+          <Property Name="NombreCliente" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DireccionEntrega" Type="nvarchar(max)" Nullable="false" />
           <Property Name="NombrePedido" Type="nvarchar" MaxLength="50" />
         </EntityType>
@@ -187,9 +188,10 @@
           <Property Name="TotalPagar" Type="float" Nullable="false" />
           <Property Name="TotalDescuento" Type="float" Nullable="false" />
           <Property Name="TotalImpuesto" Type="float" Nullable="false" />
-          <Property Name="IdCliente" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="IdCliente" Type="nvarchar" MaxLength="128" />
+          <Property Name="NombreCliente" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DireccionEntrega" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="NombreProforma" Type="nvarchar" MaxLength="50" />
+          <Property Name="NombreProforma" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -822,9 +824,10 @@
           <NavigationProperty Name="EstadoPedido" Relationship="SistemaJYRModel.FK_Pedidos_EstadoPedido" FromRole="Pedidos" ToRole="EstadoPedido" />
           <NavigationProperty Name="PedidoDetalle" Relationship="SistemaJYRModel.FK_PedidoDetalle_Pedidos" FromRole="Pedidos" ToRole="PedidoDetalle" />
           <Property Name="NumeroProforma" Type="Int32" />
-          <Property Name="IdCliente" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IdCliente" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="DireccionEntrega" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="NombrePedido" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NombreCliente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Productos">
           <Key>
@@ -884,10 +887,11 @@
           <NavigationProperty Name="AspNetUsers" Relationship="SistemaJYRModel.FK_Proformas_AspNetUsers" FromRole="Proformas" ToRole="AspNetUsers" />
           <NavigationProperty Name="EstadoProforma" Relationship="SistemaJYRModel.FK_Proformas_EstadoProforma" FromRole="Proformas" ToRole="EstadoProforma" />
           <NavigationProperty Name="ProformaDetalle" Relationship="SistemaJYRModel.FK_ProformaDetalle_Proformas" FromRole="Proformas" ToRole="ProformaDetalle" />
-          <Property Name="IdCliente" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IdCliente" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="DireccionEntrega" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Documentos" Relationship="SistemaJYRModel.FK_Documentos_Proformas" FromRole="Proformas" ToRole="Documentos" />
-          <Property Name="NombreProforma" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NombreProforma" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="NombreCliente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Telefonos">
           <Key>
@@ -1217,6 +1221,7 @@
           <EntitySetMapping Name="Pedidos">
             <EntityTypeMapping TypeName="SistemaJYRModel.Pedidos">
               <MappingFragment StoreEntitySet="Pedidos">
+                <ScalarProperty Name="NombreCliente" ColumnName="NombreCliente" />
                 <ScalarProperty Name="NombrePedido" ColumnName="NombrePedido" />
                 <ScalarProperty Name="DireccionEntrega" ColumnName="DireccionEntrega" />
                 <ScalarProperty Name="IdCliente" ColumnName="IdCliente" />
@@ -1272,6 +1277,7 @@
           <EntitySetMapping Name="Proformas">
             <EntityTypeMapping TypeName="SistemaJYRModel.Proformas">
               <MappingFragment StoreEntitySet="Proformas">
+                <ScalarProperty Name="NombreCliente" ColumnName="NombreCliente" />
                 <ScalarProperty Name="NombreProforma" ColumnName="NombreProforma" />
                 <ScalarProperty Name="DireccionEntrega" ColumnName="DireccionEntrega" />
                 <ScalarProperty Name="IdCliente" ColumnName="IdCliente" />

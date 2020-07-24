@@ -29,8 +29,12 @@ namespace Sistema_JYR.Models
         public double TotalDescuento { get; set; }
         public double TotalImpuesto { get; set; }
         public string IdCliente { get; set; }
+        [System.ComponentModel.DataAnnotations.Display(Name = "Dirección de Entrega")]
         public string DireccionEntrega { get; set; }
         public string NombreProforma { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
+        [System.ComponentModel.DataAnnotations.Display(Name = "Nombre del Cliente")]
+        public string NombreCliente { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
         public virtual EstadoProforma EstadoProforma { get; set; }

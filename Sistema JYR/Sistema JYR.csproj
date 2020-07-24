@@ -509,6 +509,8 @@
     <Content Include="Views\Productos\ListaProductos.cshtml" />
     <Content Include="Views\Manage\AddDireccion.cshtml" />
     <Content Include="Views\Proformas\_BusquedaAvanzada.cshtml" />
+    <Content Include="Views\Proformas\_Cliente.cshtml" />
+    <Content Include="Views\Proformas\_ClienteSinCuenta.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

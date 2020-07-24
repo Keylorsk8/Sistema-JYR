@@ -56,6 +56,7 @@
 
 <hr />
 
+
 <div class="container-fluid" style="text-align: center" id="divProformas">
     <table class="table table-striped table-hover table-bordered table-responsive-lg">
 
@@ -63,12 +64,16 @@
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Fecha)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreProforma)
+            </th>
 
             <th>
-                Usuario
+                Vendedor
             </th>
 
             <th>
@@ -95,7 +100,10 @@
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Fecha)
+                    @item.Fecha.ToString("dd/M/yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreProforma)
                 </td>
 
                 <td>
@@ -103,13 +111,36 @@
                 </td>
 
                 <td>
-                    ₡@Html.DisplayFor(modelItem => item.TotalDescuento)
+
+                    @if (item.TotalDescuento == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@item.TotalDescuento.ToString("0,#.00")</label>
+                    }
                 </td>
                 <td>
-                    ₡@Html.DisplayFor(modelItem => item.TotalImpuesto)
+                    @if (item.TotalImpuesto == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@item.TotalImpuesto.ToString("0,#.00")</label>
+                    }
                 </td>
                 <td>
-                    ₡@Html.DisplayFor(modelItem => item.TotalPagar)
+
+                    @if (item.TotalPagar == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label> ₡@item.TotalPagar.ToString("0,#.00")</label>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.EstadoProforma.Descripcion)
@@ -118,6 +149,10 @@
                     <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
                         <i class="fa fa-pencil-square-o"></i>Editar
                     </a>
+
+
+
+
                     <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
                         <i class="fa fa-info-circle"></i>Detalles
                     </a>
@@ -200,16 +235,16 @@
             break;
         case "¡Proforma actualizada correctamente!":
             <script type="text/javascript">
-                function ActualizarProforma() {
+                function CreacionProforma() {
                     Swal.fire({
-                        title: '¡Proforma actualizada correctamente!',
+                        title: '¡Proforma actualizada con éxito!',
                         icon: 'success',
                         toast: false,
                         timer: 4000,
                         timerProgressBar: true
                     });
                 };
-                ActualizarProforma();
+                CreacionProforma();
             </script>
             Session["Proforma"] = null;
             break;
@@ -227,6 +262,24 @@
                 DuplicarProforma();
             </script>
             Session["Proforma"] = null;
+            break;
+        case "¡Proforma convertida en Pedido exitosamente!":
+            var num = Session["NumPedido"].ToString();
+            <script type="text/javascript">
+                function DuplicarProforma() {
+                Swal.fire({
+                title: '¡Proforma convertida en Pedido exitosamente!',
+                        text: 'Pedido #' + @num,
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+            };
+            DuplicarProforma();
+            </script>
+            Session["Proforma"] = null;
+            Session["NumPedido"] = null;
             break;
         default:
             break;

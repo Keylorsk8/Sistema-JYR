@@ -54,6 +54,15 @@ namespace Sistema_JYR.Controllers
             return View(aspNetUsers);
         }
 
+        public class Ajax
+        {
+            public string cedula
+            {
+                get;
+                set;
+            }
+        }
+
         // GET: Usuarios/Create
         [Authorize(Roles = "Admin")]
         public ActionResult Create()

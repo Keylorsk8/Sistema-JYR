@@ -52,44 +52,26 @@
                             </div>
 
                             <div id="divCliente">
+                                @Html.Hidden("IdCliente", 0)
                                 <div class="form-group container">
-                                    @Html.LabelFor(model => model.IdCliente, "Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
+                                    @Html.LabelFor(model => model.NombreCliente, "Nombre del Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
                                     <div class="row">
                                         <div class="col-md-10">
-                                            <input type="text" class="fa form-control" value="" id="IdCliente">
+                                            @Html.TextBoxFor(model => model.NombreCliente, new { @class="form-control" })
+                                            @Html.ValidationMessageFor(model => model.NombreCliente, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="col-md-2">
-                                            <button class="btn btn-dark" id="buscar" type="button" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search"></i></button>
+                                            <button class="btn btn-dark" type="button" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search"></i></button>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.DireccionEntrega, "Dirección", htmlAttributes: new { @class = "control-label col-md-12" })
+                                    @Html.LabelFor(model => model.DireccionEntrega, "Dirección de entrega", htmlAttributes: new { @class = "control-label col-md-12" })
                                     <div class="col-md-12">
                                         <div class="form-group has-feedback">
                                             <input type="text" class="fa form-control" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h6 class="modal-title" id="exampleModalLabel">Busqueda de Clientes</h6>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            @Html.Partial("_BusquedaAvanzada")
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                            <button type="button" class="btn btn-primary">Seleccionar</button>
+                                            @Html.ValidationMessageFor(model => model.DireccionEntrega, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -112,6 +94,16 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.NombreProforma, "Nombre de la Proforma", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.TextBoxFor(model => model.NombreProforma, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.NombreProforma, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="row">
@@ -126,6 +118,63 @@
     }
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: 15%">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Busqueda de Clientes</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_BusquedaAvanzada")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmation" aria-hidden="true" style="margin-top: 15%">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="confirmation">¿Desea remover el cliente?</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        @using (Ajax.BeginForm("ClienteSinCuenta", "Proformas", new AjaxOptions
+                        {
+                            HttpMethod = "GET",
+                            UpdateTargetId = "divCliente",
+                            InsertionMode = InsertionMode.Replace,
+                            OnSuccess = "Complete2()"
+
+                        }))
+                        {
+                            <button type="submit" value="Buscar" class="btn btn-dark btn-success btn-block">Si</button>
+                            <script>
+                                function Complete2() {
+                                    $('#confirmation').modal('hide');
+                                }
+                            </script>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
