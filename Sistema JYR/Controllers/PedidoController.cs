@@ -4,9 +4,12 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Schema;
 using Sistema_JYR.Models;
+
 
 namespace Sistema_JYR.Controllers
 {
@@ -56,8 +59,8 @@ namespace Sistema_JYR.Controllers
         public ActionResult Create()
         {
             ViewBag.Fecha = DateTime.Now.ToShortDateString();
-            ViewBag.NumeroProforma= "N/A";
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol ==1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre");
+            ViewBag.NumeroProforma = "N/A";
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre");
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion");
             return View();
         }
@@ -86,7 +89,7 @@ namespace Sistema_JYR.Controllers
             return View(pedidos);
         }
 
-      
+
 
         // GET: Pedido/Edit/5
         public ActionResult Edit(int? id)
@@ -104,7 +107,7 @@ namespace Sistema_JYR.Controllers
                 return RedirectToAction("Index");
             }
 
-           
+
 
             ViewBag.TotalPagar = pedidos.TotalPagar;
             ViewBag.TotalDescuento = pedidos.TotalDescuento;
@@ -160,7 +163,7 @@ namespace Sistema_JYR.Controllers
             }
 
             ViewBag.Id = pedidos.Id;
-            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado== true), "Id", "Nombre", pedidos.IdUsuario);
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre", pedidos.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
             return View(pedidos);
         }
@@ -215,10 +218,10 @@ namespace Sistema_JYR.Controllers
 
             return RedirectToAction("Index");
 
-            
+
         }
 
-  
+
 
         // GET: Pedido/Delete/5
         public ActionResult Delete(int? id)
@@ -284,7 +287,7 @@ namespace Sistema_JYR.Controllers
 
 
             List<PedidoDetalle> detallesPedido = db.PedidoDetalle.Where(x => x.IdPedido == IdPedido).ToList();
-         
+
             pedidos.Id = pedidos.Id;
             pedidos.IdUsuario = pedidos.IdUsuario;
             pedidos.IdEstado = pedidos.IdEstado;
@@ -299,7 +302,7 @@ namespace Sistema_JYR.Controllers
                 imp += impuesto;
                 totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
 
-            
+
             }
 
             pedidos.TotalDescuento = desc;
@@ -313,13 +316,13 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalImpuesto = pedidos.TotalImpuesto;
             pedidos.PedidoDetalle = detallesPedido;
             return PartialView("_ListaPedidoCarrito", pedidos);
-    }
+        }
 
 
 
         public ActionResult CambiarCantidadEnviada(AjaxCambio objet)
         {
-         
+
             int pedidoId = Convert.ToInt32(objet.pedidoId);
             int id = Convert.ToInt32(objet.productoId);
             int cantidad = Convert.ToInt32(objet.cantidadEnviada);
@@ -334,7 +337,7 @@ namespace Sistema_JYR.Controllers
             double impuestoC = 0;
             double descCant = 0;
             Pedidos ped = db.Pedidos.Find(pedidoId);
-            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x=> x.IdPedido == pedidoId).ToList();
+            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidoId).ToList();
 
             foreach (var item in detalles)
             {
@@ -343,12 +346,12 @@ namespace Sistema_JYR.Controllers
                 impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
                 impuestoC += impuestoVenta;
                 total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
-            
-             }
-                foreach (var item in detalles)
+
+            }
+            foreach (var item in detalles)
             {
                 PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
-               
+
 
                 if (item.IdProducto == id)
                 {
@@ -371,7 +374,7 @@ namespace Sistema_JYR.Controllers
                     detalle.CantidadEnviada = cantidad;
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
-                    
+
 
                 }
                 {
@@ -397,7 +400,7 @@ namespace Sistema_JYR.Controllers
             int idPedido = Convert.ToInt32(objeto.idPedido);
             int id = Convert.ToInt32(objeto.id);
             int cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
-            
+
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
@@ -409,7 +412,7 @@ namespace Sistema_JYR.Controllers
             double impuestoC = 0;
             double descCant = 0;
             Pedidos pedidos = db.Pedidos.Find(idPedido);
-            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x=> x.IdPedido == idPedido).ToList();
+            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
 
             foreach (var item in detalles)
             {
@@ -421,7 +424,7 @@ namespace Sistema_JYR.Controllers
             }
             foreach (var item in detalles)
             {
-                
+
                 if (item.IdProducto == id)
                 {
                     PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
@@ -444,12 +447,12 @@ namespace Sistema_JYR.Controllers
 
                     if (cantidadCambio < item.CantidadEnviada)
                     {
-                     
+
                         ViewBag.TotalPagar = total;
                         ViewBag.TotalDescuento = descCant;
                         ViewBag.TotalImpuesto = impuestoC;
                         Session["Pedido"] = "Debe digitar una cantidad mayor a la cantidad enviada";
-                 
+
                         return PartialView("_ListaPedidoCarrito", pedidos);
                     }
 
@@ -500,7 +503,7 @@ namespace Sistema_JYR.Controllers
             double desc = 0;
             double imp = 0;
 
-            if(cant == 0)
+            if (cant == 0)
             {
                 ViewBag.TotalPagar = ped.TotalPagar;
                 ViewBag.TotalDescuento = ped.TotalDescuento;
@@ -523,7 +526,7 @@ namespace Sistema_JYR.Controllers
 
             if (validacion != null)
             {
-              
+
                 validacion.Cantidad += cant;
                 db.Entry(validacion).State = EntityState.Modified;
                 db.SaveChanges();
@@ -545,7 +548,7 @@ namespace Sistema_JYR.Controllers
                     detalle.Descuento = 0;
                     db.PedidoDetalle.Add(detalle);
                     db.SaveChanges();
-                    
+
                 }
                 catch (Exception)
                 {
@@ -554,7 +557,7 @@ namespace Sistema_JYR.Controllers
                     ViewBag.TotalImpuesto = ped.TotalImpuesto;
                     Session["Pedido"] = "Producto es inválido. Digite un código de producto nuevamente";
                     return PartialView("_ListaPedidoCarrito", ped);
-                   
+
                 }
 
             }
@@ -646,6 +649,243 @@ namespace Sistema_JYR.Controllers
                 get;
                 set;
             }
+
+        }
+
+
+        public ActionResult reporteTopProducto(string fechaAnterior, string fechaActual, string IdCategoria)
+        {
+            var list = db.CategoriasProducto.ToList();
+            CategoriasProducto cat = new CategoriasProducto();
+            cat.Descripcion = "Todas";
+            cat.Id = 90000;
+            list.Insert(0, cat);
+            SelectList listaCat = new SelectList(list, "Id", "Descripcion");
+            ViewBag.IdCategoria = listaCat;
+
+
+            if (fechaAnterior != null && fechaActual != null)
+            {
+                DateTime anterior = Convert.ToDateTime(fechaAnterior);
+                DateTime actual = Convert.ToDateTime(fechaActual);
+
+                if (anterior.Year > actual.Year)
+                {
+                    Session["Pedido"] = "Seleccione una fecha válida";
+                    TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                }
+                else
+                {
+                    if (anterior.Year == actual.Year && anterior.Month > actual.Month)
+                    {
+                        Session["Pedido"] = "Seleccione una fecha válida";
+                        TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                    }
+                    else
+                    {
+                        if (anterior.Year == actual.Year && anterior.Month == actual.Month && anterior.Day > actual.Day)
+                        {
+                            Session["Pedido"] = "Seleccione una fecha válida";
+                            TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                        }
+
+                        else
+                        {
+                            if (actual > DateTime.Now)
+                            {
+                                Session["Pedido"] = "Seleccione una fecha válida";
+                                TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+                            }
+
+                            else
+                            {
+                                int categoria = Convert.ToInt32(IdCategoria);
+                                if (categoria == 90000)
+                                {
+                                    var query = from d in db.PedidoDetalle
+                                                join p in db.Productos on d.IdProducto equals p.Id
+                                                join c in db.CategoriasProducto on p.IdCategoria equals c.Id
+                                                join o in db.Pedidos on d.IdPedido equals o.Id
+                                                where o.Fecha >= anterior && o.Fecha <= actual
+                                                group new { d.Cantidad, d.PrecioUnitario }
+                                                by new { p.Id, p.Nombre, c.Descripcion, d.Cantidad, d.PrecioUnitario }
+                                            into g
+                                                orderby g.Key.Cantidad * g.Key.PrecioUnitario descending
+
+                                                select new
+                                                {
+                                                    Id = g.Key.Id,
+                                                    Producto = g.Key.Nombre,
+                                                    Categoria = g.Key.Descripcion,
+                                                    cantidadTotal = g.Sum(x => x.Cantidad),
+                                                    Total = g.Sum(x => x.PrecioUnitario * x.Cantidad)
+
+                                                };
+
+                                    ViewBag.ReportViewer = Reporte.reporte(query.ToList(), "", "ReporteTopProducto.rdlc");
+                                    return PartialView("_reporteTopProducto", query.ToList());
+                                }
+
+                                var querys = from d in db.PedidoDetalle
+                                             join p in db.Productos on d.IdProducto equals p.Id
+                                             join c in db.CategoriasProducto on p.IdCategoria equals c.Id
+                                             join o in db.Pedidos on d.IdPedido equals o.Id
+                                             where o.Fecha >= anterior && o.Fecha <= actual && p.IdCategoria == categoria
+                                             group new { d.Cantidad, d.PrecioUnitario }
+                                             by new { p.Id, p.Nombre, c.Descripcion, d.Cantidad, d.PrecioUnitario }
+                                            into g
+                                             orderby g.Key.Cantidad * g.Key.PrecioUnitario descending
+
+                                             select new
+                                             {
+                                                 Id = g.Key.Id,
+                                                 Producto = g.Key.Nombre,
+                                                 Categoria = g.Key.Descripcion,
+                                                 cantidadTotal = g.Sum(x => x.Cantidad),
+                                                 Total = g.Sum(x => x.PrecioUnitario * x.Cantidad)
+
+                                             };
+
+
+
+                                ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteTopProducto.rdlc");
+
+
+
+                                return PartialView("_reporteTopProducto", querys.ToList());
+                            }
+
+
+                        }
+                    }
+                }
+                if (TempData.ContainsKey("mensajeReporte"))
+                {
+
+                    return PartialView("_aviso");
+
+                }
+
+            }
+
+            return View();
+
+        }
+
+        public ActionResult reporteVentasPorEmpleado(string fechaAnterior, string fechaActual)
+        {
+            if (fechaAnterior != null && fechaActual != null)
+            {
+                DateTime anterior = Convert.ToDateTime(fechaAnterior);
+                DateTime actual = Convert.ToDateTime(fechaActual);
+
+                if (anterior.Year > actual.Year)
+                {
+                    Session["Pedido"] = "Seleccione una fecha válida";
+                    TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                }
+                else
+                {
+                    if (anterior.Year == actual.Year && anterior.Month > actual.Month)
+                    {
+                        Session["Pedido"] = "Seleccione una fecha válida";
+                        TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                    }
+                    else
+                    {
+                        if (anterior.Year == actual.Year && anterior.Month == actual.Month && anterior.Day > actual.Day)
+                        {
+                            Session["Pedido"] = "Seleccione una fecha válida";
+                            TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                        }
+
+                        else
+                        {
+                            if (actual > DateTime.Now)
+                            {
+                                Session["Pedido"] = "Seleccione una fecha válida";
+                                TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+                            }
+
+                            else
+                            {
+
+                                var query = from u in db.AspNetUsers
+                                            join p in db.Pedidos on u.Id equals p.IdUsuario
+                                            where u.Rol == 1 || u.Rol == 2 && p.Fecha >= anterior && p.Fecha <= actual
+                                            group new { p.TotalPagar, u.Id }
+                                            by new { u.Nombre, u.Apellido1, u.Apellido2, u.Cedula, u.Email, p.TotalPagar }
+                                           into g
+                                            orderby g.Sum(x => x.TotalPagar) descending
+
+                                            select new
+                                            {
+                                                g.Key.Cedula,
+                                                g.Key.Nombre,
+                                                g.Key.Apellido1,
+                                                g.Key.Apellido2,
+                                                g.Key.Email,
+                                                Producto = g.Key.Nombre,
+                                                CantidadPedidos = g.Count(),
+                                                Acumulado = g.Sum(x => x.TotalPagar)
+                                            };
+
+                                ViewBag.ReportViewer = Reporte.reporte(query.ToList(), "", "ReporteUsuario.rdlc");
+
+                                return PartialView("_ReporteUsuario", query.ToList());
+                            }
+
+
+                        }
+                    }
+                }
+                if (TempData.ContainsKey("mensajeReporte"))
+                {
+
+                    return PartialView("_aviso");
+
+                }
+
+            }
+
+            return View();
+        }
+
+        public ActionResult reporteProformaAPedido()
+        {
+
+
+            var querys = from p in db.Proformas
+                         join e in db.EstadoProforma on p.IdEstado equals e.Id
+
+                         group new { p.IdEstado, p.Id }
+                         by new { e.Descripcion, e.Id, p.IdEstado }
+                        into g
+                         orderby g.Key.IdEstado descending
+
+                         select new
+                         {
+
+                             Estado = g.Key.Descripcion,
+                             g.Key.IdEstado,
+                             TotalProformas = g.Count(),
+                             porcentaje = 100
+                             };
+
+
+
+                                ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteProformaAPedido.rdlc");
+
+
+
+                     
+            return View();
 
         }
     }
