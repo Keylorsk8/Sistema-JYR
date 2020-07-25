@@ -13,3 +13,15 @@
         return false;
     });
 })
+
+$(document).ready(function () {
+    $('.scrolldown').click(function () {
+        var c = $("#Acercade").offset().left;
+        $("html, body").animate({
+            scrollTop: c
+        }, 600);
+        return false;
+    });
+})
+
+

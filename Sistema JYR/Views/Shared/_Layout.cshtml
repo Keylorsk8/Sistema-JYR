@@ -1,11 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Ferretería y Materiales JYR S.A</title>
     <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/wow.min.js"></script>
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
@@ -14,6 +16,16 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 </head>
 <body>
+    <div id="contenedor_carga">
+        <div id="carga"></div>
+    </div>
+    <script>
+        window.onload = function() {
+            var contenedor = document.getElementById('contenedor_carga');
+            contenedor.style.visibility = 'hidden';
+            contenedor.style.opacity = '0';
+        };
+    </script>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="NavBar" style="padding-left: 30px;padding-right:30px">
         <a href="@Url.Action("Index","Home")" style="text-decoration: none">
             <img src="~/Content/imagenes/logoC.png" width="50" id="imgBrand" />
@@ -27,7 +39,7 @@
         </div>
     </nav>
 
-    <div class="container-fluid body-content" id="RenderBody">
+    <div class="body-content" id="RenderBody">
         @RenderBody()
 
     </div>
@@ -46,7 +58,7 @@
                     <div class="col-md-3 col-sm-6" style="text-align: center">
                         <!--Column1-->
                         <div class="footer-pad">
-                            <img src="~/Content/imagenes/logo.jpeg" style="width: 230px"/>
+                            <img src="~/Content/imagenes/logo.jpeg" style="width: 230px" />
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6" style="text-align: center">
@@ -87,8 +99,8 @@
                             <br />
                             <a href="tel:+50624301131"><i class="fa fa-phone" style="margin-right: 5px"></i>+506 2430 1131</a>
                         </p>
-                        
-                        <h4>¡Síguenos en Facebook!</h4> 
+
+                        <h4>¡Síguenos en Facebook!</h4>
                         <ul class="social-network social-circle">
                             <li><a href="https://www.facebook.com/materialesjyr" target="_blank" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
                         </ul>

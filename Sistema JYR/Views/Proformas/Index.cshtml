@@ -62,14 +62,14 @@
 
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Número
             </th>
 
             <th>
                 @Html.DisplayNameFor(model => model.Fecha)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NombreProforma)
+                Nombre
             </th>
 
             <th>
@@ -77,16 +77,13 @@
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.TotalDescuento)
+                Descuento
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalImpuesto)
+                Impuestos
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalPagar)
-            </th>
-            <th>
-                Estado
+                Total
             </th>
             <th>
                 Acciones
@@ -107,7 +104,7 @@
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.AspNetUsers.Nombre)
+                    @Html.DisplayFor(modelItem => item.AspNetUsers.Cedula)
                 </td>
 
                 <td>
@@ -141,9 +138,6 @@
                     {
                         <label> ₡@item.TotalPagar.ToString("0,#.00")</label>
                     }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EstadoProforma.Descripcion)
                 </td>
                 <td>
                     <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">

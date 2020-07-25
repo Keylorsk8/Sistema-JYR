@@ -873,18 +873,10 @@ namespace Sistema_JYR.Controllers
                          {
 
                              Estado = g.Key.Descripcion,
-                             g.Key.IdEstado,
-                             TotalProformas = g.Count(),
                              porcentaje = 100
                              };
 
-
-
                                 ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteProformaAPedido.rdlc");
-
-
-
-                     
             return View();
 
         }
