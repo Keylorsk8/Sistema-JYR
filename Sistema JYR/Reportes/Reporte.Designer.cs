@@ -353,10 +353,6 @@ namespace Sistema_JYR.Reportes {
             
             private global::System.Data.DataColumn columnCategoria;
             
-            private global::System.Data.DataColumn columnCantidad;
-            
-            private global::System.Data.DataColumn columnPrecioUnitario;
-            
             private global::System.Data.DataColumn columnTotal;
             
             private global::System.Data.DataColumn columncantidadTotal;
@@ -409,22 +405,6 @@ namespace Sistema_JYR.Reportes {
             public global::System.Data.DataColumn CategoriaColumn {
                 get {
                     return this.columnCategoria;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn CantidadColumn {
-                get {
-                    return this.columnCantidad;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn PrecioUnitarioColumn {
-                get {
-                    return this.columnPrecioUnitario;
                 }
             }
             
@@ -489,13 +469,11 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public DataTable1Row AddDataTable1Row(string Producto, string Categoria, double Cantidad, double PrecioUnitario, double Total, double cantidadTotal) {
+            public DataTable1Row AddDataTable1Row(string Producto, string Categoria, double Total, double cantidadTotal) {
                 DataTable1Row rowDataTable1Row = ((DataTable1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Producto,
                         Categoria,
-                        Cantidad,
-                        PrecioUnitario,
                         Total,
                         cantidadTotal,
                         null};
@@ -530,8 +508,6 @@ namespace Sistema_JYR.Reportes {
             internal void InitVars() {
                 this.columnProducto = base.Columns["Producto"];
                 this.columnCategoria = base.Columns["Categoria"];
-                this.columnCantidad = base.Columns["Cantidad"];
-                this.columnPrecioUnitario = base.Columns["PrecioUnitario"];
                 this.columnTotal = base.Columns["Total"];
                 this.columncantidadTotal = base.Columns["cantidadTotal"];
                 this.columnId = base.Columns["Id"];
@@ -544,10 +520,6 @@ namespace Sistema_JYR.Reportes {
                 base.Columns.Add(this.columnProducto);
                 this.columnCategoria = new global::System.Data.DataColumn("Categoria", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCategoria);
-                this.columnCantidad = new global::System.Data.DataColumn("Cantidad", typeof(double), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnCantidad);
-                this.columnPrecioUnitario = new global::System.Data.DataColumn("PrecioUnitario", typeof(double), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnPrecioUnitario);
                 this.columnTotal = new global::System.Data.DataColumn("Total", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTotal);
                 this.columncantidadTotal = new global::System.Data.DataColumn("cantidadTotal", typeof(double), null, global::System.Data.MappingType.Element);
@@ -560,8 +532,6 @@ namespace Sistema_JYR.Reportes {
                 this.columnProducto.MaxLength = 50;
                 this.columnCategoria.AllowDBNull = false;
                 this.columnCategoria.MaxLength = 50;
-                this.columnCantidad.AllowDBNull = false;
-                this.columnPrecioUnitario.AllowDBNull = false;
                 this.columnTotal.ReadOnly = true;
                 this.columncantidadTotal.ReadOnly = true;
                 this.columnId.AutoIncrement = true;
@@ -715,8 +685,6 @@ namespace Sistema_JYR.Reportes {
             
             private global::System.Data.DataColumn columnCantidadPedidos;
             
-            private global::System.Data.DataColumn columnTotalPagar;
-            
             private global::System.Data.DataColumn columnAcumulado;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -802,14 +770,6 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn TotalPagarColumn {
-                get {
-                    return this.columnTotalPagar;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public global::System.Data.DataColumn AcumuladoColumn {
                 get {
                     return this.columnAcumulado;
@@ -853,7 +813,7 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public DataTable2Row AddDataTable2Row(string Nombre, string Apellido1, string Apellido2, int Cedula, string Email, int CantidadPedidos, double TotalPagar, double Acumulado) {
+            public DataTable2Row AddDataTable2Row(string Nombre, string Apellido1, string Apellido2, int Cedula, string Email, int CantidadPedidos, double Acumulado) {
                 DataTable2Row rowDataTable2Row = ((DataTable2Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Nombre,
@@ -862,7 +822,6 @@ namespace Sistema_JYR.Reportes {
                         Cedula,
                         Email,
                         CantidadPedidos,
-                        TotalPagar,
                         Acumulado};
                 rowDataTable2Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDataTable2Row);
@@ -892,7 +851,6 @@ namespace Sistema_JYR.Reportes {
                 this.columnCedula = base.Columns["Cedula"];
                 this.columnEmail = base.Columns["Email"];
                 this.columnCantidadPedidos = base.Columns["CantidadPedidos"];
-                this.columnTotalPagar = base.Columns["TotalPagar"];
                 this.columnAcumulado = base.Columns["Acumulado"];
             }
             
@@ -911,8 +869,6 @@ namespace Sistema_JYR.Reportes {
                 base.Columns.Add(this.columnEmail);
                 this.columnCantidadPedidos = new global::System.Data.DataColumn("CantidadPedidos", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCantidadPedidos);
-                this.columnTotalPagar = new global::System.Data.DataColumn("TotalPagar", typeof(double), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnTotalPagar);
                 this.columnAcumulado = new global::System.Data.DataColumn("Acumulado", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnAcumulado);
                 this.columnNombre.MaxLength = 2147483647;
@@ -921,7 +877,6 @@ namespace Sistema_JYR.Reportes {
                 this.columnCedula.AllowDBNull = false;
                 this.columnEmail.MaxLength = 256;
                 this.columnCantidadPedidos.ReadOnly = true;
-                this.columnTotalPagar.AllowDBNull = false;
                 this.columnAcumulado.ReadOnly = true;
             }
             
@@ -1058,11 +1013,17 @@ namespace Sistema_JYR.Reportes {
             
             private global::System.Data.DataColumn columnIdEstado;
             
-            private global::System.Data.DataColumn columnTotalProformas;
-            
             private global::System.Data.DataColumn columnPorcentaje;
             
             private global::System.Data.DataColumn columnEstado;
+            
+            private global::System.Data.DataColumn columnCantidad;
+            
+            private global::System.Data.DataColumn columnTotalPagar;
+            
+            private global::System.Data.DataColumn columnTotalDescuento;
+            
+            private global::System.Data.DataColumn columnTotalImpuesto;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -1107,14 +1068,6 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn TotalProformasColumn {
-                get {
-                    return this.columnTotalProformas;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public global::System.Data.DataColumn PorcentajeColumn {
                 get {
                     return this.columnPorcentaje;
@@ -1126,6 +1079,38 @@ namespace Sistema_JYR.Reportes {
             public global::System.Data.DataColumn EstadoColumn {
                 get {
                     return this.columnEstado;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CantidadColumn {
+                get {
+                    return this.columnCantidad;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TotalPagarColumn {
+                get {
+                    return this.columnTotalPagar;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TotalDescuentoColumn {
+                get {
+                    return this.columnTotalDescuento;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TotalImpuestoColumn {
+                get {
+                    return this.columnTotalImpuesto;
                 }
             }
             
@@ -1166,13 +1151,16 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public DataTable3Row AddDataTable3Row(int IdEstado, int TotalProformas, int Porcentaje, string Estado) {
+            public DataTable3Row AddDataTable3Row(int IdEstado, int Porcentaje, string Estado, int Cantidad, double TotalPagar, double TotalDescuento, double TotalImpuesto) {
                 DataTable3Row rowDataTable3Row = ((DataTable3Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         IdEstado,
-                        TotalProformas,
                         Porcentaje,
-                        Estado};
+                        Estado,
+                        Cantidad,
+                        TotalPagar,
+                        TotalDescuento,
+                        TotalImpuesto};
                 rowDataTable3Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDataTable3Row);
                 return rowDataTable3Row;
@@ -1196,9 +1184,12 @@ namespace Sistema_JYR.Reportes {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             internal void InitVars() {
                 this.columnIdEstado = base.Columns["IdEstado"];
-                this.columnTotalProformas = base.Columns["TotalProformas"];
                 this.columnPorcentaje = base.Columns["Porcentaje"];
                 this.columnEstado = base.Columns["Estado"];
+                this.columnCantidad = base.Columns["Cantidad"];
+                this.columnTotalPagar = base.Columns["TotalPagar"];
+                this.columnTotalDescuento = base.Columns["TotalDescuento"];
+                this.columnTotalImpuesto = base.Columns["TotalImpuesto"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1206,17 +1197,26 @@ namespace Sistema_JYR.Reportes {
             private void InitClass() {
                 this.columnIdEstado = new global::System.Data.DataColumn("IdEstado", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnIdEstado);
-                this.columnTotalProformas = new global::System.Data.DataColumn("TotalProformas", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnTotalProformas);
                 this.columnPorcentaje = new global::System.Data.DataColumn("Porcentaje", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnPorcentaje);
                 this.columnEstado = new global::System.Data.DataColumn("Estado", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnEstado);
+                this.columnCantidad = new global::System.Data.DataColumn("Cantidad", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCantidad);
+                this.columnTotalPagar = new global::System.Data.DataColumn("TotalPagar", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotalPagar);
+                this.columnTotalDescuento = new global::System.Data.DataColumn("TotalDescuento", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotalDescuento);
+                this.columnTotalImpuesto = new global::System.Data.DataColumn("TotalImpuesto", typeof(double), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotalImpuesto);
                 this.columnIdEstado.AllowDBNull = false;
-                this.columnTotalProformas.ReadOnly = true;
                 this.columnPorcentaje.ReadOnly = true;
                 this.columnEstado.AllowDBNull = false;
                 this.columnEstado.MaxLength = 50;
+                this.columnCantidad.ReadOnly = true;
+                this.columnTotalPagar.ReadOnly = true;
+                this.columnTotalDescuento.ReadOnly = true;
+                this.columnTotalImpuesto.ReadOnly = true;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1376,28 +1376,6 @@ namespace Sistema_JYR.Reportes {
                 }
                 set {
                     this[this.tableDataTable1.CategoriaColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public double Cantidad {
-                get {
-                    return ((double)(this[this.tableDataTable1.CantidadColumn]));
-                }
-                set {
-                    this[this.tableDataTable1.CantidadColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public double PrecioUnitario {
-                get {
-                    return ((double)(this[this.tableDataTable1.PrecioUnitarioColumn]));
-                }
-                set {
-                    this[this.tableDataTable1.PrecioUnitarioColumn] = value;
                 }
             }
             
@@ -1576,17 +1554,6 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public double TotalPagar {
-                get {
-                    return ((double)(this[this.tableDataTable2.TotalPagarColumn]));
-                }
-                set {
-                    this[this.tableDataTable2.TotalPagarColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public double Acumulado {
                 get {
                     try {
@@ -1701,22 +1668,6 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public int TotalProformas {
-                get {
-                    try {
-                        return ((int)(this[this.tableDataTable3.TotalProformasColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("El valor de la columna \'TotalProformas\' de la tabla \'DataTable3\' es DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableDataTable3.TotalProformasColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public int Porcentaje {
                 get {
                     try {
@@ -1744,14 +1695,66 @@ namespace Sistema_JYR.Reportes {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public bool IsTotalProformasNull() {
-                return this.IsNull(this.tableDataTable3.TotalProformasColumn);
+            public int Cantidad {
+                get {
+                    try {
+                        return ((int)(this[this.tableDataTable3.CantidadColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Cantidad\' de la tabla \'DataTable3\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDataTable3.CantidadColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public void SetTotalProformasNull() {
-                this[this.tableDataTable3.TotalProformasColumn] = global::System.Convert.DBNull;
+            public double TotalPagar {
+                get {
+                    try {
+                        return ((double)(this[this.tableDataTable3.TotalPagarColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'TotalPagar\' de la tabla \'DataTable3\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDataTable3.TotalPagarColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public double TotalDescuento {
+                get {
+                    try {
+                        return ((double)(this[this.tableDataTable3.TotalDescuentoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'TotalDescuento\' de la tabla \'DataTable3\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDataTable3.TotalDescuentoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public double TotalImpuesto {
+                get {
+                    try {
+                        return ((double)(this[this.tableDataTable3.TotalImpuestoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'TotalImpuesto\' de la tabla \'DataTable3\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDataTable3.TotalImpuestoColumn] = value;
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1764,6 +1767,54 @@ namespace Sistema_JYR.Reportes {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetPorcentajeNull() {
                 this[this.tableDataTable3.PorcentajeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCantidadNull() {
+                return this.IsNull(this.tableDataTable3.CantidadColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCantidadNull() {
+                this[this.tableDataTable3.CantidadColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTotalPagarNull() {
+                return this.IsNull(this.tableDataTable3.TotalPagarColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTotalPagarNull() {
+                this[this.tableDataTable3.TotalPagarColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTotalDescuentoNull() {
+                return this.IsNull(this.tableDataTable3.TotalDescuentoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTotalDescuentoNull() {
+                this[this.tableDataTable3.TotalDescuentoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTotalImpuestoNull() {
+                return this.IsNull(this.tableDataTable3.TotalImpuestoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTotalImpuestoNull() {
+                this[this.tableDataTable3.TotalImpuestoColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -1996,8 +2047,6 @@ namespace Sistema_JYR.Reportes.ReporteTableAdapters {
             tableMapping.DataSetTable = "DataTable1";
             tableMapping.ColumnMappings.Add("Producto", "Producto");
             tableMapping.ColumnMappings.Add("Categoria", "Categoria");
-            tableMapping.ColumnMappings.Add("Cantidad", "Cantidad");
-            tableMapping.ColumnMappings.Add("PrecioUnitario", "PrecioUnitario");
             tableMapping.ColumnMappings.Add("Total", "Total");
             tableMapping.ColumnMappings.Add("cantidadTotal", "cantidadTotal");
             tableMapping.ColumnMappings.Add("Id", "Id");
@@ -2017,13 +2066,13 @@ namespace Sistema_JYR.Reportes.ReporteTableAdapters {
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = @"SELECT        TOP (10) Productos.Id, Productos.Nombre AS 'Producto', CategoriasProducto.Descripcion AS 'Categoria', PedidoDetalle.Cantidad, PedidoDetalle.PrecioUnitario, SUM(PedidoDetalle.Cantidad) AS 'cantidadTotal', 
-                         SUM(PedidoDetalle.Cantidad * PedidoDetalle.PrecioUnitario) AS 'Total'
+            this._commandCollection[0].CommandText = @"SELECT        TOP (10) Productos.Id, Productos.Nombre AS 'Producto', CategoriasProducto.Descripcion AS 'Categoria', SUM(PedidoDetalle.Cantidad) AS 'cantidadTotal', SUM(PedidoDetalle.Cantidad * PedidoDetalle.PrecioUnitario) 
+                         AS 'Total'
 FROM            PedidoDetalle INNER JOIN
                          Productos ON PedidoDetalle.IdProducto = Productos.Id INNER JOIN
                          CategoriasProducto ON Productos.IdCategoria = CategoriasProducto.Id INNER JOIN
                          Pedidos ON PedidoDetalle.IdPedido = Pedidos.Id
-GROUP BY Productos.Nombre, CategoriasProducto.Descripcion, PedidoDetalle.Cantidad, PedidoDetalle.PrecioUnitario, Productos.Id
+GROUP BY Productos.Nombre, CategoriasProducto.Descripcion, Productos.Id
 ORDER BY 'Total' DESC";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
@@ -2180,7 +2229,6 @@ ORDER BY 'Total' DESC";
             tableMapping.ColumnMappings.Add("Cedula", "Cedula");
             tableMapping.ColumnMappings.Add("Email", "Email");
             tableMapping.ColumnMappings.Add("CantidadPedidos", "CantidadPedidos");
-            tableMapping.ColumnMappings.Add("TotalPagar", "TotalPagar");
             tableMapping.ColumnMappings.Add("Acumulado", "Acumulado");
             this._adapter.TableMappings.Add(tableMapping);
         }
@@ -2198,12 +2246,12 @@ ORDER BY 'Total' DESC";
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = @"SELECT        AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email, COUNT(Pedidos.Id) AS 'CantidadPedidos', Pedidos.TotalPagar, SUM(Pedidos.TotalPagar) AS 'Acumulado'
+            this._commandCollection[0].CommandText = @"SELECT        AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email, COUNT(Pedidos.Id) AS 'CantidadPedidos', SUM(Pedidos.TotalPagar) AS 'Acumulado'
 FROM            AspNetUsers INNER JOIN
                          Pedidos ON Pedidos.IdUsuario = AspNetUsers.Id
 WHERE        (AspNetUsers.Rol = 1) OR
                          (AspNetUsers.Rol = 2)
-GROUP BY AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email, Pedidos.TotalPagar
+GROUP BY AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email
 ORDER BY 'Acumulado' DESC";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
@@ -2355,9 +2403,12 @@ ORDER BY 'Acumulado' DESC";
             tableMapping.SourceTable = "Table";
             tableMapping.DataSetTable = "DataTable3";
             tableMapping.ColumnMappings.Add("IdEstado", "IdEstado");
-            tableMapping.ColumnMappings.Add("TotalProformas", "TotalProformas");
             tableMapping.ColumnMappings.Add("Porcentaje", "Porcentaje");
             tableMapping.ColumnMappings.Add("Estado", "Estado");
+            tableMapping.ColumnMappings.Add("Cantidad", "Cantidad");
+            tableMapping.ColumnMappings.Add("TotalPagar", "TotalPagar");
+            tableMapping.ColumnMappings.Add("TotalDescuento", "TotalDescuento");
+            tableMapping.ColumnMappings.Add("TotalImpuesto", "TotalImpuesto");
             this._adapter.TableMappings.Add(tableMapping);
         }
         
@@ -2374,12 +2425,14 @@ ORDER BY 'Acumulado' DESC";
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = @"SELECT        Proformas.IdEstado, EstadoProforma.Descripcion AS 'Estado', COUNT(Proformas.Id) AS 'TotalProformas',
+            this._commandCollection[0].CommandText = @"SELECT        Proformas.IdEstado, EstadoProforma.Descripcion AS 'Estado',
                              (SELECT        COUNT(Proformas.IdEstado) * 100 / COUNT(Id) AS Expr1
-                               FROM            Proformas AS P) AS 'Porcentaje'
+                               FROM            Proformas AS P) AS 'Porcentaje', COUNT(Proformas.IdEstado) AS 'Cantidad', SUM(Proformas.TotalPagar) AS 'TotalPagar', SUM(Proformas.TotalDescuento) AS 'TotalDescuento', SUM(Proformas.TotalImpuesto) 
+                         AS 'TotalImpuesto'
 FROM            Proformas INNER JOIN
                          EstadoProforma ON Proformas.IdEstado = EstadoProforma.Id
-GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion";
+GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion
+ORDER BY 'TotalPagar' DESC";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         

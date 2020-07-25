@@ -547,5 +547,89 @@ namespace Sistema_JYR.Controllers
                 set;
             }
         }
+
+        public ActionResult reporteProformaAPedido(string fechaAnterior, string fechaActual)
+        {
+            if (fechaAnterior != null && fechaActual != null)
+            {
+                DateTime anterior = Convert.ToDateTime(fechaAnterior);
+                DateTime actual = Convert.ToDateTime(fechaActual);
+
+                if (anterior.Year > actual.Year)
+                {
+                    Session["Proforma"] = "Seleccione una fecha válida";
+                    TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                }
+                else
+                {
+                    if (anterior.Year == actual.Year && anterior.Month > actual.Month)
+                    {
+                        Session["Proforma"] = "Seleccione una fecha válida";
+                        TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                    }
+                    else
+                    {
+                        if (anterior.Year == actual.Year && anterior.Month == actual.Month && anterior.Day > actual.Day)
+                        {
+                            Session["Proforma"] = "Seleccione una fecha válida";
+                            TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+
+                        }
+
+                        else
+                        {
+                            if (actual > DateTime.Now)
+                            {
+                                Session["Proforma"] = "Seleccione una fecha válida";
+                                TempData["mensajeReporte"] = "Seleccione una fecha inválida";
+                            }
+
+                            else
+                            {
+
+
+
+                                var querys = from p in db.Proformas
+                                             join e in db.EstadoProforma on p.IdEstado equals e.Id
+                                             where p.Fecha >= anterior && p.Fecha <= actual
+                                             group new { p.IdEstado, p.TotalPagar, p.TotalImpuesto, p.TotalDescuento }
+                                             by new { e.Descripcion, e.Id, p.IdEstado }
+                                             into g
+                                             orderby g.Sum(x=> x.TotalPagar)
+
+                                             select new
+                                             {
+                                                 TotalPagar = g.Sum(x => x.TotalPagar),
+                                                 TotalDescuento = g.Sum(x => x.TotalDescuento),
+                                                 TotalImpuesto = g.Sum(x => x.TotalImpuesto),
+                                                 Cantidad = g.Count(),
+                                                 Estado = g.Key.Descripcion,                                              
+                                                 Porcentaje = g.Count() * 100 / db.Proformas.Count()
+                                             };
+
+                           
+                                ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteProformaAPedido.rdlc");
+
+
+                                return PartialView("_reporteProformaAPedido", querys.ToList());
+                            }
+
+
+                        }
+                    }
+                }
+                if (TempData.ContainsKey("mensajeReporte"))
+                {
+
+                    return PartialView("_aviso");
+
+                }
+
+            }
+
+            return View();
+        }
     }
 }

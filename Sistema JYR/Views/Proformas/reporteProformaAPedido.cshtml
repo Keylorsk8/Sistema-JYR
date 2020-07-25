@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "Reporte de Proformas Convertidas en Pedidos";
+}
+
+<br />
+<ol class="breadcrumb container-fluid">
+    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+    <li class="breadcrumb-item active">Reportes</li>
+    <li class="breadcrumb-item active">Proformas</li>
+    <li class="breadcrumb-item active">Reporte de Proformas Convertidas en Pedidos</li>
+</ol>
+
+
+@using (Ajax.BeginForm("reporteProformaAPedido", "Proformas", new AjaxOptions
+
+{
+    UpdateTargetId = "divFecha", // <-- ID de elemento DOM para actualiza
+    InsertionMode = InsertionMode.Replace, // <-- Reemplazar el contenido del elemento DOM
+    HttpMethod = "GET", // <-- Método HTTP
+}))
+{
+    <div class="container">
+        <br />
+        <div class="row">
+
+            <div class="col-lg-12">
+                <h2><i class="fa fa-file" style="margin-right: 2px"></i>Reporte de Proformas Convertidas en Pedidos</h2>
+                <hr />
+            </div>
+
+        </div>
+        <div class="row" style="margin: 2%">
+            <div class="col-md-1">
+                Filtro:
+            </div>
+            <div class="col-md-4">
+                <label style="margin-left:13%">Desde</label>
+                @Html.TextBox("fechaAnterior", "", new { @class = "form-control", type = "date", @style = "margin-left:10%", @required = "required" })
+            </div>
+
+            <div class="col-md-4">
+                <label style="margin-left:13%">Hasta</label>
+                @Html.TextBox("fechaActual", "", new { @class = "form-control", type = "date", @style = "margin-left:10%", @required = "required" })
+            </div>
+
+            <div class="col-md-2">
+
+                <div class="col-md-1" style="margin-top: 35px;">
+
+                    <input type="submit" value="Generar Reporte" class="btn btn-success" style="margin-left: 40%" />
+                </div>
+            </div>
+        </div>
+
+
+    </div>}
+
+<div class="container">
+    <div id="divFecha" style="margin-top: 50px;">
+
+    </div>
+</div>
+
+
+
+@if (Session["Proforma"] != null)
+{
+    switch (Session["Proforma"])
+    {
+
+        case "Seleccione una fecha válida":
+            <script type="text/javascript">
+                function Invalido() {
+                    Swal.fire({
+                        title: 'Seleccione una fecha válida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                Invalido();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "No hay elementos":
+            <script type="text/javascript">
+                function Inexistente() {
+                    Swal.fire({
+                        title: 'No hay elementos',
+                        icon: 'alert',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                Inexistente();
+            </script>
+            Session["Proforma"] = null;
+            break;
+
+        default:
+            break;
+    }
+}

@@ -958,14 +958,6 @@
           <DataField>Categoria</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Cantidad">
-          <DataField>Cantidad</DataField>
-          <rd:TypeName>System.Double</rd:TypeName>
-        </Field>
-        <Field Name="PrecioUnitario">
-          <DataField>PrecioUnitario</DataField>
-          <rd:TypeName>System.Double</rd:TypeName>
-        </Field>
         <Field Name="Total">
           <DataField>Total</DataField>
           <rd:TypeName>System.Double</rd:TypeName>
