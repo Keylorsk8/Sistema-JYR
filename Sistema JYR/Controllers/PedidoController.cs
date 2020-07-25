@@ -711,9 +711,9 @@ namespace Sistema_JYR.Controllers
                                                 join o in db.Pedidos on d.IdPedido equals o.Id
                                                 where o.Fecha >= anterior && o.Fecha <= actual
                                                 group new { d.Cantidad, d.PrecioUnitario }
-                                                by new { p.Id, p.Nombre, c.Descripcion, d.Cantidad, d.PrecioUnitario }
-                                            into g
-                                                orderby g.Key.Cantidad * g.Key.PrecioUnitario descending
+                                                by new { p.Id, p.Nombre, c.Descripcion }
+                                                into g
+                                                 orderby g.Sum(x=> x.PrecioUnitario * x.Cantidad) descending
 
                                                 select new
                                                 {
@@ -820,7 +820,7 @@ namespace Sistema_JYR.Controllers
                                             join p in db.Pedidos on u.Id equals p.IdUsuario
                                             where u.Rol == 1 || u.Rol == 2 && p.Fecha >= anterior && p.Fecha <= actual
                                             group new { p.TotalPagar, u.Id }
-                                            by new { u.Nombre, u.Apellido1, u.Apellido2, u.Cedula, u.Email, p.TotalPagar }
+                                            by new { u.Nombre, u.Apellido1, u.Apellido2, u.Cedula, u.Email }
                                            into g
                                             orderby g.Sum(x => x.TotalPagar) descending
 
@@ -857,28 +857,6 @@ namespace Sistema_JYR.Controllers
             return View();
         }
 
-        public ActionResult reporteProformaAPedido()
-        {
-
-
-            var querys = from p in db.Proformas
-                         join e in db.EstadoProforma on p.IdEstado equals e.Id
-
-                         group new { p.IdEstado, p.Id }
-                         by new { e.Descripcion, e.Id, p.IdEstado }
-                        into g
-                         orderby g.Key.IdEstado descending
-
-                         select new
-                         {
-
-                             Estado = g.Key.Descripcion,
-                             porcentaje = 100
-                             };
-
-                                ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteProformaAPedido.rdlc");
-            return View();
-
-        }
+      
     }
 }

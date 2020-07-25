@@ -12,13 +12,13 @@
               <DbSource ConnectionRef="DefaultConnection (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        TOP (10) Productos.Id, Productos.Nombre AS 'Producto', CategoriasProducto.Descripcion AS 'Categoria', PedidoDetalle.Cantidad, PedidoDetalle.PrecioUnitario, SUM(PedidoDetalle.Cantidad) AS 'cantidadTotal', 
-                         SUM(PedidoDetalle.Cantidad * PedidoDetalle.PrecioUnitario) AS 'Total'
+                    <CommandText>SELECT        TOP (10) Productos.Id, Productos.Nombre AS 'Producto', CategoriasProducto.Descripcion AS 'Categoria', SUM(PedidoDetalle.Cantidad) AS 'cantidadTotal', SUM(PedidoDetalle.Cantidad * PedidoDetalle.PrecioUnitario) 
+                         AS 'Total'
 FROM            PedidoDetalle INNER JOIN
                          Productos ON PedidoDetalle.IdProducto = Productos.Id INNER JOIN
                          CategoriasProducto ON Productos.IdCategoria = CategoriasProducto.Id INNER JOIN
                          Pedidos ON PedidoDetalle.IdPedido = Pedidos.Id
-GROUP BY Productos.Nombre, CategoriasProducto.Descripcion, PedidoDetalle.Cantidad, PedidoDetalle.PrecioUnitario, Productos.Id
+GROUP BY Productos.Nombre, CategoriasProducto.Descripcion, Productos.Id
 ORDER BY 'Total' DESC</CommandText>
                     <Parameters />
                   </DbCommand>
@@ -28,8 +28,6 @@ ORDER BY 'Total' DESC</CommandText>
             <Mappings>
               <Mapping SourceColumn="Producto" DataSetColumn="Producto" />
               <Mapping SourceColumn="Categoria" DataSetColumn="Categoria" />
-              <Mapping SourceColumn="Cantidad" DataSetColumn="Cantidad" />
-              <Mapping SourceColumn="PrecioUnitario" DataSetColumn="PrecioUnitario" />
               <Mapping SourceColumn="Total" DataSetColumn="Total" />
               <Mapping SourceColumn="cantidadTotal" DataSetColumn="cantidadTotal" />
               <Mapping SourceColumn="Id" DataSetColumn="Id" />
@@ -38,15 +36,15 @@ ORDER BY 'Total' DESC</CommandText>
           </TableAdapter>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="DataTable2TableAdapter" GeneratorDataComponentClassName="DataTable2TableAdapter" Name="DataTable2" UserDataComponentName="DataTable2TableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="DefaultConnection (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="DefaultConnection (Web.config)" DbObjectName="SistemaJYR.dbo.AspNetUsers" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email, COUNT(Pedidos.Id) AS 'CantidadPedidos', Pedidos.TotalPagar, SUM(Pedidos.TotalPagar) AS 'Acumulado'
+                    <CommandText>SELECT        AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email, COUNT(Pedidos.Id) AS 'CantidadPedidos', SUM(Pedidos.TotalPagar) AS 'Acumulado'
 FROM            AspNetUsers INNER JOIN
                          Pedidos ON Pedidos.IdUsuario = AspNetUsers.Id
 WHERE        (AspNetUsers.Rol = 1) OR
                          (AspNetUsers.Rol = 2)
-GROUP BY AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email, Pedidos.TotalPagar
+GROUP BY AspNetUsers.Nombre, AspNetUsers.Apellido1, AspNetUsers.Apellido2, AspNetUsers.Cedula, AspNetUsers.Email
 ORDER BY 'Acumulado' DESC</CommandText>
                     <Parameters />
                   </DbCommand>
@@ -60,7 +58,6 @@ ORDER BY 'Acumulado' DESC</CommandText>
               <Mapping SourceColumn="Cedula" DataSetColumn="Cedula" />
               <Mapping SourceColumn="Email" DataSetColumn="Email" />
               <Mapping SourceColumn="CantidadPedidos" DataSetColumn="CantidadPedidos" />
-              <Mapping SourceColumn="TotalPagar" DataSetColumn="TotalPagar" />
               <Mapping SourceColumn="Acumulado" DataSetColumn="Acumulado" />
             </Mappings>
             <Sources />
@@ -70,12 +67,14 @@ ORDER BY 'Acumulado' DESC</CommandText>
               <DbSource ConnectionRef="DefaultConnection (Web.config)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="true">
-                    <CommandText>SELECT        Proformas.IdEstado, EstadoProforma.Descripcion AS 'Estado', COUNT(Proformas.Id) AS 'TotalProformas',
+                    <CommandText>SELECT        Proformas.IdEstado, EstadoProforma.Descripcion AS 'Estado',
                              (SELECT        COUNT(Proformas.IdEstado) * 100 / COUNT(Id) AS Expr1
-                               FROM            Proformas AS P) AS 'Porcentaje'
+                               FROM            Proformas AS P) AS 'Porcentaje', COUNT(Proformas.IdEstado) AS 'Cantidad', SUM(Proformas.TotalPagar) AS 'TotalPagar', SUM(Proformas.TotalDescuento) AS 'TotalDescuento', SUM(Proformas.TotalImpuesto) 
+                         AS 'TotalImpuesto'
 FROM            Proformas INNER JOIN
                          EstadoProforma ON Proformas.IdEstado = EstadoProforma.Id
-GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion</CommandText>
+GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion
+ORDER BY 'TotalPagar' DESC</CommandText>
                     <Parameters />
                   </DbCommand>
                 </SelectCommand>
@@ -83,9 +82,12 @@ GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion</Comm
             </MainSource>
             <Mappings>
               <Mapping SourceColumn="IdEstado" DataSetColumn="IdEstado" />
-              <Mapping SourceColumn="TotalProformas" DataSetColumn="TotalProformas" />
               <Mapping SourceColumn="Porcentaje" DataSetColumn="Porcentaje" />
               <Mapping SourceColumn="Estado" DataSetColumn="Estado" />
+              <Mapping SourceColumn="Cantidad" DataSetColumn="Cantidad" />
+              <Mapping SourceColumn="TotalPagar" DataSetColumn="TotalPagar" />
+              <Mapping SourceColumn="TotalDescuento" DataSetColumn="TotalDescuento" />
+              <Mapping SourceColumn="TotalImpuesto" DataSetColumn="TotalImpuesto" />
             </Mappings>
             <Sources />
           </TableAdapter>
@@ -114,8 +116,6 @@ GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion</Comm
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="Cantidad" msprop:Generator_ColumnVarNameInTable="columnCantidad" msprop:Generator_ColumnPropNameInRow="Cantidad" msprop:Generator_ColumnPropNameInTable="CantidadColumn" msprop:Generator_UserColumnName="Cantidad" type="xs:double" />
-              <xs:element name="PrecioUnitario" msprop:Generator_ColumnVarNameInTable="columnPrecioUnitario" msprop:Generator_ColumnPropNameInRow="PrecioUnitario" msprop:Generator_ColumnPropNameInTable="PrecioUnitarioColumn" msprop:Generator_UserColumnName="PrecioUnitario" type="xs:double" />
               <xs:element name="Total" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTotal" msprop:Generator_ColumnPropNameInRow="Total" msprop:Generator_ColumnPropNameInTable="TotalColumn" msprop:Generator_UserColumnName="Total" type="xs:double" minOccurs="0" />
               <xs:element name="cantidadTotal" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columncantidadTotal" msprop:Generator_ColumnPropNameInRow="cantidadTotal" msprop:Generator_ColumnPropNameInTable="cantidadTotalColumn" msprop:Generator_UserColumnName="cantidadTotal" type="xs:double" minOccurs="0" />
               <xs:element name="Id" msdata:ReadOnly="true" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="-1" msdata:AutoIncrementStep="-1" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:int" />
@@ -155,7 +155,6 @@ GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion</Comm
                 </xs:simpleType>
               </xs:element>
               <xs:element name="CantidadPedidos" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnCantidadPedidos" msprop:Generator_ColumnPropNameInRow="CantidadPedidos" msprop:Generator_ColumnPropNameInTable="CantidadPedidosColumn" msprop:Generator_UserColumnName="CantidadPedidos" type="xs:int" minOccurs="0" />
-              <xs:element name="TotalPagar" msprop:Generator_ColumnVarNameInTable="columnTotalPagar" msprop:Generator_ColumnPropNameInRow="TotalPagar" msprop:Generator_ColumnPropNameInTable="TotalPagarColumn" msprop:Generator_UserColumnName="TotalPagar" type="xs:double" />
               <xs:element name="Acumulado" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnAcumulado" msprop:Generator_ColumnPropNameInRow="Acumulado" msprop:Generator_ColumnPropNameInTable="AcumuladoColumn" msprop:Generator_UserColumnName="Acumulado" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
@@ -164,7 +163,6 @@ GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion</Comm
           <xs:complexType>
             <xs:sequence>
               <xs:element name="IdEstado" msprop:Generator_ColumnVarNameInTable="columnIdEstado" msprop:Generator_ColumnPropNameInRow="IdEstado" msprop:Generator_ColumnPropNameInTable="IdEstadoColumn" msprop:Generator_UserColumnName="IdEstado" type="xs:int" />
-              <xs:element name="TotalProformas" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTotalProformas" msprop:Generator_ColumnPropNameInRow="TotalProformas" msprop:Generator_ColumnPropNameInTable="TotalProformasColumn" msprop:Generator_UserColumnName="TotalProformas" type="xs:int" minOccurs="0" />
               <xs:element name="Porcentaje" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnPorcentaje" msprop:Generator_ColumnPropNameInRow="Porcentaje" msprop:Generator_ColumnPropNameInTable="PorcentajeColumn" msprop:Generator_UserColumnName="Porcentaje" type="xs:int" minOccurs="0" />
               <xs:element name="Estado" msprop:Generator_ColumnVarNameInTable="columnEstado" msprop:Generator_ColumnPropNameInRow="Estado" msprop:Generator_ColumnPropNameInTable="EstadoColumn" msprop:Generator_UserColumnName="Estado">
                 <xs:simpleType>
@@ -173,6 +171,10 @@ GROUP BY Proformas.IdEstado, EstadoProforma.Id, EstadoProforma.Descripcion</Comm
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
+              <xs:element name="Cantidad" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnCantidad" msprop:Generator_ColumnPropNameInRow="Cantidad" msprop:Generator_ColumnPropNameInTable="CantidadColumn" msprop:Generator_UserColumnName="Cantidad" type="xs:int" minOccurs="0" />
+              <xs:element name="TotalPagar" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTotalPagar" msprop:Generator_ColumnPropNameInRow="TotalPagar" msprop:Generator_ColumnPropNameInTable="TotalPagarColumn" msprop:Generator_UserColumnName="TotalPagar" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalDescuento" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTotalDescuento" msprop:Generator_ColumnPropNameInRow="TotalDescuento" msprop:Generator_ColumnPropNameInTable="TotalDescuentoColumn" msprop:Generator_UserColumnName="TotalDescuento" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalImpuesto" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnTotalImpuesto" msprop:Generator_ColumnPropNameInRow="TotalImpuesto" msprop:Generator_ColumnPropNameInTable="TotalImpuestoColumn" msprop:Generator_UserColumnName="TotalImpuesto" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

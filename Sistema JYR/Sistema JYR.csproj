@@ -577,10 +577,11 @@
     <Content Include="Views\Pedido\_aviso.cshtml" />
     <Content Include="Views\Pedido\reporteVentasPorEmpleado.cshtml" />
     <Content Include="Views\Pedido\_ReporteUsuario.cshtml" />
-    <Content Include="Views\Pedido\reporteProformaAPedido.cshtml" />
-    <Content Include="Views\Pedido\_reporteProformaAPedido.cshtml" />
+    <Content Include="Views\Proformas\reporteProformaAPedido.cshtml" />
+    <Content Include="Views\Proformas\_reporteProformaAPedido.cshtml" />
     <Content Include="Views\Proformas\_Cliente.cshtml" />
     <Content Include="Views\Proformas\_ClienteSinCuenta.cshtml" />
+    <Content Include="Views\Proformas\_aviso.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -599,6 +600,7 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Reportes\prueba.rdlc" />
     <EmbeddedResource Include="Reportes\ReporteProformaAPedido.rdlc" />
     <EmbeddedResource Include="Reportes\ReporteTopProducto.rdlc" />
     <EmbeddedResource Include="Reportes\ReporteUsuario.rdlc" />

@@ -1043,10 +1043,6 @@
           <DataField>CantidadPedidos</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="TotalPagar">
-          <DataField>TotalPagar</DataField>
-          <rd:TypeName>System.Double</rd:TypeName>
-        </Field>
         <Field Name="Acumulado">
           <DataField>Acumulado</DataField>
           <rd:TypeName>System.Double</rd:TypeName>
