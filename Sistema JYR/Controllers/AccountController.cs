@@ -322,7 +322,7 @@ namespace Sistema_JYR.Controllers
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
             if (result.Succeeded)
             {
-                Session["MensajeIndex"] = "Recuperacion de Contraseña";
+                Session["MensajeIndex"] = "Recuperacion de Contraseña Exitosa";
                 return RedirectToAction("Index", "Home");
             }
             AddErrors(result);

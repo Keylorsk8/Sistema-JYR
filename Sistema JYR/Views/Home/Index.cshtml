@@ -260,18 +260,18 @@
             Session["MensajeIndex"] = null;
             break;
         case "Recuperacion de Contraseña":
-<script type="text/javascript">
+            <script type="text/javascript">
                 function RegistroExitoso() {
                     Swal.fire({
-                        title: '¡Recuperación de contraseña exitosa!',
+                        title: '¡Solicitud de recuperación de contraseña exitosa!',
                         icon: 'success',
-                        html: 'Si desea iniciar sesión <a href="@Url.Action("LogIn","Account")">Haz clic aquí</a>',
+                        html: 'Se le ha enviado un correo con el enlace para cambiar su contraseña.',
                         toast: false,
                         timerProgressBar: true
                     });
                 };
                 RegistroExitoso();
-</script>
+            </script>
             Session["MensajeIndex"] = null;
             break;
         case "Recuperacion de Contraseña Exitosa":
