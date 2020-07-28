@@ -4,91 +4,93 @@
     ViewBag.Title = "Detalles Vendedor";
 }
 
-    <ol class="breadcrumb container-fluid">
+<div class="container-fluid">
+    <ol class="breadcrumb">
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">Mantenimientos</li>
-        <li class="breadcrumb-item active">Usuarios</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Usuarios", "Mantenimientos", "Home")</li>
         <li class="breadcrumb-item">@Html.ActionLink("Mantenimiento Vendedores", "Index", "Usuarios")</li>
         <li class="breadcrumb-item active">Detalles Vendedor</li>
     </ol>
-    <div class="container">
-        <h2>Detalles del Vendedor</h2>
+</div>
+<div class="container">
+    <h2>Detalles del Vendedor</h2>
 
-        <div>
-            <h3>@Model.Nombre @Model.Apellido1 @Model.Apellido2</h3>
-            <hr />
-            <dl class="dl-horizontal">
-                <dt>
-                    @Html.Label("Cédula")
-                </dt>
+    <div>
+        <h3>@Model.Nombre @Model.Apellido1 @Model.Apellido2</h3>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.Label("Cédula")
+            </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Cedula)
-                </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Cedula)
+            </dd>
 
-                <dt>
-                    @Html.Label("Tipo de Cuenta")
-                </dt>
+            <dt>
+                @Html.Label("Tipo de Cuenta")
+            </dt>
 
-                <dd>
-                    @switch (Model.Rol)
-                    {
-                        case 1:
-                            @Html.Label("Administrador")
-                            break;
-                        case 2:
-                            @Html.Label("Vendedor")
-                            break;
-                        case 3:
-                            @Html.Label("Cliente")
-                            break;
-                        default:
-                            break;
-                    }
-                </dd>
+            <dd>
+                @switch (Model.Rol)
+                {
+                    case 1:
+                        @Html.Label("Administrador")
+                        break;
+                    case 2:
+                        @Html.Label("Vendedor")
+                        break;
+                    case 3:
+                        @Html.Label("Cliente")
+                        break;
+                    default:
+                        break;
+                }
+            </dd>
 
-                <dt>
-                    @Html.DisplayNameFor(model => model.Email)
-                </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Email)
-                </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
 
-                <dt>
-                    @Html.Label("Nombre de Usuario")
-                </dt>
+            <dt>
+                @Html.Label("Nombre de Usuario")
+            </dt>
 
-                <dd>
-                    @Html.DisplayFor(model => model.Nombre)
-                    @Html.DisplayFor(model => model.Apellido1)
-                    @Html.DisplayFor(model => model.Apellido2)
-                </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Nombre)
+                @Html.DisplayFor(model => model.Apellido1)
+                @Html.DisplayFor(model => model.Apellido2)
+            </dd>
 
-                <dt>
-                    @Html.Label("Estado de la cuenta")
-                </dt>
+            <dt>
+                @Html.Label("Estado de la cuenta")
+            </dt>
 
-                <dd>
-                    @if (Model.Estado)
-                    {
-                        @Html.Label("Habilitada")
-                    }
-                    else
-                    {
-                        @Html.Label("Deshabilitada")
-                    }
-                </dd>
+            <dd>
+                @if (Model.Estado)
+                {
+                    @Html.Label("Habilitada")
+                }
+                else
+                {
+                    @Html.Label("Deshabilitada")
+                }
+            </dd>
 
-            </dl>
-        </div>
-        <p>
-            <a class="btn btn-dark" href="@Url.Action("Edit", new { id = Model.Id })">
-                <i class="fa fa-pencil-square-o"></i> Editar
-            </a>
-            |
-            <a class="btn btn-dark" href="@Url.Action("Index")">
-                <i class="fa fa-arrow-left"></i> Volver
-            </a>
-        </p>
+        </dl>
     </div>
+    <p>
+        <a class="btn btn-dark" href="@Url.Action("Edit", new { id = Model.Id })">
+            <i class="fa fa-pencil-square-o"></i> Editar
+        </a>
+        |
+        <a class="btn btn-dark" href="@Url.Action("Index")">
+            <i class="fa fa-arrow-left"></i> Volver
+        </a>
+    </p>
+</div>

@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "Mantenimientos";
+}
+
+    <div class="container">
+
+        <ol class="breadcrumb container-fluid">
+            <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+            <li class="breadcrumb-item active">Mantenimientos</li>
+        </ol>
+
+        <h2>Mantenimientos</h2>
+
+        <div class="list-group border-dark">
+            <div class="list-group-item list-group-item-action" style="background-color: #002f3f !important; color: white">
+                Usuarios
+            </div>
+            <a href="@Url.Action("Index","Usuarios")" class="list-group-item list-group-item-action">Vendedores</a>
+            <a href="@Url.Action("Index","Usuarios")" class="list-group-item list-group-item-action">Clientes</a>
+            <div class="list-group-item list-group-item-action" style="background-color: #002f3f !important; color: white">
+                Inventario
+            </div>
+            <a href="@Url.Action("Index","CategoriasProducto")" class="list-group-item list-group-item-action">Categoría de productos</a>
+            <a href="@Url.Action("Index","Productos")" class="list-group-item list-group-item-action">Productos</a>
+            <div class="list-group-item list-group-item-action" style="background-color: #002f3f !important; color: white">
+                Proforma
+            </div>
+            <a href="@Url.Action("Index","Proformas")" button" class="list-group-item list-group-item-action">Manipular Proformas</a>
+            <div class="list-group-item list-group-item-action" style="background-color: #002f3f !important; color: white">
+                Pedido
+            </div>
+            <a href="@Url.Action("Index","Pedido")" class="list-group-item list-group-item-action">Manipular Pedidos</a>
+        </div>
+    </div>

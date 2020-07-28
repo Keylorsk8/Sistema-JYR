@@ -4,13 +4,15 @@
     ViewBag.Title = "Crear Proforma";
 }
 
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Mantenimientos</li>
-    <li class="breadcrumb-item active">Proformas</li>
-    <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
-    <li class="breadcrumb-item active">Crear Proforma</li>
-</ol>
+<div class="container-fluid">
+    <ol class="breadcrumb container-fluid">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Proformas", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
+        <li class="breadcrumb-item active">Crear Proforma</li>
+    </ol>
+</div>
 
 <div class="container">
     <h4>Crear Proforma</h4>
@@ -57,7 +59,7 @@
                                     @Html.LabelFor(model => model.NombreCliente, "Nombre del Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
                                     <div class="row">
                                         <div class="col-md-10">
-                                            @Html.TextBoxFor(model => model.NombreCliente, new { @class="form-control" })
+                                            @Html.TextBoxFor(model => model.NombreCliente, new { @class = "form-control" })
                                             @Html.ValidationMessageFor(model => model.NombreCliente, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="col-md-2">

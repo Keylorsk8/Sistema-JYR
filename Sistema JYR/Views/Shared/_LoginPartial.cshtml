@@ -16,51 +16,49 @@
     }))
     {
         @Html.AntiForgeryToken()
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-        <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+    <ul class="navbar-nav ml-auto" style="text-align: center">
         @if (usuario.Rol == 1)
         {
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" style="color: white !important" href="#" id="navbarDropdownMantenimientos" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Mantenimientos
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <h6 class="dropdown-header">Usuarios</h6>
-                    @Html.ActionLink("Vendedores", "Index", "Usuarios", new { }, new { @class = "dropdown-item" })
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Inventario</h6>
-                    @Html.ActionLink("Categorías de Productos", "Index", "CategoriasProducto", new { }, new { @class = "dropdown-item" })
-                    @Html.ActionLink("Productos", "Index", "Productos", new { }, new { @class = "dropdown-item" })
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Proforma</h6>
-                    @Html.ActionLink("Proformas", "Index", "Proformas", new { }, new { @class = "dropdown-item" })
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Pedido</h6>
-                    @Html.ActionLink("Pedidos", "Index", "Pedido", new { }, new { @class = "dropdown-item" })
+            <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">
+                <a href="@Url.Action("Mantenimientos","Home")" class="btn" style="color: white; font-weight:100">Mantenimientos</a>
+                <div class="btn-group" role="group">
+                    <button id="btnMantenimientos" type="button" class="btn dropdown-toggle dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white; font-weight:100"></button>
+                    <div class="dropdown-menu" aria-labelledby="btnMantenimientos">
+                        <h6 class="dropdown-header">Usuarios</h6>
+                        @Html.ActionLink("Vendedores", "Index", "Usuarios", new { }, new { @class = "dropdown-item" })
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Inventario</h6>
+                        @Html.ActionLink("Categorías de Productos", "Index", "CategoriasProducto", new { }, new { @class = "dropdown-item" })
+                        @Html.ActionLink("Productos", "Index", "Productos", new { }, new { @class = "dropdown-item" })
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Proforma</h6>
+                        @Html.ActionLink("Proformas", "Index", "Proformas", new { }, new { @class = "dropdown-item" })
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Pedido</h6>
+                        @Html.ActionLink("Pedidos", "Index", "Pedido", new { }, new { @class = "dropdown-item" })
+                    </div>
                 </div>
             </li>
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" style="color: white !important" href="#" id="navbarDropdownMantenimientos" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Reportes
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <h6 class="dropdown-header">Usuarios</h6>
-                    @Html.ActionLink("Reporte de Ventas por Empleado", "reporteVentasPorEmpleado", "Pedido", new { }, new { @class = "dropdown-item" })
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Inventario</h6>
-                    @Html.ActionLink("Reporte Top 10 Productos", "reporteTopProducto", "Pedido", new { }, new { @class = "dropdown-item" })
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Proformas</h6>
-                    @Html.ActionLink("Reporte de Profomas a Pedidos", "reporteProformaAPedido", "Proformas", new { }, new { @class = "dropdown-item" })
-                    
+            <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">
+                <a href="@Url.Action("Reportes","Home")" class="btn" style="color: white; font-weight:100">Reportes</a>
+                <div class="btn-group" role="group">
+                    <button id="btnReportes" type="button" class="btn dropdown-toggle dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white; font-weight:100"></button>
+                    <div class="dropdown-menu" aria-labelledby="btnReportes" style="margin-right: 15px">
+                        @Html.ActionLink("Reporte de Ventas por Empleado", "reporteVentasPorEmpleado", "Pedido", new { }, new { @class = "dropdown-item" })
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Inventario</h6>
+                        @Html.ActionLink("Reporte Top 10 Productos", "reporteTopProducto", "Pedido", new { }, new { @class = "dropdown-item" })
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Proformas</h6>
+                        @Html.ActionLink("Reporte de Profomas a Pedidos", "reporteProformaAPedido", "Proformas", new { }, new { @class = "dropdown-item" })
+                    </div>
                 </div>
             </li>
+            <li class="dropdown-divider"></li>
         }
-
+        <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+        <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
         <li class="nav-item dropdown">
             <i class="fa fa-user-circle" style="display: inline-block; color: white; margin-right: -5px"></i>
             <a class="nav-link dropdown-toggle" style="display:inline-block; color: white !important" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -68,7 +66,7 @@
             </a>
 
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                @Html.ActionLink("Preferencias", "Index", "Manage", new { }, new { @class = "dropdown-item" })
+                @Html.ActionLink("Configuración", "Index", "Manage", new { }, new { @class = "dropdown-item" })
                 <div class="dropdown-divider"></div>
                 <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item">Cerrar sesión</a>
             </div>

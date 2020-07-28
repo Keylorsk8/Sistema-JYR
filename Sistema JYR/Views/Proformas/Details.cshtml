@@ -5,14 +5,15 @@
     Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
     List<Sistema_JYR.Models.Telefonos> tels = db.Telefonos.Where(x => x.IdUsuario == Model.IdCliente).ToList();
 }
-
-    <ol class="breadcrumb container-fluid">
-        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">Mantenimientos</li>
-        <li class="breadcrumb-item active">Proforma</li>
-        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
-        <li class="breadcrumb-item active">Detalle</li>
-    </ol>
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+            <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+            <li class="breadcrumb-item active">@Html.ActionLink("Proformas", "Mantenimientos", "Home")</li>
+            <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
+            <li class="breadcrumb-item active">Detalles Proforma</li>
+        </ol>
+    </div>
     <div class="container">
         <h4>Proforma No. @ViewBag.Id - @Model.NombreProforma</h4>
         <hr />

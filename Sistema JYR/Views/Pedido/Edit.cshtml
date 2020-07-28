@@ -3,14 +3,15 @@
 @{
     ViewBag.Title = "Editar Pedido";
 }
-
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Mantenimientos</li>
-    <li class="breadcrumb-item active">Pedidos</li>
-    <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
-    <li class="breadcrumb-item active">Editar</li>
-</ol>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Pedidos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimiento Pedidos", "Index", "Pedido")</li>
+        <li class="breadcrumb-item active">Editar Pedido</li>
+    </ol>
+</div>
 <div class="container">
     <h4>Editar Pedido No.  @ViewBag.Id</h4>
 
@@ -38,25 +39,48 @@
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 @Html.HiddenFor(model => model.Id)
                 @Html.HiddenFor(model => model.NumeroProforma)
-
+                <h5>Encabezado</h5>
                 <div class="row">
                     <div class="col col-md-6">
 
                         <div class="form-group">
                             @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="col-md-12">
+                                @Html.Hidden("Fecha", Model.Fecha)
                                 <div class="form-group has-feedback">
                                     <i class="fa fa-calendar-o form-control-feedback"></i>
                                     @Html.HiddenFor(model => model.Fecha)
-
-                                    <input type="text" class="form-control" value="@ViewBag.Fecha" readonly="readonly" />
+                                    @Html.TextBox("Date", Model.Fecha.ToString("dd/MM/yyyy"), new { @class = "form-control", @readonly = true })
                                 </div>
-
-
                             </div>
                         </div>
+
+                        <div id="divCliente">
+                            @Html.Hidden("IdCliente", Model.IdCliente)
+                            @Html.Hidden("NombreCliente", Model.NombreCliente)
+                            <div class="form-group container">
+                                @Html.LabelFor(model => model.NombreCliente, "Nombre del Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.TextBox("Nombre", Model.NombreCliente, new { disabled = "disabled", @class = "form-control", @id = "NombreCliente" })
+                                        @Html.ValidationMessageFor(model => model.NombreCliente, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DireccionEntrega, "Dirección de entrega", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    <div class="form-group has-feedback">
+                                        @Html.TextBoxFor(model => model.DireccionEntrega, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.DireccionEntrega, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
-                            @Html.LabelFor(model => model.NumeroProforma, htmlAttributes: new { @class = "control-label col-md-12" })
+                            @Html.LabelFor(model => model.NumeroProforma, "Número de Proforma", htmlAttributes: new { @class = "control-label col-md-12" })
                             <div class="col-md-12">
 
                                 @if (Model.NumeroProforma == null)
@@ -65,7 +89,7 @@
                                 }
                                 else
                                 {
-                                    @Html.TextBoxFor(model => model.NumeroProforma, "", new { @class = "form-control", @readonly = true })
+                                    @Html.TextBoxFor(model => model.NumeroProforma, new { @class = "form-control", @readonly = true })
                                 }
 
                             </div>
@@ -92,7 +116,15 @@
                             </div>
                         </div>
 
-
+                        <div class="form-group container">
+                            @Html.LabelFor(model => model.NombrePedido, "Nombre del Pedido", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.TextBoxFor(model => model.NombrePedido, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.NombrePedido, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col col-md-12">
@@ -157,6 +189,9 @@
                                         </th>
                                         <th>
                                             Precio Unitario
+                                        </th>
+                                        <th>
+                                            Impuesto
                                         </th>
                                         <th>
                                             Descuento
@@ -237,13 +272,24 @@
                                             </td>
 
                                             <td style="text-align:center">
-                                                @item.PrecioUnitario
+                                                ₡@item.PrecioUnitario.ToString("0,#.00")
+                                            </td>
+                                            <td>
+                                                @item.Productos.Impuesto%
                                             </td>
                                             <td style="text-align:center">
-                                                @item.Descuento
+                                                @if (item.Descuento == 0)
+                                                {
+                                                    <label>₡0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>₡ @item.Descuento.ToString("0,#.00")</label>
+                                                }
                                             </td>
                                             <td style="text-align:center">
-                                                ₡@(item.PrecioUnitario * item.Cantidad)
+                                                @{var sub = item.PrecioUnitario * item.Cantidad;}
+                                                ₡@sub.ToString("0,#.00")
                                             </td>
                                             <td style="text-align:center">
 
@@ -252,54 +298,67 @@
                                         </tr>
 
                                     }
-                                    <tr>
-                                        <td colspan="3"></td>
-                                        <th>
-                                            <label>Total Descuento</label>
+                                    <tr style="text-align:center">
+                                        <td colspan="4"></td>
+                                        <th colspan="2">
+                                            <label>Descuento Total</label>
                                         </th>
-                                        <th>
-                                            <label>₡@ViewBag.TotalDescuento</label>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3"></td>
-                                        <th>
-                                            <label>Total Impuesto</label>
-                                        </th>
-                                        <th>
-                                            <label>₡@ViewBag.TotalImpuesto</label>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3"></td>
-                                        <th>
-                                            <label>Total Pagar</label>
-                                        </th>
-                                        <th>
-                                            <label>₡@ViewBag.TotalPagar</label>
-                                        </th>
-                                    </tr>
+                                        <th colspan="2">
+                                            @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
+                                            {
+                                                <label>₡0,00</label>
+                                            }
+                                            else
+                                            {
+                                                <label>₡ @Model.TotalDescuento.ToString("0,#.00")</label>
+                                            }
 
-
+                                        </th>
+                                    </tr>
+                                    <tr style="text-align:center">
+                                        <td colspan="4"></td>
+                                        <th colspan="2">
+                                            <label>Total de Impuestos</label>
+                                        </th>
+                                        <th colspan="2">
+                                            @if (Model.TotalImpuesto == 0 || Model.TotalImpuesto == null)
+                                            {
+                                                <label>₡0,00</label>
+                                            }
+                                            else
+                                            {
+                                                <label>₡ @Model.TotalImpuesto.ToString("0,#.00")</label>
+                                            }
+                                        </th>
+                                    </tr>
+                                    <tr style="text-align:center">
+                                        <td colspan="4"></td>
+                                        <th colspan="2">
+                                            <label>Total a Pagar</label>
+                                        </th>
+                                        <th colspan="2">
+                                            @if (Model.TotalPagar == 0 || Model.TotalPagar == null)
+                                            {
+                                                <label>₡0,00</label>
+                                            }
+                                            else
+                                            {
+                                                <label>₡ @Model.TotalPagar.ToString("0,#.00")</label>
+                                            }
+                                        </th>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
         </div>
-
     }
-
 </div>
-
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
 
     <script>
         $(function () {

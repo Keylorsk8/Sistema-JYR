@@ -27,5 +27,17 @@ namespace Sistema_JYR.Controllers
 
             return View();
         }
+
+        [Authorize(Roles = "Admin,Vendedor")]
+        public ActionResult Mantenimientos()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin,Vendedor")]
+        public ActionResult Reportes()
+        {
+            return View();
+        }
     }
 }

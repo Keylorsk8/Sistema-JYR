@@ -4,96 +4,188 @@
     ViewBag.Title = "Crear Pedido";
 }
 
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Mantenimientos</li>
-    <li class="breadcrumb-item active">Pedidos</li>
-    <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Pedidos", "Index", "Pedido")</li>
-    <li class="breadcrumb-item active">Crear Pedido</li>
-</ol>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Pedidos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Pedidos", "Index", "Pedido")</li>
+        <li class="breadcrumb-item active">Crear Pedido</li>
+    </ol>
+</div>
 
 <div class="container">
     <h4>Crear Pedido</h4>
-
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-<div class="form-horizontal" style="margin-bottom: 100px">
-    <div class="row">
-        <div class="col col-lg-6">
-            <p>Digite la información de pedido</p>
-        </div>
-        <div class="col col-lg-6">
-            <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
-                <i class="fa fa-arrow-left"></i> Volver
-            </a>
-          
-        </div>
-    
-    </div>
 
-    <div class="form-horizontal">
-        <hr />
+        <div class="form-horizontal" style="margin-bottom: 100px">
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-    <div class="row">
-        <div class="col col-md-6">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-12">
-                    <div class="form-group has-feedback">
-                        <i class="fa fa-calendar-o form-control-feedback"></i>
-                        <input type="text" class="fa form-control" value="@ViewBag.Fecha" readonly="readonly">
-                    </div>
-
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.NumeroProforma, htmlAttributes: new { @class = "control-label col-md-12" })
-                <div class="col-md-12">
-                    <input type="text" class="form-control" value="@ViewBag.NumeroProforma" readonly="readonly">
-
-                </div>
-            </div>
-        </div>
-        <div class="col col-md-6">
-            <div class="form-group">
-                @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-12">
-                    @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-12">
-                    @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-        </div>
-        <div class="col col-md-12">
-            <button type="submit" value="Crear" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Crear </button>
             <hr />
-        </div>
-    </div>
-           
 
-           
-            
+            <div class="row">
+                <div class="col col-lg-6">
+                    <p>Digite la información de pedido</p>
+                </div>
+                <div class="col col-lg-6">
+                    <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                        <i class="fa fa-arrow-left"></i> Volver
+                    </a>
 
-
-        
+                </div>
 
             </div>
+
+            <div class="form-horizontal">
+                <hr />
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="row">
+                    <div class="col col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-12">
+                                <div class="form-group has-feedback">
+                                    <i class="fa fa-calendar-o form-control-feedback"></i>
+                                    <input type="text" class="fa form-control" value="@ViewBag.Fecha" readonly="readonly">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div id="divCliente">
+                            @Html.Hidden("IdCliente", 0)
+                            <div class="form-group container">
+                                @Html.LabelFor(model => model.NombreCliente, "Nombre del Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.NombreCliente, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.NombreCliente, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-dark" type="button" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DireccionEntrega, "Dirección de entrega", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="fa form-control" value="">
+                                        @Html.ValidationMessageFor(model => model.DireccionEntrega, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NumeroProforma,"Número de Proforma", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" value="@ViewBag.NumeroProforma" readonly="readonly">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdUsuario, "Vendedor", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NombrePedido, "Nombre de la Pedido", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.TextBoxFor(model => model.NombrePedido, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.NombrePedido, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col col-md-12">
+                        <button type="submit" value="Crear" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Crear </button>
+                        <hr />
+                    </div>
+                </div>
+            </div>
         </div>
-        }
+    }
+</div>
 
-    
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="margin-top: 15%">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="exampleModalLabel">Busqueda de Clientes</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_BusquedaAvanzada")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
+</div>
 
-        @section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }
+<div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmation" aria-hidden="true" style="margin-top: 15%">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="confirmation">¿Desea remover el cliente?</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        @using (Ajax.BeginForm("ClienteSinCuenta", "Proformas", new AjaxOptions
+                        {
+                            HttpMethod = "GET",
+                            UpdateTargetId = "divCliente",
+                            InsertionMode = InsertionMode.Replace,
+                            OnSuccess = "Complete2()"
+
+                        }))
+                        {
+                            <button type="submit" value="Buscar" class="btn btn-dark btn-success btn-block">Si</button>
+                            <script>
+                                function Complete2() {
+                                    $('#confirmation').modal('hide');
+                                }
+                            </script>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,14 +1,23 @@
 ﻿@model List<Sistema_JYR.Models.Productos>
 
 @{
-    ViewBag.Title = "ListaProductos";
+    ViewBag.Title = "Productos";
 }
 
+
+
+<div id="mySidebar" class="sidebar" style="margin-bottom:5%">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()" style="margin-top:25px">×</a>
+    <a href="#">About</a>
+    <a href="#">Services</a>
+    <a href="#">Clients</a>
+    <a href="#">Contact</a>
+</div>
+<button class="openbtn" onclick="openNav()">☰ Filtros</button>
+<div id="wrap">
     <div class="container"><h2>Lista de Productos</h2></div>
 
-<div id="wrap">
     <div id="columns" class="columns_4">
-
         @foreach (var item in Model)
         {
             <figure>
@@ -20,3 +29,15 @@
         }
     </div>
 </div>
+
+<script>
+    function openNav() {
+        document.getElementById("mySidebar").style.width = "250px";
+        document.getElementById("wrap").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+        document.getElementById("wrap").style.marginLeft = "0";
+    }
+</script>

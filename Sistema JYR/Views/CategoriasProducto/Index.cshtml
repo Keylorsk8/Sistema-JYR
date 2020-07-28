@@ -7,12 +7,14 @@
     SistemaJYREntities db = new SistemaJYREntities();
 }
 
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Mantenimientos</li>
-    <li class="breadcrumb-item active">Inventario</li>
-    <li class="breadcrumb-item active">Mantenimiento Categorías de Producto</li>
-</ol>
+    <div class="container-fluid">
+        <ol class="breadcrumb container-fluid">
+            <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+            <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+            <li class="breadcrumb-item active"> @Html.ActionLink("Inventario", "Mantenimientos", "Home")</li>
+            <li class="breadcrumb-item active">Mantenimiento Categorías de Producto</li>
+        </ol>
+    </div>
 
 @using (Ajax.BeginForm("filtrarCategoriasAjax", "CategoriasProducto", new AjaxOptions
 {

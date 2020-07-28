@@ -61,7 +61,7 @@ namespace Sistema_JYR.Controllers
             ViewBag.Fecha = DateTime.Now.ToShortDateString();
             ViewBag.NumeroProforma = "N/A";
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre");
-            ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion");
+            ViewBag.IdEstado = new SelectList(db.EstadoPedido.Where(x => x.Descripcion.Equals("Nuevo")), "Id", "Descripcion");
             return View();
         }
 
@@ -70,22 +70,36 @@ namespace Sistema_JYR.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto")] Pedidos pedidos)
+        public ActionResult Create([Bind(Include = "IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombrePedido,NumeroProforma")] Pedidos pedidos)
         {
             pedidos.Fecha = DateTime.Now;
             pedidos.TotalDescuento = 0;
             pedidos.TotalImpuesto = 0;
             pedidos.TotalPagar = 0;
+            if (pedidos.DireccionEntrega == null)
+            {
+                pedidos.DireccionEntrega = "Retirar en la ferretería";
+            }
+            if (pedidos.NombrePedido == null)
+            {
+                pedidos.NombrePedido = "Pedido #";
+            }
             if (ModelState.IsValid)
             {
                 db.Pedidos.Add(pedidos);
                 db.SaveChanges();
                 Session["Pedido"] = "¡Pedido creado con éxito!";
+                if (pedidos.NombrePedido == "Pedido #")
+                {
+                    pedidos.NombrePedido += pedidos.Id;
+                }
+                db.Entry(pedidos).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 1 || x.Rol == 2 && x.Estado == true), "Id", "Nombre", pedidos.IdUsuario);
-            ViewBag.IdEstado = new SelectList(db.EstadoPedido, "Id", "Descripcion", pedidos.IdEstado);
+            ViewBag.IdEstado = new SelectList(db.EstadoPedido.Where(x => x.Descripcion.Equals("Nuevo")), "Id", "Descripcion");
             return View(pedidos);
         }
 

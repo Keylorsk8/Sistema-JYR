@@ -4,112 +4,122 @@
     ViewBag.Title = "Detalles del Producto";
 }
 
-    <div class="container">
-        <h2>Detalles</h2>
 
-        <div class="row">
-            <div class="col-md-6">
-                <hr />
-                <dl class="dl-horizontal">
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Nombre)
-                    </dt>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Inventario", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimiento Productos", "Index", "Productos")</li>
+        <li class="breadcrumb-item active">Detalles Producto</li>
+    </ol>
+</div>
+<div class="container">
+    <h2>Detalles</h2>
 
-                    <dd>
-                        @Html.DisplayFor(model => model.Nombre)
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Descripcion)
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.Descripcion)
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.UnidadDeMedida)
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.UnidadDeMedida)
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Precio)
-                    </dt>
-
-                    <dd>
-                        @String.Format("{0:C}", Model.Precio)
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.CantidadEnInventario)
-                    </dt>
-
-                    <dd>
-                        @Html.DisplayFor(model => model.CantidadEnInventario)
-                    </dd>
-
-                    @*<dt>
-                    @Html.DisplayNameFor(model => model.FechaVencimiento)
+    <div class="row">
+        <div class="col-md-6">
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Nombre)
                 </dt>
 
                 <dd>
-                    @if (Model.FechaVencimiento == null)
-                    {
-                        @Html.Label("No Aplica");
-                    }
-                    else
-                    {
-                        @Html.DisplayFor(model => model.FechaVencimiento)
-                    }
-                </dd>*@
+                    @Html.DisplayFor(model => model.Nombre)
+                </dd>
 
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Impuesto)
+                <dt>
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.UnidadDeMedida)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.UnidadDeMedida)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Precio)
+                </dt>
+
+                <dd>
+                    @String.Format("{0:C}", Model.Precio)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.CantidadEnInventario)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CantidadEnInventario)
+                </dd>
+
+                @*<dt>
+                        @Html.DisplayNameFor(model => model.FechaVencimiento)
                     </dt>
 
                     <dd>
-                        @Html.DisplayFor(model => model.Impuesto)%
-                    </dd>
-
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Estado)
-                    </dt>
-
-                    <dd>
-                        @if (Model.Estado)
+                        @if (Model.FechaVencimiento == null)
                         {
-                            @Html.Label("Habilitado")
+                            @Html.Label("No Aplica");
                         }
                         else
                         {
-                            @Html.Label("Deshabilitado")
+                            @Html.DisplayFor(model => model.FechaVencimiento)
                         }
-                    </dd>
+                    </dd>*@
 
-                    <dt>
-                        @Html.DisplayName("Categoría")
-                    </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Impuesto)
+                </dt>
 
-                    <dd>
-                        @Html.DisplayFor(model => model.CategoriasProducto.Descripcion)
-                    </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Impuesto)%
+                </dd>
 
-                </dl>
-            </div>
-            <div class="col-md-6" style="display: flex; align-items: center">
-                <center><img style="border: 1px solid black; width: 50%" src="@Url.Action("getImage", "Productos", new { id = Model.Id })"></center>
-            </div>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Estado)
+                </dt>
+
+                <dd>
+                    @if (Model.Estado)
+                    {
+                        @Html.Label("Habilitado")
+                    }
+                    else
+                    {
+                        @Html.Label("Deshabilitado")
+                    }
+                </dd>
+
+                <dt>
+                    @Html.DisplayName("Categoría")
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.CategoriasProducto.Descripcion)
+                </dd>
+
+            </dl>
         </div>
-        <p>
-            <a class="btn btn-dark" href="@Url.Action("Edit", new { id = Model.Id })">
-                <i class="fa fa-pencil-square-o"></i> Editar
-            </a>
-            |
-            <a class="btn btn-dark" href="@Url.Action("Index")">
-                <i class="fa fa-arrow-left"></i> Volver
-            </a>
-        </p>
+        <div class="col-md-6" style="display: flex; align-items: center">
+            <center><img style="border: 1px solid black; width: 50%" src="@Url.Action("getImage", "Productos", new { id = Model.Id })"></center>
+        </div>
     </div>
+    <p>
+        <a class="btn btn-dark" href="@Url.Action("Edit", new { id = Model.Id })">
+            <i class="fa fa-pencil-square-o"></i> Editar
+        </a>
+        |
+        <a class="btn btn-dark" href="@Url.Action("Index")">
+            <i class="fa fa-arrow-left"></i> Volver
+        </a>
+    </p>
+</div>

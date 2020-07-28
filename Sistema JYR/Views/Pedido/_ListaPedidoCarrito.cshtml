@@ -1,7 +1,6 @@
 ﻿@model Sistema_JYR.Models.Pedidos
 
 
-<div class="container">
 
     <div id="carritoAjax">
         <div class="card bg-light mb-12">
@@ -23,6 +22,9 @@
                         </th>
                         <th>
                             Precio Unitario
+                        </th>
+                        <th>
+                            Impuesto
                         </th>
                         <th>
                             Descuento
@@ -103,13 +105,24 @@
                             </td>
 
                             <td style="text-align:center">
-                                @item.PrecioUnitario
+                                ₡@item.PrecioUnitario.ToString("0,#.00")
+                            </td>
+                            <td>
+                                @item.Productos.Impuesto%
                             </td>
                             <td style="text-align:center">
-                                @item.Descuento
+                                @if (item.Descuento == 0)
+                                {
+                                    <label>₡0,00</label>
+                                }
+                                else
+                                {
+                                    <label>₡ @item.Descuento.ToString("0,#.00")</label>
+                                }
                             </td>
                             <td style="text-align:center">
-                                ₡@(item.PrecioUnitario * item.Cantidad)
+                                @{var sub = item.PrecioUnitario * item.Cantidad;}
+                                ₡@sub.ToString("0,#.00")
                             </td>
                             <td style="text-align:center">
 
@@ -118,35 +131,55 @@
                         </tr>
 
                     }
-                    <tr>
-                        <td colspan="3"></td>
-                        <th>
-                            <label>Total Descuento</label>
+                    <tr style="text-align:center">
+                        <td colspan="4"></td>
+                        <th colspan="2">
+                            <label>Descuento Total</label>
                         </th>
-                        <th>
-                            <label>₡@ViewBag.TotalDescuento</label>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td colspan="3"></td>
-                        <th>
-                            <label>Total Impuesto</label>
-                        </th>
-                        <th>
-                            <label>₡@ViewBag.TotalImpuesto</label>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td colspan="3"></td>
-                        <th>
-                            <label>Total Pagar</label>
-                        </th>
-                        <th>
-                            <label>₡@ViewBag.TotalPagar</label>
-                        </th>
-                    </tr>
+                        <th colspan="2">
+                            @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
+                            {
+                                <label>₡0,00</label>
+                            }
+                            else
+                            {
+                                <label>₡ @Model.TotalDescuento.ToString("0,#.00")</label>
+                            }
 
-
+                        </th>
+                    </tr>
+                    <tr style="text-align:center">
+                        <td colspan="4"></td>
+                        <th colspan="2">
+                            <label>Total de Impuestos</label>
+                        </th>
+                        <th colspan="2">
+                            @if (Model.TotalImpuesto == 0 || Model.TotalImpuesto == null)
+                            {
+                                <label>₡0,00</label>
+                            }
+                            else
+                            {
+                                <label>₡ @Model.TotalImpuesto.ToString("0,#.00")</label>
+                            }
+                        </th>
+                    </tr>
+                    <tr style="text-align:center">
+                        <td colspan="4"></td>
+                        <th colspan="2">
+                            <label>Total a Pagar</label>
+                        </th>
+                        <th colspan="2">
+                            @if (Model.TotalPagar == 0 || Model.TotalPagar == null)
+                            {
+                                <label>₡0,00</label>
+                            }
+                            else
+                            {
+                                <label>₡ @Model.TotalPagar.ToString("0,#.00")</label>
+                            }
+                        </th>
+                    </tr>
                 </table>
             </div>
         </div>
@@ -154,7 +187,6 @@
 
 
 
-</div>
 @if (Session["Pedido"] != null)
 {
     switch (Session["Pedido"])

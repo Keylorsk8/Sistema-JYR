@@ -3,12 +3,14 @@
 
 
 <br />
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Reportes</li>
-    <li class="breadcrumb-item active">Inventario</li>
-    <li class="breadcrumb-item active">Reporte Top 10 Productos</li>
-</ol>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Reportes", "Reportes", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Inventario", "Reportes", "Home")</li>
+        <li class="breadcrumb-item active">Reporte Top 10 Productos</li>
+    </ol>
+</div>
 
 
 

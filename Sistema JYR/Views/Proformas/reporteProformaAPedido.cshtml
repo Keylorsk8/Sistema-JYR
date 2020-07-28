@@ -3,12 +3,14 @@
 }
 
 <br />
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Reportes</li>
-    <li class="breadcrumb-item active">Proformas</li>
-    <li class="breadcrumb-item active">Reporte de Proformas Convertidas en Pedidos</li>
-</ol>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Reportes", "Reportes", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Proformas", "Reportes", "Home")</li>
+        <li class="breadcrumb-item active">Reporte de Proformas Convertidas en Pedidos</li>
+    </ol>
+</div>
 
 
 @using (Ajax.BeginForm("reporteProformaAPedido", "Proformas", new AjaxOptions

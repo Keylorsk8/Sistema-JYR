@@ -4,6 +4,16 @@
     ViewBag.Title = "Editar Producto";
 }
 
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+            <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+            <li class="breadcrumb-item active"> @Html.ActionLink("Inventario", "Mantenimientos", "Home")</li>
+            <li class="breadcrumb-item active">@Html.ActionLink("Mantenimiento Productos","Index","Productos")</li>
+            <li class="breadcrumb-item active">Editar Producto</li>
+        </ol>
+    </div>
+
 <div class="container">
     @using (Html.BeginForm("Edit", "Productos", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {

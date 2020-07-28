@@ -6,12 +6,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Mantenimientos</li>
-    <li class="breadcrumb-item active">Pedidos</li>
-    <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
-</ol>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Pedidos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
+    </ol>
+</div>
 
 
 @using (Ajax.BeginForm("filtrarPedidosAjax", "Pedido", new AjaxOptions
@@ -64,30 +66,29 @@
 
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Número
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Fecha)
             </th>
-
             <th>
-                Usuario
+                Número de proforma
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Vendedor
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.TotalDescuento)
+                Descuento
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalImpuesto)
+                Impuesto
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TotalPagar)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumeroProforma)
-            </th>
-            <th>
-                Estado
+                Total
             </th>
             <th>
                 Acciones
@@ -101,25 +102,8 @@
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Fecha)
+                    @item.Fecha.ToString("dd/M/yyyy")
                 </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.AspNetUsers.Nombre)
-
-
-                </td>
-
-                <td>
-                    ₡@Html.DisplayFor(modelItem => item.TotalDescuento)
-                </td>
-                <td>
-                    ₡@Html.DisplayFor(modelItem => item.TotalImpuesto)
-                </td>
-                <td>
-                    ₡@Html.DisplayFor(modelItem => item.TotalPagar)
-                </td>
-
                 @if (item.NumeroProforma == null)
                 {
 
@@ -131,15 +115,45 @@
                 else
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.NumeroProforma)
+                        @Html.DisplayFor(modelItem => item.NombrePedido)
                     </td>
                 }
-
-
-
-
                 <td>
-                    @Html.DisplayFor(modelItem => item.EstadoPedido.Descripcion)
+                    @Html.DisplayFor(modelItem => item.NombrePedido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AspNetUsers.Cedula)
+                </td>
+                <td>
+
+                    @if (item.TotalDescuento == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@item.TotalDescuento.ToString("0,#.00")</label>
+                    }
+                </td>
+                <td>
+                    @if (item.TotalImpuesto == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@item.TotalImpuesto.ToString("0,#.00")</label>
+                    }
+                </td>
+                <td>
+                    @if (item.TotalPagar == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label> ₡@item.TotalPagar.ToString("0,#.00")</label>
+                    }
                 </td>
                 <td>
                     <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
@@ -249,7 +263,7 @@
             </script>
             Session["Pedido"] = null;
             break;
-        
+
         default:
             break;
     }

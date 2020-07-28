@@ -582,6 +582,11 @@
     <Content Include="Views\Proformas\_Cliente.cshtml" />
     <Content Include="Views\Proformas\_ClienteSinCuenta.cshtml" />
     <Content Include="Views\Proformas\_aviso.cshtml" />
+    <Content Include="Views\Home\Mantenimientos.cshtml" />
+    <Content Include="Views\Home\Reportes.cshtml" />
+    <Content Include="Views\Pedido\_BusquedaAvanzada.cshtml" />
+    <Content Include="Views\Pedido\_Cliente.cshtml" />
+    <Content Include="Views\Pedido\_ClienteSinCuenta.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

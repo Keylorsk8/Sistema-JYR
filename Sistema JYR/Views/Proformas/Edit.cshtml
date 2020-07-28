@@ -10,7 +10,15 @@
     usuario = db.AspNetUsers.Where(x => x.Id == id).First();
 }
 
-
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Proformas", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
+        <li class="breadcrumb-item active">Editar Proforma</li>
+    </ol>
+</div>
 
 <div class="container">
     <h4>Editar Proforma No.  @ViewBag.Id</h4>
@@ -31,9 +39,6 @@
                 </div>
             </div>
             <hr />
-
-
-
             <div class="form-horizontal">
 
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -317,6 +322,8 @@
             </div>
         </div>
     }
+</div>
+<div class="container">
     <div class="card bg-light mb-12" style="margin-top:-7%">
         <div class="card-body">
             <div class="row">
@@ -332,10 +339,11 @@
         </div>
 
     </div>
+</div>
 
-    @section Scripts {
+@section Scripts {
 
-        <script>
+    <script>
         $(function () {
             $("#agregar").click(function () {
                 var cantidad = $("#cant").val();
@@ -363,47 +371,47 @@
                 })
             })
         })
-        </script>
-        @Scripts.Render("~/bundles/jqueryval")
-    }
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}
 
 
-    @if (Session["Proforma"] != null)
+@if (Session["Proforma"] != null)
+{
+    switch (Session["Proforma"])
     {
-        switch (Session["Proforma"])
-        {
 
-            case "Producto es inválido. Digite un código de producto nuevamente":
-                <script type="text/javascript">
-                    function ProductoInvalido() {
-                        Swal.fire({
-                            title: 'Producto es inválido. Digite un código de producto nuevamente',
-                            icon: 'error',
-                            toast: false,
-                            timer: 4000,
-                            timerProgressBar: true
-                        });
-                    };
-                    ProductoInvalido();
-                </script>
-                Session["Proforma"] = null;
-                break;
-            case "Debe digitar una cantidad mayor a 0":
-                <script type="text/javascript">
-                    function ProductoCantidad() {
-                        Swal.fire({
-                            title: 'Debe digitar una cantidad mayor a 0',
-                            icon: 'error',
-                            toast: false,
-                            timer: 4000,
-                            timerProgressBar: true
-                        });
-                    };
-                    ProductoCantidad();
-                </script>
-                Session["Proforma"] = null;
-                break;
-            default:
-                break;
-        }
+        case "Producto es inválido. Digite un código de producto nuevamente":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'Producto es inválido. Digite un código de producto nuevamente',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a 0":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a 0',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        default:
+            break;
     }
+}

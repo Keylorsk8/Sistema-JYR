@@ -4,12 +4,14 @@
     ViewBag.Title = "Mantenimiento Productos";
 }
 
-<ol class="breadcrumb container-fluid">
-    <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-    <li class="breadcrumb-item active">Mantenimientos</li>
-    <li class="breadcrumb-item active">Inventario</li>
-    <li class="breadcrumb-item active">Mantenimiento Productos</li>
-</ol>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Inventario", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">Mantenimiento Productos</li>
+    </ol>
+</div>
 
 
 @using (Ajax.BeginForm("filtrarProductosAjax", "Productos", new AjaxOptions
