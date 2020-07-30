@@ -587,6 +587,7 @@
     <Content Include="Views\Pedido\_BusquedaAvanzada.cshtml" />
     <Content Include="Views\Pedido\_Cliente.cshtml" />
     <Content Include="Views\Pedido\_ClienteSinCuenta.cshtml" />
+    <Content Include="Views\Productos\_ListaProductosPartialView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

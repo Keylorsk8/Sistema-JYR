@@ -181,6 +181,56 @@ namespace Sistema_JYR.Controllers
             return View();
         }
 
+        public ActionResult FiltrarProductos(Ajax objeto)
+        {
+            int idProducto = Convert.ToInt32(objeto.productoId);
+            string nombre = Convert.ToString(objeto.nombreProducto);
+            int idCategoria = Convert.ToInt32(objeto.idCategoria);
+
+            List<Productos> productos = new List<Productos>();
+            List<Productos> productosFiltradaNombre = new List<Productos>();
+            List<Productos> productosFiltradaId = new List<Productos>();
+
+            if (idCategoria == 0)
+            {
+                productos = db.Productos.Where(x => x.Estado == true).ToList();
+            }
+            else
+            {
+                productos = db.Productos.Where(x => x.IdCategoria == idCategoria && x.Estado == true).ToList();
+            }
+
+            if (nombre != null)
+            {
+                foreach (var item in productos)
+                {
+                    if (item.Nombre.Contains(nombre))
+                    {
+                        productosFiltradaNombre.Add(item);
+                    }
+                }
+                productos = productosFiltradaNombre;
+            }
+
+            if (idProducto != 0)
+            {
+                foreach (var item in productos)
+                {
+                    if (item.Id == idProducto)
+                    {
+                        productosFiltradaId = new List<Productos>
+                        {
+                            item
+                        };
+                        break;
+                    }
+                }
+                productos = productosFiltradaId;
+            }
+
+            return PartialView("_ListaProductosPartialView",productos);
+        }
+
         public ActionResult getImage(int id)
         {
             Productos pro = db.Productos.Find(id);
@@ -202,6 +252,26 @@ namespace Sistema_JYR.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public class Ajax
+        {
+            public string productoId
+            {
+                get;
+                set;
+            }
+            public string nombreProducto
+            {
+                get;
+                set;
+            }
+
+            public string idCategoria
+            {
+                get;
+                set;
+            }
         }
     }
 }

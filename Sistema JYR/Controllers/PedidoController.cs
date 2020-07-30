@@ -141,7 +141,7 @@ namespace Sistema_JYR.Controllers
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto, NumeroProforma")] Pedidos pedidos)
+        public ActionResult Edit([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,NumeroProforma,IdCliente,NombreCliente,DireccionEntrega,NombrePedido")] Pedidos pedidos)
         {
 
             double descuento = 0;
@@ -204,14 +204,20 @@ namespace Sistema_JYR.Controllers
             pedidos.PedidoDetalle = detalles;
 
 
-            Pedidos pedidoDuplicado = new Pedidos();
-            pedidoDuplicado.IdUsuario = pedidos.IdUsuario;
-            pedidoDuplicado.IdEstado = pedidos.IdEstado;
-            pedidoDuplicado.Fecha = pedidos.Fecha;
-            pedidoDuplicado.TotalPagar = pedidos.TotalPagar;
-            pedidoDuplicado.TotalDescuento = pedidos.TotalDescuento;
-            pedidoDuplicado.TotalImpuesto = pedidos.TotalImpuesto;
-            pedidoDuplicado.NumeroProforma = pedidos.NumeroProforma;
+            Pedidos pedidoDuplicado = new Pedidos
+            {
+                IdUsuario = pedidos.IdUsuario,
+                IdEstado = pedidos.IdEstado,
+                Fecha = pedidos.Fecha,
+                TotalPagar = pedidos.TotalPagar,
+                TotalDescuento = pedidos.TotalDescuento,
+                TotalImpuesto = pedidos.TotalImpuesto,
+                NumeroProforma = pedidos.NumeroProforma,
+                IdCliente = pedidos.IdCliente,
+                NombreCliente = pedidos.NombreCliente,
+                NombrePedido = pedidos.NombrePedido,
+                DireccionEntrega = pedidos.DireccionEntrega 
+            };
             db.Pedidos.Add(pedidoDuplicado);
             db.SaveChanges();
 

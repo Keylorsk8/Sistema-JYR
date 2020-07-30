@@ -25,13 +25,13 @@
             <h5>Cliente</h5>
             <dl class="dl-horizontal">
                 <dt>
-                    @Html.DisplayNameFor(model => model.NombreCliente)
+                   Nombre del Cliente
                 </dt>
                 <dd>
                     @Model.NombreCliente
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.DireccionEntrega)
+                    Dirección de Entrega
                 </dt>
                 <dd>
                     @Model.DireccionEntrega
@@ -56,7 +56,7 @@
             <h5>Total</h5>
             <dl class="dl-horizontal">
                 <dt>
-                    @Html.DisplayNameFor(model => model.TotalDescuento)
+                    Descuento Total
                 </dt>
                 <dd>
                     @if (Model.TotalDescuento == 0)
@@ -69,7 +69,7 @@
                     }
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.TotalImpuesto)
+                    Impuesto Total
                 </dt>
                 <dd>
                     @if (Model.TotalImpuesto == 0)
@@ -82,7 +82,7 @@
                     }
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.TotalPagar)
+                    Total a Pagar
                 </dt>
                 <dd>
                     @if (Model.TotalPagar == 0)

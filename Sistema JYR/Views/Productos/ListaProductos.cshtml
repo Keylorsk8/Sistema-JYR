@@ -1,43 +1,110 @@
 ﻿@model List<Sistema_JYR.Models.Productos>
 
 @{
+    Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
     ViewBag.Title = "Productos";
+    List<Sistema_JYR.Models.CategoriasProducto> categorias = db.CategoriasProducto.ToList();
+    Sistema_JYR.Models.CategoriasProducto cate = new Sistema_JYR.Models.CategoriasProducto();
+    cate.Id = 0;
+    cate.Descripcion = "Todas";
+    categorias.Insert(0, cate);
+    SelectList list = new SelectList(categorias, "Id", "Descripcion");
+
+    List<Sistema_JYR.Models.Productos> recomendaciones = db.Productos.Where(x => x.Id == 1 || x.Id == 9 || x.Id == 11).ToList();
 }
 
+<div class="container-fluid">
 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="topnav" id="myTopnav">
+                <a href="#" class="active" style="text-decoration: none; cursor: default">Filtros</a>
+                <input type="number" placeholder="Producto #" id="idProducto"/>
+                <input type="text" placeholder="Nombre del producto" id="nombreProducto"/>
+                @Html.DropDownList("idCategoria", list, new { @class = "item", @id= "idCategoria" })
+                <input type="button" value="Aplicar" class="btn-dark item" onclick="Filtrar()" style="text-align: center;margin-right: 2px; margin-left: 2px" />
+                <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        function Filtrar() {
+            var idProducto = $('#idProducto').val();
+            var nombreProducto = $("#nombreProducto").val();
+            var idCategoria = $("#idCategoria").val();
 
-<div id="mySidebar" class="sidebar" style="margin-bottom:5%">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()" style="margin-top:25px">×</a>
-    <a href="#">About</a>
-    <a href="#">Services</a>
-    <a href="#">Clients</a>
-    <a href="#">Contact</a>
-</div>
-<button class="openbtn" onclick="openNav()">☰ Filtros</button>
-<div id="wrap">
-    <div class="container"><h2>Lista de Productos</h2></div>
+            var dataObject = JSON.stringify({
+                'productoId': idProducto,
+                'nombreProducto': nombreProducto,
+                'idCategoria': idCategoria
+            })
 
-    <div id="columns" class="columns_4">
-        @foreach (var item in Model)
-        {
-            <figure>
-                <img src="@Url.Action("getImage", "Productos", new { id = item.Id })">
-                <figcaption>@item.Nombre</figcaption>
-                <span class="price">₡@item.Precio</span>
-                <a class="button" href="#">Agregar</a>
-            </figure>
+            var objeto = new Object();
+                objeto.productoId = idProducto;
+                objeto.nombreProducto = nombreProducto;
+            objeto.idcategoria = idCategoria;
+
+            var url = "@Url.Action("FiltrarProductos", "Productos")";
+            var data = { productoId: idProducto, nombreProducto: nombreProducto, idCategoria: idCategoria };
+            $.post(url, data).done(function (data) {
+                $("#divProductos").html(data);
+            })
         }
+    </script>
+
+    <br />
+    <br />
+    <div id="divProductos">
+        <div id="wrap">
+            <h3 class="wow animate__animated animate__fadeInLeft"><i class="fa fa-thumbs-o-up" style="margin-right: 10px"></i>Recomendaciones</h3>
+            <hr />
+            <div id="columns" class="columns_4">
+                @foreach (var item in recomendaciones)
+                {
+                <figure style="text-align: center" class="wow animate__animated animate__fadeInRight">
+                    <figcaption>@item.Nombre</figcaption>
+                    <span class="price">₡@item.Precio</span>
+                    <br />
+                    <br />
+                    <button class="button" style="vertical-align:middle"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar </span></button>
+                    <br />
+                    <p style="font-size:smaller;color:gray">Producto #@item.Id</p>
+                </figure>
+                }
+            </div>
+        </div>
+        <div id="wrap">
+            <h3 class="wow animate__animated animate__fadeInLeft"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i>Lista de Productos</h3>
+            <hr />
+            <div id="columns" class="columns_4">
+                @foreach (var item in Model)
+                {
+                <figure style="text-align: center" class="wow animate__animated animate__fadeInRight">
+                    <img src="@Url.Action("getImage", "Productos", new { id = item.Id })">
+                    <figcaption>@item.Nombre</figcaption>
+                    <span class="price">₡@item.Precio</span>
+                    <br />
+                    <br />
+                    <button class="button" style="vertical-align:middle"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar </span></button>
+                    <br />
+                    <p style="font-size:smaller;color:gray">Producto #@item.Id</p>
+                </figure>
+                }
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    function openNav() {
-        document.getElementById("mySidebar").style.width = "250px";
-        document.getElementById("wrap").style.marginLeft = "250px";
-    }
-
-    function closeNav() {
-        document.getElementById("mySidebar").style.width = "0";
-        document.getElementById("wrap").style.marginLeft = "0";
+    function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+            x.className += " responsive";
+        } else {
+            x.className = "topnav";
+        }
     }
 </script>
+
