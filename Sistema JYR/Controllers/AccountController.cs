@@ -228,7 +228,7 @@ namespace Sistema_JYR.Controllers
         {
             if (userId == null || code == null)
             {
-                string callbackUrl = await EnviarCorreoAsync(userId, "Confirma tú cuenta-Reenviado", 1);
+                string callbackUrl = await EnviarCorreoAsync(userId, "Confirma tu cuenta- reenviado", 1);
                 Session["MensajeIndex"] = "Error Confirmar Cuenta";
                 return RedirectToAction("Index", "Home");
             }
@@ -240,7 +240,7 @@ namespace Sistema_JYR.Controllers
             }
             else
             {
-                string callbackUrl = await EnviarCorreoAsync(userId, "Confirma tú cuenta-Reenviado", 1);
+                string callbackUrl = await EnviarCorreoAsync(userId, "Confirma tu cuenta- reenviado", 1);
                 Session["MensajeIndex"] = "Error Confirmar Cuenta";
                 return RedirectToAction("Index", "Home");
             }

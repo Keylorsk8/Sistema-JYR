@@ -105,8 +105,8 @@
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Estado, htmlAttributes: new { @class = "control-label col-md-12" })
-                        <p class="control-label col-md-12">Habilitado o deshabilitado</p>
+                        @Html.Label("¿Habilitado?", htmlAttributes: new { @class = "control-label col-md-12" })
+                       
                         <div class="col-md-12">
                             <div class="checkbox">
                                 @Html.EditorFor(model => model.Estado)
