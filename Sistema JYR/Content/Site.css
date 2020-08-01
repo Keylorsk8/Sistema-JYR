@@ -247,6 +247,19 @@ body {
     ImgInicio{
         width: 2%
     }
+
+    .dividerNav {
+        display: none
+    }
+
+    #btnMantenimientos {
+        display: none;
+    }
+
+    #btnReportes {
+        display: none;
+    }
+
 }
 
 @media (max-width: 900px) {

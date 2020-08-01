@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Sistema_JYR.Models;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Sistema_JYR.Models;
 
 namespace Sistema_JYR.Controllers
 {
@@ -94,11 +93,11 @@ namespace Sistema_JYR.Controllers
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
 
-                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta-Reenviado",1);
+                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta-Reenviado", 1);
                     Session["MensajeIndex"] = "Confirma tú cuenta-Reenviado";
                     ViewBag.errorMessage = "Debe confirmar su correo para iniciar sesión."
                         + "La confirmación ha sido reenviada a su correo electrónico.";
-                    return RedirectToAction("Index","Home") ;
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -128,9 +127,9 @@ namespace Sistema_JYR.Controllers
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     Session["MensajeIndex"] = "Lockout";
-                    return RedirectToAction("Index","Home") ;
+                    return RedirectToAction("Index", "Home");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Usuario o contraseña incorrectos, intentelo de nuevo.");
@@ -209,10 +208,10 @@ namespace Sistema_JYR.Controllers
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
-                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta",1) ;
+                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta", 1);
 
                     Session["MensajeIndex"] = "Confirma tú cuenta";
-                    return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
             }
@@ -502,12 +501,13 @@ namespace Sistema_JYR.Controllers
             {
                 code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
                 callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userID, code = code }, protocol: Request.Url.Scheme);
-            } else
+            }
+            else
             {
                 code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
             }
-            
+
             string text = "";
             string html = "<!DOCTYPE html>";
             html += "<html lang='en'>";
@@ -519,7 +519,7 @@ namespace Sistema_JYR.Controllers
             html += "<div style='background-color: white;'>";
             html += "<div style='display:flex;align-items: center;justify-content: center; background-color: #002f3f; width: 100%; padding:1px ; text-align: center'>";
             html += "<img style='padding:3px;width: 80px; height:60px; display: inline-block;' src='https://scontent.fsjo9-1.fna.fbcdn.net/v/t1.0-9/89285644_1717326001743786_4731412217533038592_n.jpg?_nc_cat=105&_nc_sid=09cbfe&_nc_ohc=JU5DJunai8sAX9rvEL3&_nc_ht=scontent.fsjo9-1.fna&oh=a651db2a91ad73b41bc9114543292741&oe=5F25066B'>";
-            html += "<h1 style='font-weight: 200;display: inline-block; color: white;'>"+ subject +"</h1>";
+            html += "<h1 style='font-weight: 200;display: inline-block; color: white;'>" + subject + "</h1>";
             html += "</div>";
             html += "<div style='padding: 20px;'>";
             html += "<h4 style='color: black;font-weight: 200'>Hola " + user.Nombre + " " + user.Apellido1 + ",</h4>";
@@ -535,7 +535,7 @@ namespace Sistema_JYR.Controllers
                 html += "<p style='color: black;font-weight: 200'>Has clic en el siguiente botón para recuperar tu contraseña. </p>";
                 html += "<div style='text-align: center;margin-top: 30px;'>";
             }
-            html += "<a href='" + callbackUrl + "' class='btn btn-info' style='padding: 20px 70px 20px 70px;font-weight: 200;width: 50px ; color: white; text-decoration: none; background-color: #002f3f;'>"+ (tipo == 1? "Confirmar":"Cambiar contraseña") +"</a>";
+            html += "<a href='" + callbackUrl + "' class='btn btn-info' style='padding: 20px 70px 20px 70px;font-weight: 200;width: 50px ; color: white; text-decoration: none; background-color: #002f3f;'>" + (tipo == 1 ? "Confirmar" : "Cambiar contraseña") + "</a>";
             html += "</div>";
             html += "<br>";
             html += "<p style='color: black;font-weight: 200'>¡Muchas gracias por confiar en nosotros!</p>";
@@ -549,7 +549,7 @@ namespace Sistema_JYR.Controllers
             {
                 html += "<p style='color: black;font-weight: 200;font-size:smaller;text-align: center'>Si no fuiste tú, alguien intentó cambiar tu contraseña, considera cambiarla </p>";
             }
-            
+
             html += "</div>";
             html += "</div>";
             html += "</body>";
