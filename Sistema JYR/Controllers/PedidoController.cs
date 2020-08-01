@@ -15,7 +15,7 @@ namespace Sistema_JYR.Controllers
 {
     public class PedidoController : Controller
     {
-        private SistemaJYREntities db = new SistemaJYREntities();
+        private readonly SistemaJYREntities db = new SistemaJYREntities();
 
         // GET: Pedido
 
@@ -278,7 +278,7 @@ namespace Sistema_JYR.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult filtrarPedidosAjax(string terminoBusqueda)
+        public ActionResult FiltrarPedidosAjax(string terminoBusqueda)
         {
             if (terminoBusqueda != null)
             {
@@ -557,10 +557,11 @@ namespace Sistema_JYR.Controllers
                 try
                 {
 
-                    PedidoDetalle detalle = new PedidoDetalle();
-
-                    detalle.IdPedido = idPedido;
-                    detalle.IdProducto = nuevoId;
+                    PedidoDetalle detalle = new PedidoDetalle
+                    {
+                        IdPedido = idPedido,
+                        IdProducto = nuevoId
+                    };
                     detalle.Productos = db.Productos.Where(x => x.Id == detalle.IdProducto).First();
                     detalle.Cantidad = cant;
                     detalle.CantidadEnviada = 0;

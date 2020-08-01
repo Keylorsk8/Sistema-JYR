@@ -588,6 +588,10 @@
     <Content Include="Views\Pedido\_Cliente.cshtml" />
     <Content Include="Views\Pedido\_ClienteSinCuenta.cshtml" />
     <Content Include="Views\Productos\_ListaProductosPartialView.cshtml" />
+    <Content Include="Views\Proformas\ListaProformas.cshtml" />
+    <Content Include="Views\Proformas\DetailsProformaCliente.cshtml" />
+    <Content Include="Views\Proformas\CreateProfromaCliente.cshtml" />
+    <Content Include="Views\Proformas\EditProformaCliente.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

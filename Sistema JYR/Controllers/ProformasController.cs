@@ -16,10 +16,11 @@ namespace Sistema_JYR.Controllers
     {
         private readonly SistemaJYREntities db = new SistemaJYREntities();
 
+        #region Metodos de Admin - Vendedor
         // GET: Proformas
         public ActionResult Index()
         {
-            var proformas = db.Proformas.Where(x => /*x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1 && */x.IdEstado == 2).OrderByDescending(x => x.Id);
+            var proformas = db.Proformas.Where(x => x.AspNetUsers.Rol == 2 && x.IdEstado == 2 || x.AspNetUsers.Rol == 1 && x.IdEstado == 2).OrderByDescending(x => x.Id);
             return View(proformas.ToList());
         }
 
@@ -154,6 +155,169 @@ namespace Sistema_JYR.Controllers
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
         }
+        #endregion
+
+        #region Metodos de Cliente
+        public ActionResult ListaProformas(string idUser)
+        {
+            var proformas = db.Proformas.Where(x => x.IdUsuario == idUser && x.IdEstado == 2).OrderByDescending(x => x.Id);
+            return View(proformas);
+        }
+
+        // GET: Proformas/Edit/5
+        public ActionResult EditProformaCliente(int? id, string idUser)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
+            }
+            var usuario = db.AspNetUsers.Where(x => x.Id == idUser).First();
+            if (usuario.Rol != 3 )
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
+            }
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+            ViewBag.Id = proformas.Id;
+            ViewBag.TotalPagar = proformas.TotalPagar;
+            ViewBag.TotalDescuento = proformas.TotalDescuento;
+            ViewBag.TotalImpuesto = proformas.TotalImpuesto;
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            proformas.ProformaDetalle = detalles;
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == idUser), "Id", "Nombre");
+            ViewBag.IdEstado = new SelectList(db.EstadoProforma.Where(x => x.Descripcion.Equals("Nueva")), "Id", "Descripcion");
+            return View(proformas);
+        }
+
+        // POST: Proformas/Edit/5
+        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
+        // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProformaCliente([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
+        {
+            double descuento = 0;
+            double desc = 0;
+            double impuesto = 0;
+            double imp = 0;
+            double totalPagar = 0;
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proformas.Id).ToList();
+            foreach (var item in detalles)
+            {
+                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+            }
+            proformas.TotalDescuento = desc;
+            proformas.TotalImpuesto = imp;
+            proformas.TotalPagar = totalPagar;
+            if (ModelState.IsValid)
+            {
+                db.Entry(proformas).State = EntityState.Modified;
+                db.SaveChanges();
+                Session["Proforma"] = "¡Proforma actualizada correctamente!";
+                return RedirectToAction("Index");
+            }
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == proformas.IdCliente), "Id", "Nombre");
+            ViewBag.IdEstado = new SelectList(db.EstadoProforma.Where(x => x.Descripcion.Equals("Nueva")), "Id", "Descripcion");
+            return View(proformas);
+        }
+
+        /// <summary>
+        /// Detalles de Proforma con usuario cliente
+        /// </summary>
+        /// <param name="id">Id de la Proforma</param>
+        /// <param name="idCliente">Id del usuario en session</param>
+        /// <returns></returns>
+        public ActionResult DetailsProformaCliente(int? id, string idCliente)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas");
+            }
+            var cliente = db.AspNetUsers.Where(x => x.Id == idCliente).First();
+            if (cliente.Rol != 3)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas");
+            }
+
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas != null)
+            {
+                if (proformas.IdUsuario == idCliente)
+                {
+                    List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+                    proformas.ProformaDetalle = detalles;
+                    ViewBag.Id = proformas.Id;
+                }
+                else
+                {
+                    Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                    return RedirectToAction("ListaProformas");
+                }
+            }
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("ListaProformas");
+            }
+            return View(proformas);
+        }
+
+        // GET: Proformas/Create
+        public ActionResult CreateProfromaCliente(string id)
+        {
+            ViewBag.Fecha = DateTime.Now.ToShortDateString();
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == id), "Id", "Nombre");
+            ViewBag.IdEstado = new SelectList(db.EstadoProforma.Where(x => x.Descripcion.Equals("Nueva")), "Id", "Descripcion");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateProfromaCliente([Bind(Include = "IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
+        {
+            proformas.Fecha = DateTime.Now;
+            proformas.TotalDescuento = 0;
+            proformas.TotalImpuesto = 0;
+            proformas.TotalPagar = 0;
+            if (proformas.DireccionEntrega == null)
+            {
+                proformas.DireccionEntrega = "Retirar en la ferretería";
+            }
+            if (proformas.NombreProforma == null)
+            {
+                proformas.NombreProforma = "Proforma #";
+            }
+            if (ModelState.IsValid)
+            {
+                db.Proformas.Add(proformas);
+                db.SaveChanges();
+                Session["Proforma"] = "¡Proforma creada con éxito!";
+                if (proformas.NombreProforma == "Proforma #")
+                {
+                    proformas.NombreProforma += proformas.Id;
+                }
+                db.Entry(proformas).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("ListaProformas", new { idUser = proformas.IdCliente });
+            }
+            ViewBag.Id = proformas.Id;
+            ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == proformas.IdUsuario), "Id", "Nombre");
+            ViewBag.IdEstado = new SelectList(db.EstadoProforma.Where(x => x.Descripcion.Equals("Nueva")), "Id", "Descripcion");
+            return View(proformas);
+        }
+        #endregion
 
         public ActionResult DuplicarProforma(int? id)
         {
@@ -197,7 +361,7 @@ namespace Sistema_JYR.Controllers
                 db.SaveChanges();
             }
             Session["Proforma"] = "¡Proforma duplicada correctamente!";
-            return RedirectToAction("Index");
+            return RedirectToAction("ListaProformas", new { idUser = proformas.IdCliente });
         }
 
         // GET: Proformas/Delete/5

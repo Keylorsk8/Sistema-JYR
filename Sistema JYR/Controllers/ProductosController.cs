@@ -204,7 +204,7 @@ namespace Sistema_JYR.Controllers
             {
                 foreach (var item in productos)
                 {
-                    if (item.Nombre.Contains(nombre))
+                    if (item.Nombre.ToLower().Contains(nombre.ToLower()))
                     {
                         productosFiltradaNombre.Add(item);
                     }
