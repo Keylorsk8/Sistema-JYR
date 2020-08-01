@@ -11,7 +11,8 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class Proformas
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -25,8 +26,16 @@ namespace Sistema_JYR.Models
         public string IdUsuario { get; set; }
         public int IdEstado { get; set; }
         public System.DateTime Fecha { get; set; }
+
+        [DisplayName("Total Pagar")]
         public double TotalPagar { get; set; }
+
+
+        [DisplayName("Total Descuento")]
         public double TotalDescuento { get; set; }
+
+
+        [DisplayName("Total Impuesto")]
         public double TotalImpuesto { get; set; }
         public string IdCliente { get; set; }
         [System.ComponentModel.DataAnnotations.Display(Name = "Dirección de Entrega")]

@@ -580,11 +580,12 @@ namespace Sistema_JYR.Controllers
         //Filtros de la página
         public ActionResult filtrarProformasAjax(string terminoBusqueda)
         {
+
             if (terminoBusqueda != null)
-            {
-                var lista = db.Proformas.Where(x => x.AspNetUsers.Nombre.Contains(terminoBusqueda)
-                || x.EstadoProforma.Descripcion.Contains(terminoBusqueda) || x.Id == Convert.ToInt32(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
-                return PartialView("_ListaProformas", lista.ToList());
+            {            
+                var lista = db.Proformas.Where(x => x.NombreProforma.Contains(terminoBusqueda)
+                 /*&& x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1*/);
+                return PartialView("_ListaProformas", lista.ToList().Where(x=> x.IdEstado==2));
             }
             return View();
         }

@@ -282,8 +282,8 @@ namespace Sistema_JYR.Controllers
         {
             if (terminoBusqueda != null)
             {
-                var lista = db.Pedidos.Where(x => x.AspNetUsers.Nombre.Contains(terminoBusqueda)
-                || x.EstadoPedido.Descripcion.Contains(terminoBusqueda) || x.Id == Convert.ToInt32(terminoBusqueda) && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
+                var lista = db.Pedidos.Where(x => x.NombrePedido.Contains(terminoBusqueda)
+                  && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
                 return PartialView("_ListaPedidos", lista.ToList());
             }
 
@@ -751,24 +751,24 @@ namespace Sistema_JYR.Controllers
                                 }
 
                                 var querys = from d in db.PedidoDetalle
-                                             join p in db.Productos on d.IdProducto equals p.Id
-                                             join c in db.CategoriasProducto on p.IdCategoria equals c.Id
-                                             join o in db.Pedidos on d.IdPedido equals o.Id
+                                            join p in db.Productos on d.IdProducto equals p.Id
+                                            join c in db.CategoriasProducto on p.IdCategoria equals c.Id
+                                            join o in db.Pedidos on d.IdPedido equals o.Id
                                              where o.Fecha >= anterior && o.Fecha <= actual && p.IdCategoria == categoria
                                              group new { d.Cantidad, d.PrecioUnitario }
-                                             by new { p.Id, p.Nombre, c.Descripcion, d.Cantidad, d.PrecioUnitario }
-                                            into g
-                                             orderby g.Key.Cantidad * g.Key.PrecioUnitario descending
+                                            by new { p.Id, p.Nombre, c.Descripcion }
+                                               into g
+                                            orderby g.Sum(x => x.PrecioUnitario * x.Cantidad) descending
 
-                                             select new
-                                             {
-                                                 Id = g.Key.Id,
-                                                 Producto = g.Key.Nombre,
-                                                 Categoria = g.Key.Descripcion,
-                                                 cantidadTotal = g.Sum(x => x.Cantidad),
-                                                 Total = g.Sum(x => x.PrecioUnitario * x.Cantidad)
+                                            select new
+                                            {
+                                                Id = g.Key.Id,
+                                                Producto = g.Key.Nombre,
+                                                Categoria = g.Key.Descripcion,
+                                                cantidadTotal = g.Sum(x => x.Cantidad),
+                                                Total = g.Sum(x => x.PrecioUnitario * x.Cantidad)
 
-                                             };
+                                            };
 
 
 
