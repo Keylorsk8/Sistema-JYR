@@ -13,7 +13,7 @@
                 Filtro:
             </div>
             <div class="col-md-8">
-                @Html.TextBox("cedula", "", new { @class = "form-control", @placeholder = "Cédula" })
+                @Html.TextBox("cedula", "", new { @class = "form-control", @placeholder = "Cédula", @required= "required"})
             </div>
             <div class="col-md-2">
                 <button type="submit" value="Buscar" class="btn btn-dark btn-block"><i class="fa fa-search"></i></button>
