@@ -41,11 +41,14 @@
                 Filtro:
             </div>
 
-            <div class="col-md-9">
+            <div class="col-md-6">
                 @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
 
             </div>
+            <div class="col-md-3">
+                <input type="number" min="0" class="form-control" placeholder="Número de Proforma" onchange="x(this.value )" id="numeroProforma" />
 
+            </div>
             <div class="col-md-1">
                 <button type="submit" value="Buscar" class="btn btn-dark btn-block"><i class="fa fa-search"></i></button>
             </div>
@@ -215,6 +218,27 @@
 
 @section Scripts {
 
+    <script>
+  function x(e) {
+      var numeroProforma = e;
+var dataObjeto = JSON.stringify({
+    'numeroProforma': numeroProforma,
+
+                                                        })
+
+                                                        var objeto = new Object();
+      objeto.numeroProforma = numeroProforma;
+
+                                                    var url = "@Url.Action("filtrarNumeroProforma", "Proformas")";
+      var datos = { numeroProforma: numeroProforma};
+
+                                                        $.post(url, datos).done(function (datos) {
+                                                            $("#divProformas").html(datos);
+                                                            $("#numeroProforma").val("");
+                                                        })
+
+                                                }
+    </script>
 
     @Scripts.Render("~/bundles/jqueryval")
 }

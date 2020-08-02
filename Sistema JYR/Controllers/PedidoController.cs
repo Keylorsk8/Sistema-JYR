@@ -601,14 +601,30 @@ namespace Sistema_JYR.Controllers
         {
             if (terminoBusqueda != null)
             {
-                var lista = db.Pedidos.Where(x => x.NombrePedido.Contains(terminoBusqueda)
-                  && x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1);
+                var lista = db.Pedidos.Where(x => x.NombrePedido.Contains(terminoBusqueda));
                 return PartialView("_ListaPedidos", lista.ToList());
             }
 
 
             return View();
         }
+
+        public ActionResult filtrarNumeroPedido(string numeroPedido)
+        {
+            
+
+            if (numeroPedido != null)
+            {
+                int id = Convert.ToInt32(numeroPedido);
+                var lista = db.Pedidos.Where(x => x.Id == id);
+                return PartialView("_ListaPedidos", lista.ToList());
+            }
+
+
+            return View();
+        }
+
+        
 
         public ActionResult EliminarCarrito(int? idD, int IdPedido)
         {
@@ -990,7 +1006,17 @@ namespace Sistema_JYR.Controllers
             }
 
         }
+        public class AjaxFiltro
+        {
+            public string numeroPedido
+            {
+                get;
+                set;
+            }
+          
 
+        
+        }
 
         public ActionResult reporteTopProducto(string fechaAnterior, string fechaActual, string IdCategoria)
         {

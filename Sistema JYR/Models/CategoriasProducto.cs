@@ -12,6 +12,7 @@ namespace Sistema_JYR.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
 
     public partial class CategoriasProducto
     {
@@ -23,6 +24,8 @@ namespace Sistema_JYR.Models
     
         public int Id { get; set; }
 
+
+        [Required(ErrorMessage = "Este campo es requerido")]
         [DisplayName("Descripción")]
         public string Descripcion { get; set; }
     

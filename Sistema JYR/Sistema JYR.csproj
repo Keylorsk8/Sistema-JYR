@@ -354,6 +354,7 @@
     <Content Include="Content\imagenes\Carrusel\imagen3.jpg" />
     <Content Include="Content\imagenes\Carrusel\imagen4.jpg" />
     <Content Include="Content\imagenes\Carrusel\imagen5.jpg" />
+    <Content Include="Content\imagenes\hoja.png" />
     <Content Include="Content\imagenes\Index\Compromise.png" />
     <Content Include="Content\imagenes\Index\Generosity.png" />
     <Content Include="Content\imagenes\Index\leader.png" />
@@ -631,6 +632,7 @@
     <Content Include="Views\Proformas\DetailsProformaCliente.cshtml" />
     <Content Include="Views\Proformas\CreateProfromaCliente.cshtml" />
     <Content Include="Views\Proformas\EditProformaCliente.cshtml" />
+    <Content Include="Views\Home\Politic.cshtml" />
     <Content Include="Views\Productos\_ListaProductosMensajes.cshtml" />
     <Content Include="Views\Pedido\_ListaProductosMensajes.cshtml" />
     <Content Include="Views\Proformas\_ListaProductosMensajes.cshtml" />
@@ -652,7 +654,6 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reportes\prueba.rdlc" />
     <EmbeddedResource Include="Reportes\ReporteProformaAPedido.rdlc" />
     <EmbeddedResource Include="Reportes\ReporteTopProducto.rdlc" />
     <EmbeddedResource Include="Reportes\ReporteUsuario.rdlc" />

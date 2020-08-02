@@ -61,7 +61,7 @@
                                 @Html.LabelFor(model => model.NombreCliente,"Nombre del Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
                                 <div class="row">
                                     <div class="col-md-10">
-                                        @Html.TextBoxFor(model => model.NombreCliente, new { @class = "form-control" })
+                                        @Html.TextBoxFor(model => model.NombreCliente, new { @class = "form-control", @required = "required" })
                                         @Html.ValidationMessageFor(model => model.NombreCliente, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="col-md-2">
@@ -73,10 +73,9 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.DireccionEntrega, "Dirección de entrega", htmlAttributes: new { @class = "control-label col-md-12" })
                                 <div class="col-md-12">
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="fa form-control" value="">
-                                        @Html.ValidationMessageFor(model => model.DireccionEntrega, "", new { @class = "text-danger" })
-                                    </div>
+                                    @Html.TextBoxFor(model => model.DireccionEntrega, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.DireccionEntrega, "", new { @class = "text-danger" })
+
                                 </div>
                             </div>
                         </div>
