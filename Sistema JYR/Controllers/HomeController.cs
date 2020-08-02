@@ -28,6 +28,13 @@ namespace Sistema_JYR.Controllers
             return View();
         }
 
+        public ActionResult Politic()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+
         [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Mantenimientos()
         {

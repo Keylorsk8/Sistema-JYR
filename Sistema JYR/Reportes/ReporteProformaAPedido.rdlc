@@ -745,7 +745,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!TotalDescuento.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <Format>#,0.00;(#,0.00)</Format>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -777,7 +779,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!TotalImpuesto.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <Format>#,0.00;(#,0.00)</Format>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>
@@ -809,7 +813,9 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!TotalPagar.Value</Value>
-                                  <Style />
+                                  <Style>
+                                    <Format>#,0.00;(#,0.00)</Format>
+                                  </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style>

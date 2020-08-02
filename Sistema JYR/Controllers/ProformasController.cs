@@ -690,7 +690,10 @@ namespace Sistema_JYR.Controllers
             return PartialView("_ListaProformaCarrito", proforma);
         }
 
-        //Cambiar la cantidad del producto
+        /// <summary>
+        /// Cambiar la cantidad en una proforma
+        /// </summary>
+        /// <returns></returns>
         public ActionResult CambiarCantidadPedida(Ajax objeto)
         {
             int idProforma = Convert.ToInt32(objeto.idProforma);
@@ -750,7 +753,10 @@ namespace Sistema_JYR.Controllers
             return PartialView("_ListaProformaCarrito", proforma);
         }
 
-        //Agregar un nuevo producto en la página editar
+        /// <summary>
+        /// Agrega un nuevo producto a la proforma
+        /// </summary>
+        /// <returns></returns>
         public ActionResult AgregarDetalle(AjaxDetalle objeto)
         {
             int idProforma = Convert.ToInt32(objeto.idProforma);
@@ -831,7 +837,10 @@ namespace Sistema_JYR.Controllers
             return PartialView("_ListaProformaCarrito", ped);
         }
 
-        //Filtros de la página
+        /// <summary>
+        /// Filtra por nombre de proforma 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult filtrarProformasAjax(string terminoBusqueda)
         {
 
@@ -862,6 +871,26 @@ namespace Sistema_JYR.Controllers
                 throw e;
             }
         }
+
+        /// <summary>
+        /// Filtra por Numero Proforma
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult filtrarNumeroProforma(string numeroProforma)
+        {
+
+
+            if (numeroProforma != null)
+            {
+                int id = Convert.ToInt32(numeroProforma);
+                var lista = db.Proformas.Where(x => x.Id == id);
+                return PartialView("_ListaProformas", lista.ToList().Where(x => x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1));
+            }
+
+
+            return View();
+        }
+
 
         /// <summary>
         /// Retorna la vista para clientes no registrados creando una nueva proforma
@@ -965,6 +994,18 @@ namespace Sistema_JYR.Controllers
                 get;
                 set;
             }
+        }
+
+        public class AjaxFiltro
+        {
+            public string numeroPedido
+            {
+                get;
+                set;
+            }
+           
+
+           
         }
 
         public ActionResult reporteProformaAPedido(string fechaAnterior, string fechaActual)
