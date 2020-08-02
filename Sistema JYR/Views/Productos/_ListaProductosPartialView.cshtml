@@ -16,7 +16,7 @@
                         <span class="price">₡@item.Precio</span>
                         <br />
                         <br />
-                        <button class="button" style="vertical-align:middle"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar </span></button>
+                        <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#Mensajes" href="@Url.Action("AgregaraDocumento",new { id = item.Id })" class="button"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar</span></a>
                         <br />
                         <p style="font-size:smaller;color:gray">Producto #@item.Id</p>
                     </figure>

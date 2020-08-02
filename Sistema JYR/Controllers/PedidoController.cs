@@ -20,8 +20,9 @@ using iText.Layout;
 using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.AspNet.Identity;
 using Sistema_JYR.Models;
-
+using Sistema_JYR.Models.Session;
 
 namespace Sistema_JYR.Controllers
 {
@@ -34,7 +35,7 @@ namespace Sistema_JYR.Controllers
         public ActionResult Index()
         {
 
-            var pedidos = db.Pedidos.Include(p => p.EstadoPedido);
+            var pedidos = db.Pedidos.Where(x => x.IdEstado == 7).ToList();
             return View(pedidos.ToList());
         }
 
@@ -432,6 +433,78 @@ namespace Sistema_JYR.Controllers
             return View(pedidos);
         }
 
+        public ActionResult SeleccionarDocumento(int id)
+        {
+            try
+            {
+                Pedidos pedido = db.Pedidos.Find(id);
+            }
+            catch (Exception)
+            {
+                Session["Pedido"] = "No existe el pedido";
+                return RedirectToAction("Index");
+            }
+            Session["Documento"] = new Documento() { TipoDocumento = TipoDocumento.Pedido, NumerosDocumento = id };
+            Session["Pedido"] = "Seleccionado";
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult CancelarPedido(int? id)
+        {
+            if (id == null)
+            {
+                Session["Pedido"] = "Pedido inválido. Especifique un Pedido";
+                return RedirectToAction("Index");
+            }
+            Pedidos pedido = db.Pedidos.Find(id);
+            if (pedido == null)
+            {
+                Session["Pedido"] = "No existe el pedido";
+                return RedirectToAction("Index");
+            }
+            pedido.IdEstado = 4;
+            db.Entry(pedido).State = EntityState.Modified;
+            db.SaveChanges();
+            Session["Pedido"] = "Cancelado";
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult SeleccionarDocumentoCliente(int id)
+        {
+            try
+            {
+                Pedidos pedido = db.Pedidos.Find(id);
+            }
+            catch (Exception)
+            {
+
+                Session["Pedido"] = "No existe el pedido";
+                return RedirectToAction("ListaPedidos",User.Identity.GetUserId());
+            }
+            Session["Documento"] = new Documento() { TipoDocumento = TipoDocumento.Proforma, NumerosDocumento = id };
+            Session["Pedido"] = "Seleccionado";
+            return RedirectToAction("ListaPedidos", HttpContext.User.Identity.GetUserId());
+        }
+
+        public ActionResult CancelarPedidoCliente(int? id)
+        {
+            if (id == null)
+            {
+                Session["Pedido"] = "Pedido inválido. Especifique un pedido";
+                return RedirectToAction("ListaPedidos", User.Identity.GetUserId());
+            }
+            Proformas proforma = db.Proformas.Find(id);
+            if (proforma == null)
+            {
+                Session["Pedido"] = "No existe el pedido";
+                return RedirectToAction("ListaPedidos", User.Identity.GetUserId());
+            }
+            proforma.IdEstado = 4;
+            db.Entry(proforma).State = EntityState.Modified;
+            db.SaveChanges();
+            Session["Pedido"] = "Cancelado";
+            return RedirectToAction("ListaPedidos", User.Identity.GetUserId());
+        }
 
 
 
@@ -487,11 +560,7 @@ namespace Sistema_JYR.Controllers
             }
 
             return RedirectToAction("Index");
-
-
         }
-
-
 
         // GET: Pedido/Delete/5
         public ActionResult Delete(int? id)
@@ -858,7 +927,6 @@ namespace Sistema_JYR.Controllers
             return PartialView("_ListaPedidoCarrito", ped);
 
         }
-
 
         public class Ajax
         {

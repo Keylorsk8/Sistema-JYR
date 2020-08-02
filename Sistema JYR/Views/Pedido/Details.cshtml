@@ -182,14 +182,9 @@
     <div class="card bg-light mb-12">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <a class="btn btn-danger btn-block" href="@Url.Action("Pdf", new { id = Model.Id })" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> Exportar a PDF
-                    </a>
-                </div>
-                <div class="col-md-6">
-                    <a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedido", new { id = Model.Id })">
-                        <i class="fa fa-send-o"></i>  Convertir a Pedido
                     </a>
                 </div>
             </div>

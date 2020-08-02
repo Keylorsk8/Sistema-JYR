@@ -22,10 +22,10 @@
         <div class="form-horizontal" style="margin-bottom: 100px">
 
             <div class="row">
-                <div class="col col-lg-6">
+                <div class="col-lg-6">
                     <p>Actualiza la información del pedido</p>
                 </div>
-                <div class="col col-lg-6">
+                <div class="col-lg-6">
                     <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
                         <i class="fa fa-arrow-left"></i> Volver
                     </a>
@@ -41,7 +41,7 @@
                 @Html.HiddenFor(model => model.NumeroProforma)
                 <h5>Encabezado</h5>
                 <div class="row">
-                    <div class="col col-md-6">
+                    <div class="col-md-6">
 
                         <div class="form-group">
                             @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -98,7 +98,7 @@
                         </div>
                     </div>
 
-                    <div class="col col-md-6">
+                    <div class="col-md-6">
 
                         <div class="form-group">
                             @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-12" })
@@ -127,7 +127,7 @@
                         </div>
                     </div>
 
-                    <div class="col col-md-12">
+                    <div class="col-md-12">
                         <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
                         <hr />
                     </div>
@@ -136,7 +136,7 @@
 
 
                 <div id="detalleAjax" class="row container">
-                    <div class="col col-md-4">
+                    <div class="col-md-4">
                         <div class="form-group">
                             @Html.Label("", "Agregar Producto", htmlAttributes: new { @class = "control-label col-md-12" })
                             <div class="col-md-12">
@@ -144,7 +144,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col col-md-4">
+                    <div class="col-md-4">
                         <div class="form-group">
 
                             @Html.Label("", "Cantidad", htmlAttributes: new { @class = "control-label col-md-12" })
@@ -155,7 +155,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col col-md-4">
+                    <div class="col-md-4">
 
                         <div class="col-md-12">
                             <input type="button" id="agregar" style="margin-top:32px; background-color:#043443; color:white" value="Agregar" class="form-control" />
@@ -173,7 +173,7 @@
                         <div class="card bg-light mb-12">
                             <div class="card-header">Materiales en la Orden</div>
                             <div class="card-body">
-                                <table class="table">
+                                <table class="table table-responsive">
                                     <tr style="text-align:center">
                                         <th style="text-align:center">
                                             Id
@@ -321,7 +321,7 @@
                                             <label>Total de Impuestos</label>
                                         </th>
                                         <th colspan="2">
-                                            @if (Model.TotalImpuesto == 0 || Model.TotalImpuesto == null)
+                                            @if (Model.TotalImpuesto == 0)
                                             {
                                                 <label>₡0,00</label>
                                             }
@@ -337,7 +337,7 @@
                                             <label>Total a Pagar</label>
                                         </th>
                                         <th colspan="2">
-                                            @if (Model.TotalPagar == 0 || Model.TotalPagar == null)
+                                            @if (Model.TotalPagar == 0)
                                             {
                                                 <label>₡0,00</label>
                                             }
@@ -355,7 +355,21 @@
             </div>
         </div>
     }
+
+    <div class="card bg-light mb-12">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="btn btn-danger btn-block" href="@Url.Action("Pdf", new { id = Model.Id })" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> Exportar a PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

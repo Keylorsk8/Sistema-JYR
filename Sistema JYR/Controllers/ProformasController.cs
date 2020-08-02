@@ -1,15 +1,12 @@
 ﻿using System;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.UI;
 using iText.IO.Font.Constants;
 using iText.IO.Image;
 using iText.Kernel.Colors;
@@ -21,11 +18,11 @@ using iText.Layout;
 using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using Org.BouncyCastle.Tsp;
 using Sistema_JYR.Models;
-using WebGrease.Css.ImageAssemblyAnalysis.LogModel;
+using Sistema_JYR.Models.Session;
 using Image = iText.Layout.Element.Image;
 using Rectangle = iText.Kernel.Geom.Rectangle;
+
 
 namespace Sistema_JYR.Controllers
 {
@@ -39,6 +36,88 @@ namespace Sistema_JYR.Controllers
         {
             var proformas = db.Proformas.Where(x => x.AspNetUsers.Rol == 2 && x.IdEstado == 2 || x.AspNetUsers.Rol == 1 && x.IdEstado == 2).OrderByDescending(x => x.Id);
             return View(proformas.ToList());
+        }
+
+        public ActionResult SeleccionarDocumento(int id)
+        {
+            try
+            {
+                Proformas proformas = db.Proformas.Find(id);
+            }
+            catch (Exception)
+            {
+
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+            Session["Documento"] = new Documento() { TipoDocumento = TipoDocumento.Proforma, NumerosDocumento = id };
+            Session["Proforma"] = "Seleccionado";
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult CancelarProforma(int? id)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
+            }
+            Proformas proforma = db.Proformas.Find(id);
+            if (proforma == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+            proforma.IdEstado = 1;
+            db.Entry(proforma).State = EntityState.Modified;
+            db.SaveChanges();
+            Session["Proforma"] = "Cancelada";
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult DuplicarProforma(int? id)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
+            }
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            proformas.ProformaDetalle = detalles;
+            Proformas proformaDuplicado = new Proformas
+            {
+                IdUsuario = proformas.IdUsuario,
+                IdEstado = proformas.IdEstado,
+                Fecha = proformas.Fecha,
+                TotalPagar = proformas.TotalPagar,
+                TotalDescuento = proformas.TotalDescuento,
+                TotalImpuesto = proformas.TotalImpuesto,
+                IdCliente = proformas.IdCliente,
+                NombreCliente = proformas.NombreCliente,
+                DireccionEntrega = proformas.DireccionEntrega,
+                NombreProforma = proformas.NombreProforma
+            };
+            db.Proformas.Add(proformaDuplicado);
+            db.SaveChanges();
+            ProformaDetalle detalleDuplicado = new ProformaDetalle();
+            foreach (var item in detalles)
+            {
+                detalleDuplicado.IdProforma = proformaDuplicado.Id;
+                detalleDuplicado.IdProducto = item.IdProducto;
+                detalleDuplicado.Cantidad = item.Cantidad;
+                detalleDuplicado.PrecioUnitario = item.PrecioUnitario;
+                detalleDuplicado.Descuento = item.Descuento;
+                db.ProformaDetalle.Add(detalleDuplicado);
+                db.SaveChanges();
+            }
+            Session["Proforma"] = "¡Proforma duplicada correctamente!";
+            return RedirectToAction("Index");
         }
 
         // GET: Proformas/Details/5
@@ -285,11 +364,6 @@ namespace Sistema_JYR.Controllers
                 doc.Add(_footer3);
             }
 
-          
-
-            
-
-
             doc.Close();
             byte[] bytesStream = ms.ToArray();
             ms = new MemoryStream();
@@ -297,10 +371,7 @@ namespace Sistema_JYR.Controllers
             ms.Position = 0;
 
             return new FileStreamResult(ms, "application/pdf");
-
         }
-
-       
 
         // GET: Proformas/Create
         public ActionResult Create()
@@ -418,6 +489,43 @@ namespace Sistema_JYR.Controllers
             return View(proformas);
         }
 
+        public ActionResult SeleccionarDocumentoCliente(int id)
+        {
+            try
+            {
+                Proformas proformas = db.Proformas.Find(id);
+            }
+            catch (Exception)
+            {
+
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+            Session["Documento"] = new Documento() { TipoDocumento = TipoDocumento.Proforma, NumerosDocumento = id };
+            Session["Proforma"] = "Seleccionado";
+            return RedirectToAction("ListaProformas","Proformas",new { idUser = User.Identity.GetUserId() });
+        }
+
+        public ActionResult CancelarProformaCliente(int? id)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas",User.Identity.GetUserId());
+            }
+            Proformas proforma = db.Proformas.Find(id);
+            if (proforma == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("ListaProformas", User.Identity.GetUserId());
+            }
+            proforma.IdEstado = 1;
+            db.Entry(proforma).State = EntityState.Modified;
+            db.SaveChanges();
+            Session["Proforma"] = "Cancelada";
+            return RedirectToAction("ListaProformas", User.Identity.GetUserId());
+        }
+
         // GET: Proformas/Edit/5
         public ActionResult EditProformaCliente(int? id, string idUser)
         {
@@ -483,6 +591,51 @@ namespace Sistema_JYR.Controllers
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == proformas.IdCliente), "Id", "Nombre");
             ViewBag.IdEstado = new SelectList(db.EstadoProforma.Where(x => x.Descripcion.Equals("Nueva")), "Id", "Descripcion");
             return View(proformas);
+        }
+
+        public ActionResult DuplicarProformaCliente(int? id)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas", new { idUser = User.Identity.GetUserId() });
+            }
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("ListaProformas", new { idUser = proformas.IdCliente });
+            }
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            proformas.ProformaDetalle = detalles;
+            Proformas proformaDuplicado = new Proformas
+            {
+                IdUsuario = proformas.IdUsuario,
+                IdEstado = proformas.IdEstado,
+                Fecha = proformas.Fecha,
+                TotalPagar = proformas.TotalPagar,
+                TotalDescuento = proformas.TotalDescuento,
+                TotalImpuesto = proformas.TotalImpuesto,
+                IdCliente = proformas.IdCliente,
+                NombreCliente = proformas.NombreCliente,
+                DireccionEntrega = proformas.DireccionEntrega,
+                NombreProforma = proformas.NombreProforma
+            };
+            db.Proformas.Add(proformaDuplicado);
+            db.SaveChanges();
+            ProformaDetalle detalleDuplicado = new ProformaDetalle();
+            foreach (var item in detalles)
+            {
+                detalleDuplicado.IdProforma = proformaDuplicado.Id;
+                detalleDuplicado.IdProducto = item.IdProducto;
+                detalleDuplicado.Cantidad = item.Cantidad;
+                detalleDuplicado.PrecioUnitario = item.PrecioUnitario;
+                detalleDuplicado.Descuento = item.Descuento;
+                db.ProformaDetalle.Add(detalleDuplicado);
+                db.SaveChanges();
+            }
+            Session["Proforma"] = "¡Proforma duplicada correctamente!";
+            return RedirectToAction("ListaProformas", new { idUser = proformas.IdCliente });
         }
 
         /// <summary>
@@ -572,77 +725,6 @@ namespace Sistema_JYR.Controllers
             return View(proformas);
         }
         #endregion
-
-        public ActionResult DuplicarProforma(int? id)
-        {
-            if (id == null)
-            {
-                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
-                return RedirectToAction("Index");
-            }
-            Proformas proformas = db.Proformas.Find(id);
-            if (proformas == null)
-            {
-                Session["Proforma"] = "No existe la proforma";
-                return RedirectToAction("Index");
-            }
-            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
-            proformas.ProformaDetalle = detalles;
-            Proformas proformaDuplicado = new Proformas
-            {
-                IdUsuario = proformas.IdUsuario,
-                IdEstado = proformas.IdEstado,
-                Fecha = proformas.Fecha,
-                TotalPagar = proformas.TotalPagar,
-                TotalDescuento = proformas.TotalDescuento,
-                TotalImpuesto = proformas.TotalImpuesto,
-                IdCliente = proformas.IdCliente,
-                NombreCliente = proformas.NombreCliente,
-                DireccionEntrega = proformas.DireccionEntrega,
-                NombreProforma = proformas.NombreProforma
-            };
-            db.Proformas.Add(proformaDuplicado);
-            db.SaveChanges();
-            ProformaDetalle detalleDuplicado = new ProformaDetalle();
-            foreach (var item in detalles)
-            {
-                detalleDuplicado.IdProforma = proformaDuplicado.Id;
-                detalleDuplicado.IdProducto = item.IdProducto;
-                detalleDuplicado.Cantidad = item.Cantidad;
-                detalleDuplicado.PrecioUnitario = item.PrecioUnitario;
-                detalleDuplicado.Descuento = item.Descuento;
-                db.ProformaDetalle.Add(detalleDuplicado);
-                db.SaveChanges();
-            }
-            Session["Proforma"] = "¡Proforma duplicada correctamente!";
-            return RedirectToAction("ListaProformas", new { idUser = proformas.IdCliente });
-        }
-
-        // GET: Proformas/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Proformas proformas = db.Proformas.Find(id);
-            if (proformas == null)
-            {
-                return HttpNotFound();
-            }
-            return View(proformas);
-        }
-
-        // POST: Proformas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Proformas proformas = db.Proformas.Find(id);
-            db.Proformas.Remove(proformas);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {

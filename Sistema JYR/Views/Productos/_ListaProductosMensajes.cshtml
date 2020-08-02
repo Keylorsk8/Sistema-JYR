@@ -1,0 +1,91 @@
+﻿@if (Session["ListaProductos"] != null)
+{
+    switch (Session["ListaProductos"])
+    {
+        case 1:
+            <script type="text/javascript">
+                function NoExiste() {
+                    Swal.fire({
+                        title: 'No existe el producto',
+                        text: 'Intentelo nuevamente',
+                        icon: 'warning',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                NoExiste();
+            </script>
+            Session["ListaProductos"] = null;
+            break;
+        case 2:
+            <script type="text/javascript">
+                function NoExiste() {
+                    Swal.fire({
+                        title: 'Debes seleccionar un Documento',
+                        text: 'Dirigite a Proformas o Pedidos y seleccionada alguno para incluir tus articulos',
+                        icon: 'info',
+                        toast: false,
+                        timerProgressBar: true
+                    });
+                };
+                NoExiste();
+            </script>
+            Session["ListaProductos"] = null;
+            break;
+        case 3:
+            <script type="text/javascript">
+                function NoExiste() {
+                    Swal.fire({
+                        title: 'Debes Iniciar Sesión',
+                        html: 'Inicia sesión o crea una cuenta para generar proformas y pedidos virtualmente. <a href="@Url.Action("Login","Account")">Clic acá </a> para iniciar sesión',
+                        icon: 'info',
+                        toast: false,
+                        timerProgressBar: true
+                    });
+                };
+                NoExiste();
+            </script>
+            Session["ListaProductos"] = null;
+            break;
+        case 4:
+            <script type="text/javascript">
+                function NoExiste() {
+                    Swal.fire({
+                        toast: true,
+                        timerProgressBar: true,
+                        position: 'top',
+                        width: '1000px',
+                        icon: 'success',
+                        title: 'Producto Agregado Correctamente', 
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+                };
+                NoExiste();
+            </script>
+            Session["ListaProductos"] = null;
+            break;
+        case 5:
+            <script type="text/javascript">
+                function NoExiste() {
+                    Swal.fire({
+                        toast: true,
+                        timerProgressBar: true,
+                        position: 'top',
+                        width: '1000px',
+                        icon: 'success',
+                        title: '¡Producto Agregado Correctamente!',
+                        showConfirmButton: false,
+                        timer: 2500
+                    });
+                };
+                NoExiste();
+            </script>
+            Session["ListaProductos"] = null;
+            break;
+        default:
+            break;
+    }
+}
+

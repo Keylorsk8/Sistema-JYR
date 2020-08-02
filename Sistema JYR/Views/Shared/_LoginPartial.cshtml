@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNet.Identity
 @using Sistema_JYR.Models
+@using Sistema_JYR.Models.Session
+
 @if (Request.IsAuthenticated)
 {
     Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
@@ -19,6 +21,21 @@
     <ul class="navbar-nav ml-auto" style="text-align: center">
         @if (usuario.Rol == 1 || usuario.Rol == 2)
         {
+            if (Session["Documento"] != null)
+            {
+                var num = ((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido ? "Pedido #" + ((Documento)Session["Documento"]).NumerosDocumento : "Proforma#" + ((Documento)Session["Documento"]).NumerosDocumento;
+                <li class="nav-item">
+                    @if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                    {
+                        @Html.ActionLink(num, "Edit", "Pedido", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink(num, "Edit", "Proformas", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
+
+                </li>
+            }
             <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
             <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
             <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:5px">|</li>
@@ -68,6 +85,21 @@
         }
         else
         {
+            if (Session["Documento"] != null)
+            {
+                var num = ((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido ? "Pedido #" + ((Documento)Session["Documento"]).NumerosDocumento : "Proforma#" + ((Documento)Session["Documento"]).NumerosDocumento;
+                <li class="nav-item">
+                    @if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                    {
+                        @Html.ActionLink(num, "Edit", "Pedido", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink(num, "Edit", "Proformas", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
+
+                </li>
+            }
             <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
             <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
             <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:5px">|</li>

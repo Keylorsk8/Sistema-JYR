@@ -318,6 +318,8 @@
     </Compile>
     <Compile Include="Models\Reporte.cs" />
     <Compile Include="Models\RoleViewModels.cs" />
+    <Compile Include="Models\Session\Documento.cs" />
+    <Compile Include="Models\Session\TipoDocumento.cs" />
     <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -629,6 +631,9 @@
     <Content Include="Views\Proformas\DetailsProformaCliente.cshtml" />
     <Content Include="Views\Proformas\CreateProfromaCliente.cshtml" />
     <Content Include="Views\Proformas\EditProformaCliente.cshtml" />
+    <Content Include="Views\Productos\_ListaProductosMensajes.cshtml" />
+    <Content Include="Views\Pedido\_ListaProductosMensajes.cshtml" />
+    <Content Include="Views\Proformas\_ListaProductosMensajes.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

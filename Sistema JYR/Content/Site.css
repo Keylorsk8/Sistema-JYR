@@ -555,6 +555,7 @@ div#columns figure {
         }
     .button:hover {
         background-color: black;
+        color: white;
     }
 
     .button:hover span {

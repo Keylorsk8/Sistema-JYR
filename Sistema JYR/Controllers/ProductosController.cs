@@ -10,7 +10,7 @@ using Sistema_JYR.Models;
 using System.IO;
 using System.Drawing;
 using System.Web.Helpers;
-
+using Sistema_JYR.Models.Session;
 
 namespace Sistema_JYR.Controllers
 {
@@ -31,6 +31,186 @@ namespace Sistema_JYR.Controllers
         {
             var listaProductos = db.Productos.Where(x => x.Estado == true).ToList();
             return View(listaProductos);
+        }
+
+        public ActionResult AgregaraDocumento(int id)
+        {
+            try
+            {
+                Productos producto = db.Productos.Find(id);
+                if (producto == null)
+                {
+                    Session["ListaProductos"] = 1;
+                    return PartialView("_ListaProductosMensajes");
+                }
+            }
+            catch (Exception)
+            {
+
+                Session["ListaProductos"] = 1;
+                return PartialView("_ListaProductosMensajes");
+            }
+
+            try
+            {
+                var UserID = User.Identity.IsAuthenticated;
+                if (!UserID)
+                {
+                    Session["ListaProductos"] = 3;
+                    return PartialView("_ListaProductosMensajes");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            if (Session["Documento"] == null)
+            {
+                Session["ListaProductos"] = 2;
+                return PartialView("_ListaProductosMensajes");
+            }
+            else
+            {
+                if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                {
+                    int idPedido = ((Documento)Session["Documento"]).NumerosDocumento;
+                    int nuevoId = id;
+                    int cant = 1;
+
+                    Pedidos ped = db.Pedidos.Find(idPedido);
+                    double totalPagar = 0;
+                    double impuesto = 0;
+                    double descuento = 0;
+                    double desc = 0;
+                    double imp = 0;
+
+                    PedidoDetalle validacion = null;
+
+                    try
+                    {
+                        validacion = db.PedidoDetalle.Where(x => x.IdPedido == idPedido && x.IdProducto == nuevoId).First();
+                    }
+                    catch (Exception)
+                    {
+
+                        validacion = null;
+                    }
+
+                    if (validacion != null)
+                    {
+
+                        validacion.Cantidad += cant;
+                        db.Entry(validacion).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                    }
+                    else
+                    {
+                        PedidoDetalle detalle = new PedidoDetalle
+                        {
+                            IdPedido = idPedido,
+                            IdProducto = nuevoId
+                        };
+                        detalle.Productos = db.Productos.Where(x => x.Id == detalle.IdProducto).First();
+                        detalle.Cantidad = cant;
+                        detalle.CantidadEnviada = 0;
+                        detalle.PrecioUnitario = detalle.Productos.Precio;
+                        detalle.Descuento = 0;
+                        db.PedidoDetalle.Add(detalle);
+                        db.SaveChanges();
+                    }
+
+                    List<PedidoDetalle> detallesPedido = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
+                    ped.PedidoDetalle = detallesPedido;
+
+                    foreach (var item in detallesPedido)
+                    {
+                        descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                        desc += descuento;
+                        impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                        imp += impuesto;
+                        totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
+                    }
+
+                    ped.TotalDescuento = desc;
+                    ped.TotalImpuesto = imp;
+                    ped.TotalPagar = totalPagar;
+                    db.Entry(ped).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    ViewBag.TotalPagar = ped.TotalPagar;
+                    ViewBag.TotalDescuento = ped.TotalDescuento;
+                    ViewBag.TotalImpuesto = ped.TotalImpuesto;
+                    Session["ListaProductos"] = 5;
+                    return PartialView("_ListaProductosMensajes");
+                }
+                else
+                {
+                    int idProforma = ((Documento)Session["Documento"]).NumerosDocumento;
+                    int nuevoId = id;
+                    int cant = 1;
+                    Proformas ped = db.Proformas.Find(idProforma);
+
+                    double totalPagar = 0;
+                    double impuesto = 0;
+                    double descuento = 0;
+                    double desc = 0;
+                    double imp = 0;
+
+                    ProformaDetalle validacion = null;
+                    try
+                    {
+                        validacion = db.ProformaDetalle.Where(x => x.IdProforma == idProforma && x.IdProducto == nuevoId).First();
+                    }
+                    catch (Exception)
+                    {
+                        validacion = null;
+                    }
+                    if (validacion != null)
+                    {
+                        validacion.Cantidad += cant;
+                        db.Entry(validacion).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        ProformaDetalle detalle = new ProformaDetalle
+                        {
+                            IdProforma = idProforma,
+                            IdProducto = nuevoId
+                        };
+                        detalle.Productos = db.Productos.Where(x => x.Id == detalle.IdProducto).First();
+                        detalle.Cantidad = cant;
+                        detalle.PrecioUnitario = detalle.Productos.Precio;
+                        detalle.Descuento = 0;
+                        db.ProformaDetalle.Add(detalle);
+                        db.SaveChanges();
+                    }
+                    List<ProformaDetalle> detallesProforma = db.ProformaDetalle.Where(x => x.IdProforma == idProforma).ToList();
+                    foreach (var item in detallesProforma)
+                    {
+                        descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                        desc += descuento;
+                        impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                        imp += impuesto;
+                        totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                    }
+                    ped.TotalDescuento = desc;
+                    ped.TotalImpuesto = imp;
+                    ped.TotalPagar = totalPagar;
+                    db.Entry(ped).State = EntityState.Modified;
+                    db.SaveChanges();
+                    ped.ProformaDetalle = detallesProforma;
+                    ViewBag.TotalPagar = ped.TotalPagar;
+                    ViewBag.TotalDescuento = ped.TotalDescuento;
+                    ViewBag.TotalImpuesto = ped.TotalImpuesto;
+                    Session["ListaProductos"] = 4;
+                    return PartialView("_ListaProductosMensajes", "");
+                }
+            }
         }
 
         [Authorize(Roles = "Admin,Vendedor")]
@@ -74,7 +254,7 @@ namespace Sistema_JYR.Controllers
             catch (Exception)
             {
                 WebImage image = new WebImage("~/Content/imagenes/Sin_Imagen.jpg");
-                producto.imagen = image.GetBytes();  
+                producto.imagen = image.GetBytes();
             }
 
             if (ModelState.IsValid)
@@ -228,7 +408,7 @@ namespace Sistema_JYR.Controllers
                 productos = productosFiltradaId;
             }
 
-            return PartialView("_ListaProductosPartialView",productos);
+            return PartialView("_ListaProductosPartialView", productos);
         }
 
         public ActionResult getImage(int id)

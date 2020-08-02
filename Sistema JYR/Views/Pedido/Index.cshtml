@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<Sistema_JYR.Models.Pedidos>
-
+@using Sistema_JYR.Models.Session
 
 @{
     ViewBag.Title = "Mantenimiento Pedidos";
@@ -156,15 +156,58 @@
                     }
                 </td>
                 <td>
-                    <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
-                        <i class="fa fa-pencil-square-o"></i>Editar
-                    </a>
-                    <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
-                        <i class="fa fa-info-circle"></i>Detalles
-                    </a>
-                    <a class="btn btn-dark" href="@Url.Action("DuplicarPedido",new { id = item.Id })">
-                        <i class="fa fa-files-o"></i>Duplicar
-                    </a>
+                    @if (Session["Documento"] != null)
+                    {
+                        if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                        {
+                            if (((Documento)Session["Documento"]).NumerosDocumento == item.Id)
+                            {
+                                <button class="btn btn-dark" disabled>
+                                    Seleccionar
+                                </button>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                                    Seleccionar
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                                Seleccionar
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                            Seleccionar
+                        </a>
+                    }
+
+                    <div class="btn-group">
+                        <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id})">
+                            <i class="fa fa-pencil-square-o"></i>Editar
+                        </a>
+                        <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="@Url.Action("Details",new { id = item.Id})">
+                                <i class="fa fa-info-circle"></i>Detalles
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="@Url.Action("DuplicarPedido",new { id = item.Id })">
+                                <i class="fa fa-files-o"></i>Duplicar
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="@Url.Action("CancelarPedido",new { id = item.Id })" style="color: red">
+                                <i class="fa fa-trash-o"></i>Cancelar Pedido
+                            </a>
+                        </div>
+                    </div>
                 </td>
             </tr>
         }
@@ -263,7 +306,38 @@
             </script>
             Session["Pedido"] = null;
             break;
-
+        case "Seleccionado":
+            <script type="text/javascript">
+                function DuplicarProforma() {
+                    Swal.fire({
+                        title: '¡Pedido Seleccionado!',
+                        text: 'Ahora los artículos agregados, serán incluidos en este pedido',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                DuplicarProforma();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Cancelado":
+            <script type="text/javascript">
+                function DuplicarProforma() {
+                    Swal.fire({
+                        title: '¡Pedido Cancelado!',
+                        text: 'El Pedido ha sido cancelado con éxito',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                DuplicarProforma();
+            </script>
+            Session["Pedido"] = null;
+            break;
         default:
             break;
     }
