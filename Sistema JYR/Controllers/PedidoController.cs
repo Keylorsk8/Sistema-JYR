@@ -68,6 +68,34 @@ namespace Sistema_JYR.Controllers
             return View(pedido);
         }
 
+
+        public ActionResult DetalleCliente(int? id)
+        {
+            if (id == null)
+            {
+                Session["Pedido"] = "Pedido inválido. Especifique un pedido";
+
+                return RedirectToAction("Index");
+            }
+
+            Pedidos pedido = db.Pedidos.Find(id);
+            if (pedido != null)
+            {
+                List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == id).ToList();
+                pedido.PedidoDetalle = detalles;
+                ViewBag.Id = pedido.Id;
+            }
+
+
+            if (pedido == null)
+            {
+                Session["Pedido"] = "No existe el pedido";
+                return RedirectToAction("Index");
+            }
+
+
+            return View(pedido);
+        }
         public ActionResult Pdf(int id)
         {
             MemoryStream ms = new MemoryStream();
@@ -588,6 +616,104 @@ namespace Sistema_JYR.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult SeguimientoPedido()
+        {
+            string idUsuario = User.Identity.GetUserId();
+            var list = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado== 7).ToList();
+
+            return View(list);
+        }
+
+
+        [HttpPost]
+        public ActionResult SeguimientoPedido(AjaxSeguimiento objet)
+        {
+            if (objet.usuarioId != null)
+            {
+                if (objet.estado.Equals("nuevo"))
+                {
+                    string usuario = objet.usuarioId;
+                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 7).ToList();
+                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
+
+                }
+
+             
+
+                if (objet.estado.Equals("procesando"))
+                {
+                    string usuario = objet.usuarioId;
+                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 3).ToList();
+                    foreach (var item in pedidos)
+                    {
+                        List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == item.Id).ToList();
+
+                        foreach (var det in detalles)
+                        {
+                            if(det.Cantidad == det.CantidadEnviada)
+                            {
+
+                                Pedidos ped = db.Pedidos.Find(item.Id);
+                                ped.IdEstado = 1;
+
+
+                                if (ModelState.IsValid)
+                                {
+
+                                    db.Entry(ped).State = EntityState.Modified;
+
+                                    db.SaveChanges();
+
+                                    var pedido = db.Pedidos.Where(x => x.IdEstado == 3).ToList();
+                                    return PartialView("_SeguimientoPedido", pedido.ToList().Where(x => x.IdCliente == usuario));
+                                }
+                            }
+                        }
+
+                    }
+                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
+                }
+
+
+                if (objet.estado.Equals("finalizado"))
+                {
+                    string usuario = objet.usuarioId;
+                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 1).ToList();
+                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
+                }
+
+                if (objet.estado.Equals("cancelado"))
+                {
+                    string usuario = objet.usuarioId;
+                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 4 || x.IdEstado == 6).ToList();
+                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
+                }
+
+            }
+
+   
+            return View();
+        }
+
+        public ActionResult Cancelar(int Id)
+        {
+            Pedidos pedidos = db.Pedidos.Find(Id);
+            pedidos.IdEstado = 4;
+     
+          
+            if (ModelState.IsValid)
+            {
+
+                db.Entry(pedidos).State = EntityState.Modified;
+
+                db.SaveChanges();
+                Session["Pedido"] = "¡Orden Cancelada Correctamente!";
+                return RedirectToAction("SeguimientoPedido");
+            }
+
+            return View();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -985,7 +1111,22 @@ namespace Sistema_JYR.Controllers
                 set;
             }
         }
+        public class AjaxSeguimiento
+        {
+       
+            public string usuarioId
+            {
+                get;
+                set;
+            }
 
+            public string estado
+            {
+                get;
+                set;
+            }
+
+        }
         public class AjaxDetalle
         {
             public string cantidad

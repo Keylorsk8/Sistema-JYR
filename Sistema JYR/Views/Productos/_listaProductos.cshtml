@@ -1,78 +1,105 @@
 ﻿@model IEnumerable<Sistema_JYR.Models.Productos>
 
-<table class="table table-striped table-hover table-bordered table-responsive-lg">
-    <tr class="thead-dark">
-        <th>
-            @Html.DisplayNameFor(model => model.Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Nombre)
-        </th>
-        <th>
-            @Html.Label("Categoría")
-        </th>
-        <th>
-            @Html.Label("Stock")
-        </th>
-        <th>
-            @Html.Label("UM")
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Precio)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Impuesto)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Estado)
-        </th>
-        <th>
-            Acciones
-        </th>
-    </tr>
+@{
+    ViewBag.Title = "Mantenimiento Productos";
+}
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoriasProducto.Descripcion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CantidadEnInventario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnidadDeMedida)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Precio)
-            </td>
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Inventario", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">Mantenimiento Productos</li>
+    </ol>
+</div>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Impuesto) %
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.ActionLink("Editar", "Edit", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-dark" }) |
-                @Html.ActionLink("Detalles", "Details", new { id = item.Id }, htmlAttributes: new { @class = "btn btn-dark" })
-            </td>
+<div class="container-fluid" style="text-align: center" id="divProductos">
+    <table class="table table-striped table-hover table-bordered table-responsive-lg">
+        <tr class="thead-light">
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.Label("Categoría")
+            </th>
+            <th>
+                @Html.Label("Stock")
+            </th>
+            <th>
+                @Html.Label("UM")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Impuesto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                Acciones
+            </th>
         </tr>
-    }
 
-    @if (Model.Count() == 0)
-    {
-        <tr>
-            <td colspan="9">
-                No hay elementos
-            </td>
-        </tr>
-    }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoriasProducto.Descripcion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CantidadEnInventario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UnidadDeMedida)
+                </td>
+                <td>
+                    @String.Format("{0:C}", item.Precio)
+                </td>
 
-</table>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Impuesto)%
+                </td>
+                <td>
+                    @if (item.Estado)
+                    {
+                        @Html.Label("Habilitado")
+                    }
+                    else
+                    {
+                        @Html.Label("Deshabilitado")
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-dark" href="@Url.Action("Edit", new { id = item.Id })">
+                        <i class="fa fa-pencil-square-o"></i>  Editar
+                    </a>
+                    |
+                    <a class="btn btn-dark" href="@Url.Action("Details", new { id = item.Id })">
+                        <i class="fa fa-info-circle"></i>  Detalles
+                    </a>
+                </td>
+            </tr>
+        }
+
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="9">
+                    No hay elementos
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
