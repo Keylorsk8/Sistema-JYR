@@ -38,6 +38,8 @@
             }
             <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
             <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="nav-item">@Html.ActionLink("Pedidos de Clientes", "SeguimientoPedidoEmpresa", "Pedido", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+
             <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:5px">|</li>
             <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">
                 <a href="@Url.Action("Mantenimientos","Home")" class="btn" style="color: white; font-weight:100">Mantenimientos</a>

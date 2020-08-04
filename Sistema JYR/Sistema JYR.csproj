@@ -642,6 +642,11 @@
     <Content Include="Views\Pedido\_SeguimientoPedido.cshtml" />
     <Content Include="Views\Productos\_listaProductos.cshtml" />
     <Content Include="Views\Pedido\DetalleCliente.cshtml" />
+    <Content Include="Views\Pedido\SeguimientoPedidoEmpresa.cshtml" />
+    <Content Include="Views\Pedido\_SeguimientoPedidoEmpresa.cshtml" />
+    <Content Include="Views\Pedido\DetalleEmpresa.cshtml" />
+    <Content Include="Views\Pedido\cantidadAEnviar.cshtml" />
+    <Content Include="Views\Pedido\_detalle.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

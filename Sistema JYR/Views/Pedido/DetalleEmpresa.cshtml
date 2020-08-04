@@ -9,7 +9,7 @@
 <div class="container-fluid">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">@Html.ActionLink("Mis Pedidos", "SeguimientoPedido", "Pedido")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Pedidos de Clientes", "SeguimientoPedidoEmpresa", "Pedido")</li>       
         <li class="breadcrumb-item active">Detalle Pedido</li>
     </ol>
 </div>
@@ -104,7 +104,7 @@
                 <dd>
                     @Model.Fecha.ToString("dd/M/yyyy")
                 </dd>
-            
+
                 <dt>
                     Estado
                 </dt>
@@ -179,7 +179,7 @@
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <a class="btn btn-dark btn-block" href="@Url.Action("SeguimientoPedido", "Pedido")">
+                    <a class="btn btn-dark btn-block" href="@Url.Action("SeguimientoPedidoEmpresa", "Pedido")">
                         <i class="fa fa-arrow-left"></i> Volver
                     </a>
                 </div>
@@ -188,6 +188,6 @@
     </div>
     <div class="container">
 
-  
+
     </div>
 </div>
