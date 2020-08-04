@@ -98,15 +98,58 @@
                         }
                     </td>
                     <td>
-                        <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id })">
-                            <i class="fa fa-pencil-square-o"></i>Editar
+                        if (Session["Documento"] != null)
+                        {
+                        if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                        {
+                        if (((Documento)Session["Documento"]).NumerosDocumento == item.Id)
+                        {
+                        <button class="btn btn-dark" disabled>
+                            Seleccionar
+                        </button>
+                        }
+                        else
+                        {
+                        <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                            Seleccionar
                         </a>
-                        <a class="btn btn-dark" href="@Url.Action("Details",new { id = item.Id })">
-                            <i class="fa fa-info-circle"></i>Detalles
+                        }
+                        }
+                        else
+                        {
+                        <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                            Seleccionar
                         </a>
-                        <a class="btn btn-dark" href="@Url.Action("DuplicarPedido",new { id = item.Id })">
-                            <i class="fa fa-files-o"></i>Duplicar
+                        }
+                        }
+                        else
+                        {
+                        <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                            Seleccionar
                         </a>
+                        }
+
+                        <div class="btn-group">
+                            <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id})">
+                                <i class="fa fa-pencil-square-o"></i>Editar
+                            </a>
+                            <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="@Url.Action("Details",new { id = item.Id})">
+                                    <i class="fa fa-info-circle"></i>Detalles
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("DuplicarPedido",new { id = item.Id })">
+                                    <i class="fa fa-files-o"></i>Duplicar
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("CancelarPedido",new { id = item.Id })" style="color: red">
+                                    <i class="fa fa-trash-o"></i>Cancelar Pedido
+                                </a>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             }

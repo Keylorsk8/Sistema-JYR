@@ -1,8 +1,9 @@
 ﻿@model Sistema_JYR.Models.Proformas
 @using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
 
 @{
-    ViewBag.Title = "Detalle Proforma";
+    ViewBag.Title = "Solicitud de Revaloración";
     Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
     List<Sistema_JYR.Models.Telefonos> tels = db.Telefonos.Where(x => x.IdUsuario == Model.IdCliente).ToList();
     var idUser = HttpContext.Current.User.Identity.GetUserId();
@@ -11,27 +12,21 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
         <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas", new { idUser = idUser })</li>
-        <li class="breadcrumb-item active">Detalles Proforma</li>
+        <li class="breadcrumb-item active">Solicitud de Revaloración</li>
     </ol>
 </div>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <h4>Proforma No. @ViewBag.Id - @Model.NombreProforma</h4>
         </div>
         <div class="col-md-2">
-            <a class="btn btn-outline-dark btn-block" href="@Url.Action("EditProformaCliente", new { id = Model.Id, idUser = Model.IdCliente })">
-                <i class="fa fa-pencil-square-o"></i> Editar
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="btn btn-outline-dark btn-block" href="@Url.Action("ListaProformas", new { idUser = Model.IdCliente } )">
+            <a class="btn btn-outline-dark btn-block" href="@Url.Action("EditProformaCliente", new { id = Model.Id, idUser = idUser } )">
                 <i class="fa fa-arrow-left"></i> Volver
             </a>
         </div>
     </div>
-
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -196,49 +191,94 @@
             </table>
         </div>
     </div>
-    @if (Model.ProformaDetalle.Count == 0)
-    {
-        <div class="container">
-            <div class="card bg-light mb-12">
-                <div class="card-body">
+    <div class="container">
+        <p style="text-align:justify">
+            El proceso de revaloración consiste en enviar una solicitud de mejora de precios a los empleados de la Ferretería y Materiales JYR.
+            Los empleados responderán con los mejores precios posibles, una vez listo recibirás un correo con la confirmación del proceso y encontrarás
+            tu proforma revalorada en la lista de proformas.
+        </p>
+        <div class="card bg-light mb-12">
+            <div class="card-body">
+                <div class="container">
                     <div class="row">
-                        <div class="col-md-6">
-                            <button class="btn btn-danger btn-block" disabled><i class="fa fa-file-pdf-o"></i>Exportar a PDF</button>
+                        <div class="col-md-12">
+                            <h5>Adjunta las proformas de otras instituciones</h5>
                         </div>
-                        <div class="col-md-6">
-                            <a class="btn btn-success btn-block disabled" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" disabled="disabled">
-                                <i class="fa fa-send-o"></i>  Convertir a Pedido
-                            </a>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input name="file" id="file" type="file" accept="application/pdf" />
+                                <button class="btn btn-dark" onclick="agregar()">Agregar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="container">
-            <div class="card bg-light mb-12">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })">
-                                <i class="fa fa-file-pdf-o"></i>  Exportar a PDF
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })">
-                                <i class="fa fa-send-o"></i>  Convertir a Pedido
-                            </a>
-                        </div>
+                <script>
+                    function agregar() {
+                        var data = new FormData();
+
+                        var inputFile = $('#file').val();
+                        //var file = inputFile.files[0];
+                        data.append('archivo', inputFile);
+
+                        jQuery.ajax({
+                            url: '@Url.Action("agregardocumento", "Proformas", new { id = Model.Id })',
+                            data: data,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            method: 'POST',
+                            success: function (data) {
+                                alert(data);
+                            }
+                        })
+                    }
+                </script>
+
+                <div class="container">
+                    <div id="Documentos" style="border: 1px solid lightgray;border-radius: 10px; padding: 5px">
+                        <h6>Proformas adjuntas</h6>
+                        <hr />
+                        @{
+                            List<Documentos> documentos = db.Documentos.Where(x => x.IdProforma == Model.Id).ToList();
+                        }
+                        @if (documentos.Count != 0)
+                        {
+                            foreach (var item in documentos)
+                            {
+                                byte[] byteDocument = item.Documento;
+                                MemoryStream ms = new MemoryStream(byteDocument, 0, 0, true, true);
+                                Response.ContentType = "application/pdf";
+                                Response.AddHeader("content-disposition", "attachment;filename=" + "Proforma" + item.Descripcion);
+                                Response.Buffer = true;
+                                Response.Clear();
+                                Response.OutputStream.Write(ms.GetBuffer(), 0, ms.GetBuffer().Length);
+                                Response.OutputStream.Flush();
+                                Response.End();
+                                var file = new FileStreamResult(Response.OutputStream, "aplication/pdf");
+                                <a href="@file" download="@item.Descripcion">@item.Descripcion</a>
+                            }
+                        }
+                        else
+                        {
+                            <div class="container" style="text-align: center">
+                                <h7>Ningún adjunto</h7>
+                            </div>
+
+                        }
                     </div>
                 </div>
 
+                <div class="row" style="margin-top: 5px">
+                    <div class="col-md-12">
+                        <a class="btn btn-info btn-block" href="@Url.Action("EnviarRevaloracionPOST", new { id = Model.Id })">
+                            <i class="fa fa-line-chart" style="margin-right: 5px"></i>  Enviar Solicitud de Revaloración
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-    }
+    </div>
     <hr />
-
 </div>
 

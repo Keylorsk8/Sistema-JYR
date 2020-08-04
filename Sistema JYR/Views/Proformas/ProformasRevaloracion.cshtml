@@ -14,7 +14,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
         <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas", new { idUser = id })</li>
-        <li class="breadcrumb-item active">Proformas Canceladas</li>
+        <li class="breadcrumb-item active">Proformas en revaloración</li>
     </ol>
 </div>
 
@@ -22,7 +22,7 @@
 
     <div class="row">
         <div class="col-lg-6">
-            <h2><i class="fa fa-list-ul" style="margin-right: 2px"></i>Proformas Canceladas</h2>
+            <h2><i class="fa fa-list-ul" style="margin-right: 2px"></i>Proformas en Revaloración</h2>
         </div>
         <div class="col-lg-4">
 
@@ -110,10 +110,7 @@
                             }
                         </td>*@
                     <td>
-                        <a class="btn btn-outline-danger" href="@Url.Action("RestaurarProformaCliente",new { id = item.Id })">
-                            <i class="fa fa-backward" style="margin-right: 5px"></i>Restaurar
-                        </a>
-                        <a class="btn btn-dark" href="@Url.Action("DetallesProformaCanceladaCliente",new { id = item.Id })">
+                        <a class="btn btn-dark" href="@Url.Action("DetallesProformasRevaloracion",new { id = item.Id })">
                             <i class="fa fa-info" style="margin-right: 5px"></i>Detalles
                         </a>
                     </td>

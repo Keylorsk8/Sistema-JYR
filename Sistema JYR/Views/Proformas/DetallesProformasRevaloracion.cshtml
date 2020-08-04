@@ -1,37 +1,28 @@
 ﻿@model Sistema_JYR.Models.Proformas
 @using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
 
 @{
     ViewBag.Title = "Detalle Proforma";
     Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
     List<Sistema_JYR.Models.Telefonos> tels = db.Telefonos.Where(x => x.IdUsuario == Model.IdCliente).ToList();
-    var idUser = HttpContext.Current.User.Identity.GetUserId();
+
+    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+    string id = HttpContext.Current.User.Identity.GetUserId();
+    usuario = db.AspNetUsers.Where(x => x.Id == id).First();
 }
 <div class="container-fluid">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas", new { idUser = idUser })</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas", new { idUser = Model.IdCliente })</li>
         <li class="breadcrumb-item active">Detalles Proforma</li>
     </ol>
 </div>
-
 <div class="container">
-    <div class="row">
-        <div class="col-md-8">
-            <h4>Proforma No. @ViewBag.Id - @Model.NombreProforma</h4>
-        </div>
-        <div class="col-md-2">
-            <a class="btn btn-outline-dark btn-block" href="@Url.Action("EditProformaCliente", new { id = Model.Id, idUser = Model.IdCliente })">
-                <i class="fa fa-pencil-square-o"></i> Editar
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="btn btn-outline-dark btn-block" href="@Url.Action("ListaProformas", new { idUser = Model.IdCliente } )">
-                <i class="fa fa-arrow-left"></i> Volver
-            </a>
-        </div>
-    </div>
-
+    <h4>Proforma No. @ViewBag.Id - @Model.NombreProforma</h4>
+    <a class="btn btn-outline-dark" href="@Url.Action("ProformasRevaloracion",new { idUser = usuario.Id })">
+        <i class="fa fa-arrow-left"></i> Volver
+    </a>
     <hr />
     <div class="row">
         <div class="col-md-4">
@@ -196,49 +187,5 @@
             </table>
         </div>
     </div>
-    @if (Model.ProformaDetalle.Count == 0)
-    {
-        <div class="container">
-            <div class="card bg-light mb-12">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button class="btn btn-danger btn-block" disabled><i class="fa fa-file-pdf-o"></i>Exportar a PDF</button>
-                        </div>
-                        <div class="col-md-6">
-                            <a class="btn btn-success btn-block disabled" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" disabled="disabled">
-                                <i class="fa fa-send-o"></i>  Convertir a Pedido
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="container">
-            <div class="card bg-light mb-12">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })">
-                                <i class="fa fa-file-pdf-o"></i>  Exportar a PDF
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })">
-                                <i class="fa fa-send-o"></i>  Convertir a Pedido
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    }
-    <hr />
-
 </div>
 

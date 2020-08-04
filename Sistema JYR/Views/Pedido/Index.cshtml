@@ -42,14 +42,15 @@
             <div class="col-md-1">
                 Filtro:
             </div>
+            <div class="col-md-3">
+                <input type="number" min="0" class="form-control" placeholder="Número de Pedido" id="numeroPedido" name="numeroPedido"/>
+
+            </div>
             <div class="col-md-6">
                 @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
             </div>
 
-            <div class="col-md-3">
-                <input type="number" min="0"  class="form-control" placeholder="Número de Pedido" onchange="x(this.value )" id="numeroPedido" />
 
-            </div>
 
 
             <div class="col-md-1">

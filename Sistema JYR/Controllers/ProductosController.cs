@@ -422,7 +422,7 @@ namespace Sistema_JYR.Controllers
             memory = new MemoryStream();
             image.Save(memory, System.Drawing.Imaging.ImageFormat.Jpeg);
             memory.Position = 0;
-            return File(memory, "image/jpg");
+            return File(memory, "image/jpg"); 
         }
 
         protected override void Dispose(bool disposing)

@@ -620,7 +620,6 @@ namespace Sistema_JYR.Controllers
         {
             string idUsuario = User.Identity.GetUserId();
             var list = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado== 7).ToList();
-
             return View(list);
         }
 
@@ -628,70 +627,30 @@ namespace Sistema_JYR.Controllers
         [HttpPost]
         public ActionResult SeguimientoPedido(AjaxSeguimiento objet)
         {
+            string idUsuario = User.Identity.GetUserId();
             if (objet.usuarioId != null)
             {
                 if (objet.estado.Equals("nuevo"))
                 {
-                    string usuario = objet.usuarioId;
-                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 7).ToList();
-                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
-
+                    var pedidos = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 7).ToList();
+                    return PartialView("_SeguimientoPedido",pedidos);
                 }
-
-             
-
                 if (objet.estado.Equals("procesando"))
                 {
-                    string usuario = objet.usuarioId;
-                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 3).ToList();
-                    foreach (var item in pedidos)
-                    {
-                        List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == item.Id).ToList();
-
-                        foreach (var det in detalles)
-                        {
-                            if(det.Cantidad == det.CantidadEnviada)
-                            {
-
-                                Pedidos ped = db.Pedidos.Find(item.Id);
-                                ped.IdEstado = 1;
-
-
-                                if (ModelState.IsValid)
-                                {
-
-                                    db.Entry(ped).State = EntityState.Modified;
-
-                                    db.SaveChanges();
-
-                                    var pedido = db.Pedidos.Where(x => x.IdEstado == 3).ToList();
-                                    return PartialView("_SeguimientoPedido", pedido.ToList().Where(x => x.IdCliente == usuario));
-                                }
-                            }
-                        }
-
-                    }
-                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
+                    var pedidos = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 3).ToList();
+                    return PartialView("_SeguimientoPedido", pedidos);
                 }
-
-
                 if (objet.estado.Equals("finalizado"))
                 {
-                    string usuario = objet.usuarioId;
-                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 1).ToList();
-                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
+                    var pedidos = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 1).ToList();
+                    return PartialView("_SeguimientoPedido", pedidos);
                 }
-
                 if (objet.estado.Equals("cancelado"))
                 {
-                    string usuario = objet.usuarioId;
-                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 4 || x.IdEstado == 6).ToList();
-                    return PartialView("_SeguimientoPedido", pedidos.ToList().Where(x => x.IdCliente == usuario));
+                    var pedidos = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 4 || x.IdEstado == 6 ).ToList();
+                    return PartialView("_SeguimientoPedido", pedidos);
                 }
-
             }
-
-   
             return View();
         }
 
@@ -723,34 +682,47 @@ namespace Sistema_JYR.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult FiltrarPedidosAjax(string terminoBusqueda)
+        public ActionResult FiltrarPedidosAjax(AjaxFiltrarPedido objeto)
         {
+
+            var terminoBusqueda = objeto.TerminoBusqueda;
+            var idPedido = Convert.ToInt32(objeto.IdPedido);
+            List<Pedidos> pedidos = new List<Pedidos>();
+            List<Pedidos> pedidosFiltradasNombre = new List<Pedidos>();
+            List<Pedidos> pedidosFiltradaId = new List<Pedidos>();
+            pedidos = db.Pedidos.Where(x => x.AspNetUsers.Rol == 2 && x.IdEstado == 7 || x.AspNetUsers.Rol == 1 && x.IdEstado == 7).ToList();
+
             if (terminoBusqueda != null)
             {
-                var lista = db.Pedidos.Where(x => x.NombrePedido.Contains(terminoBusqueda));
-                return PartialView("_ListaPedidos", lista.ToList());
+                foreach (var item in pedidos)
+                {
+                    if (item.NombrePedido.ToLower().Contains(terminoBusqueda.ToLower()))
+                    {
+                        pedidosFiltradasNombre.Add(item);
+                    }
+                }
+                pedidos = pedidosFiltradasNombre;
             }
 
 
-            return View();
-        }
-
-        public ActionResult filtrarNumeroPedido(string numeroPedido)
-        {
-            
-
-            if (numeroPedido != null)
+            if (idPedido != 0)
             {
-                int id = Convert.ToInt32(numeroPedido);
-                var lista = db.Pedidos.Where(x => x.Id == id);
-                return PartialView("_ListaPedidos", lista.ToList());
+                foreach (var item in pedidos)
+                {
+                    if (item.Id == idPedido)
+                    {
+                        pedidosFiltradaId = new List<Pedidos>
+                        {
+                            item
+                        };
+                        break;
+                    }
+                }
+                pedidos = pedidosFiltradaId;
             }
 
-
-            return View();
+            return PartialView("_ListaPedidos", pedidos);
         }
-
-        
 
         public ActionResult EliminarCarrito(int? idD, int IdPedido)
         {
@@ -1068,6 +1040,20 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalImpuesto = ped.TotalImpuesto;
             return PartialView("_ListaPedidoCarrito", ped);
 
+        }
+
+        public class AjaxFiltrarPedido
+        {
+            public string TerminoBusqueda
+            {
+                get;
+                set;
+            }
+            public string IdPedido
+            {
+                get;
+                set;
+            }
         }
 
         public class Ajax

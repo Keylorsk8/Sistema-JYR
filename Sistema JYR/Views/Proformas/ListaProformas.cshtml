@@ -24,14 +24,18 @@
             <h2><i class="fa fa-list-ul" style="margin-right: 2px"></i>Mis Proformas</h2>
 
         </div>
-        <div class="col-lg-4">
-
+        <div class="col-lg-2">
             <a class="btn btn-dark btn-block" href="@Url.Action("CreateProfromaCliente",new { id = usuario.Id })">
                 <i class="fa fa-plus" style="margin-right:5px"></i>Crear Nueva Proforma
             </a>
         </div>
         <div class="col-lg-2">
-            <a class="btn btn-info btn-block" href="@Url.Action("ProformasCanceladas",new { idUser = usuario.Id })">
+            <a class="btn btn-info btn-block" href="@Url.Action("ProformasRevaloracion",new { idUser = usuario.Id })">
+                <i class="fa fa-line-chart" style="margin-right:5px"></i>Revaloración
+            </a>
+        </div>
+        <div class="col-lg-2">
+            <a class="btn btn-outline-danger btn-block" href="@Url.Action("ProformasCanceladas",new { idUser = usuario.Id })">
                 <i class="fa fa-undo" style="margin-right:5px"></i>Proformas Canceladas
             </a>
         </div>
@@ -153,15 +157,15 @@
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="@Url.Action("DetailsProformaCliente",new { id = item.Id, idCliente = usuario.Id })">
-                                <i class="fa fa-info-circle"></i>Detalles
+                                <i class="fa fa-info" style="margin-right: 5px"></i>Detalles
                             </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="@Url.Action("DuplicarProforma",new { id = item.Id })">
-                                <i class="fa fa-files-o"></i>Duplicar
+                                <i class="fa fa-files-o" style="margin-right: 5px"></i>Duplicar
                             </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="@Url.Action("CancelarProformaCliente",new { id = item.Id })" style="color: red">
-                                <i class="fa fa-trash-o"></i>Cancelar Proforma
+                                <i class="fa fa-close" style="margin-right: 5px"></i>Cancelar Proforma
                             </a>
                         </div>
                     </div>
@@ -179,7 +183,8 @@
     </div>
 </div>
 
-
+<br />
+<br />
 
 
 

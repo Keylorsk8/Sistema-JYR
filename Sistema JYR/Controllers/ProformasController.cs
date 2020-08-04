@@ -22,7 +22,8 @@ using Sistema_JYR.Models;
 using Sistema_JYR.Models.Session;
 using Image = iText.Layout.Element.Image;
 using Rectangle = iText.Kernel.Geom.Rectangle;
-
+using System.Web;
+using System.Web.Helpers;
 
 namespace Sistema_JYR.Controllers
 {
@@ -32,12 +33,14 @@ namespace Sistema_JYR.Controllers
 
         #region Metodos de Admin - Vendedor
         // GET: Proformas
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Index()
         {
             var proformas = db.Proformas.Where(x => x.AspNetUsers.Rol == 2 && x.IdEstado == 2 || x.AspNetUsers.Rol == 1 && x.IdEstado == 2).OrderByDescending(x => x.Id);
             return View(proformas.ToList());
         }
 
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult SeleccionarDocumento(int id)
         {
             try
@@ -55,6 +58,7 @@ namespace Sistema_JYR.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult CancelarProforma(int? id)
         {
             if (id == null)
@@ -75,6 +79,7 @@ namespace Sistema_JYR.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult DuplicarProforma(int? id)
         {
             if (id == null)
@@ -121,6 +126,7 @@ namespace Sistema_JYR.Controllers
         }
 
         // GET: Proformas/Details/5
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -174,9 +180,7 @@ namespace Sistema_JYR.Controllers
                 cellenc = new Cell().Add(new Paragraph("Año").SetFontSize(9)).
                            SetTextAlignment(TextAlignment.CENTER).SetWidth(30);
                 enc.AddCell(cellenc);
-
                 doc.Add(enc);
-
                 Table enc2 = new Table(4).UseAllAvailableWidth();
                 Cell cellenc2 = new Cell().Add(new Paragraph(item.NombreProforma).SetFontSize(9)).
                     SetTextAlignment(TextAlignment.LEFT).SetBorder(Border.NO_BORDER);
@@ -190,9 +194,7 @@ namespace Sistema_JYR.Controllers
                 cellenc2 = new Cell().Add(new Paragraph(item.Fecha.Year.ToString()).SetFontSize(9)).
                            SetTextAlignment(TextAlignment.CENTER).SetWidth(30).SetHorizontalAlignment(HorizontalAlignment.RIGHT) ;
                 enc2.AddCell(cellenc2);
-
                 doc.Add(enc2);
-
                 Table _enc = new Table(2).UseAllAvailableWidth();
                 Cell _cellEnc = new Cell(2, 1).Add(new Paragraph("Información de Cliente").SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetWidth(100).SetBorderRight(Border.NO_BORDER);
@@ -201,8 +203,6 @@ namespace Sistema_JYR.Controllers
                      SetTextAlignment(TextAlignment.LEFT).SetWidth(100).SetBorderLeft(Border.NO_BORDER);
                 _enc.AddCell(_cellEnc);
                 doc.Add(_enc);
-           
-
                 Table _det = new Table(2).UseAllAvailableWidth();
                 Cell _cellDet = new Cell(2, 1).Add(new Paragraph(item.NombreCliente).SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(100).SetBorderRight(Border.NO_BORDER);
@@ -212,27 +212,20 @@ namespace Sistema_JYR.Controllers
                         SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(116).SetBorderLeft(Border.NO_BORDER);
                         _enc.AddCell(_cellDet);
                         _det.AddHeaderCell(_cellDet);
-                  
-
                 doc.Add(_det);
-
                 Table _det2 = new Table(2).UseAllAvailableWidth();
                 Cell _cellDet2 = new Cell(2, 1).Add(new Paragraph(item.DireccionEntrega).SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER)
                      .SetBorderBottom(Border.NO_BORDER).SetWidth(100).SetBorderRight(Border.NO_BORDER); 
                 _enc.AddCell(_cellDet2);
                 _det2.AddHeaderCell(_cellDet2);
-
                 _cellDet2 = new Cell(2, 1).Add(new Paragraph("Estado:" + item.EstadoProforma.Descripcion).SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetWidth(125)
                      .SetBorderLeft(Border.NO_BORDER); 
                 _enc.AddCell(_cellDet2);
                 _det2.AddHeaderCell(_cellDet2);
                 doc.Add(_det2);
-
-
                 Table _det3 = new Table(2).UseAllAvailableWidth();
-                
                 if (tel.Count() == 0)
                 {
                     Cell _cellDet3 = new Cell(2, 1).Add(new Paragraph("Tel: N/A").SetFontSize(9)).
@@ -240,38 +233,26 @@ namespace Sistema_JYR.Controllers
                     _enc.AddCell(_cellDet3);
                     _det3.AddHeaderCell(_cellDet3);
                     doc.Add(_det3);
-
                 }
-
                 else
                 {
                     foreach (var t in tel)
                     {
-
 
                         Cell _cellDet3 = new Cell(2, 1).Add(new Paragraph("Tel:" + t.Telefono).SetFontSize(9)).
                    SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
                         _enc.AddCell(_cellDet3);
                         _det3.AddHeaderCell(_cellDet3);
                         doc.Add(_det3);
-
                     }
-
                 }
-
             }
-
-
             //Productos
-
-
             Style styleCell = new Style()
                 .SetBackgroundColor(WebColors.GetRGBColor("#042c3c"))
                 .SetFontColor(WebColors.GetRGBColor("#f68c25"))
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(10);
-                
-
             Table _table = new Table(5).UseAllAvailableWidth();
             Cell _cell = new Cell(2, 1).Add(new Paragraph("Id"));
             _table.AddHeaderCell(_cell.AddStyle(styleCell));
@@ -283,23 +264,15 @@ namespace Sistema_JYR.Controllers
             _table.AddHeaderCell(_cell.AddStyle(styleCell));
             _cell = new Cell(2, 1).Add(new Paragraph("Descuento"));
             _table.AddHeaderCell(_cell.AddStyle(styleCell));
-
-
-
             Style sty = new Style()             
                .SetTextAlignment(TextAlignment.CENTER)
                .SetFontSize(9);
-
             List<ProformaDetalle> det = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
             foreach (var item in det)
             {
                 List<Productos> prod = db.Productos.Where(p => p.Id == item.IdProducto).ToList();
-
-           
                 foreach (var p in prod)
                 {
-
-            
                     _cell = new Cell().Add(new Paragraph(item.IdProducto.ToString())).SetBorderRight(Border.NO_BORDER).
                         SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER);
                     _table.AddCell(_cell.AddStyle(sty));
@@ -314,16 +287,10 @@ namespace Sistema_JYR.Controllers
                     _table.AddCell(_cell.AddStyle(sty));
                 }
             }
-          
             doc.Add(_table);
-
-            
-        
             foreach (var item in model)
             {
-
                 float[] anchos = { 300f, 70f, 80f };
-
                 Table _footer = new Table(anchos).UseAllAvailableWidth();
                 Cell _foot = new Cell().Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).
              SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
@@ -336,10 +303,7 @@ namespace Sistema_JYR.Controllers
               SetTextAlignment(TextAlignment.CENTER);
             _footer.AddCell(_foot);
                doc.Add(_footer);
-
-
                 Table _footer2 = new Table(anchos).UseAllAvailableWidth();
-
                 Cell _foot2 = new Cell().Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).
              SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER);
                 _footer2.AddCell(_foot2);
@@ -350,7 +314,6 @@ namespace Sistema_JYR.Controllers
               SetTextAlignment(TextAlignment.CENTER);
                 _footer2.AddCell(_foot2);
                 doc.Add(_footer2);
-
                 Table _footer3 = new Table(anchos).UseAllAvailableWidth();
                 Cell _foot3 = new Cell().Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).
              SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
@@ -363,17 +326,16 @@ namespace Sistema_JYR.Controllers
                 _footer3.AddCell(_foot3);
                 doc.Add(_footer3);
             }
-
             doc.Close();
             byte[] bytesStream = ms.ToArray();
             ms = new MemoryStream();
             ms.Write(bytesStream, 0, bytesStream.Length);
             ms.Position = 0;
-
             return new FileStreamResult(ms, "application/pdf");
         }
 
         // GET: Proformas/Create
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Create()
         {
             ViewBag.Fecha = DateTime.Now.ToShortDateString();
@@ -385,6 +347,7 @@ namespace Sistema_JYR.Controllers
         // POST: Proformas/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Vendedor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
@@ -421,6 +384,7 @@ namespace Sistema_JYR.Controllers
         }
 
         // GET: Proformas/Edit/5
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -448,6 +412,7 @@ namespace Sistema_JYR.Controllers
         // POST: Proformas/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin,Vendedor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
@@ -483,12 +448,27 @@ namespace Sistema_JYR.Controllers
         #endregion
 
         #region Metodos de Cliente
+        [Authorize(Roles = "Cliente")]
         public ActionResult ListaProformas(string idUser)
         {
             var proformas = db.Proformas.Where(x => x.IdUsuario == idUser && x.IdEstado == 2).OrderByDescending(x => x.Id);
             return View(proformas);
         }
 
+        [Authorize(Roles = "Cliente")]
+        public ActionResult ProformasRevaloracion(string idUser)
+        {
+            if (idUser == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas", User.Identity.GetUserId());
+            }
+
+            var lista = db.Proformas.Where(x => x.IdUsuario == idUser && x.IdEstado == 5).ToList();
+            return View(lista);
+        }
+
+        [Authorize(Roles = "Cliente")]
         public ActionResult SeleccionarDocumentoCliente(int id)
         {
             try
@@ -506,6 +486,7 @@ namespace Sistema_JYR.Controllers
             return RedirectToAction("ListaProformas","Proformas",new { idUser = User.Identity.GetUserId() });
         }
 
+        [Authorize(Roles = "Cliente")]
         public ActionResult CancelarProformaCliente(int? id)
         {
             if (id == null)
@@ -527,6 +508,7 @@ namespace Sistema_JYR.Controllers
         }
 
         // GET: Proformas/Edit/5
+        [Authorize(Roles = "Cliente")]
         public ActionResult EditProformaCliente(int? id, string idUser)
         {
             if (id == null)
@@ -560,6 +542,7 @@ namespace Sistema_JYR.Controllers
         // POST: Proformas/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que quiere enlazarse. Para obtener 
         // más detalles, vea https://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Cliente")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditProformaCliente([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
@@ -594,12 +577,77 @@ namespace Sistema_JYR.Controllers
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = proformas.IdCliente });
         }
 
+        public ActionResult EnviarRevaloracion(int id)
+        {
+            if (id == 0)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
+            }
+            var proforma = db.Proformas.Find(id);
+            if (proforma == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
+            }
+            if (proforma.IdUsuario != User.Identity.GetUserId())
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
+            }
+            return View(proforma);
+        }
+
+        [HttpPost]
+        public ActionResult EnviarRevaloracionPOST(int id)
+        {
+            if (id == 0)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
+            }
+            var proforma = db.Proformas.Find(id);
+            proforma.IdEstado = 5;
+            db.Entry(proforma).State = EntityState.Modified;
+            db.SaveChanges();
+            Session["Proforma"] = "Revaloracion";
+            return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
+        }
+
+        public ActionResult agregardocumento()
+        {
+            try
+            {
+                HttpPostedFileBase FileBase = Request.Files[0];
+                Stream fs = FileBase.InputStream;
+                BinaryReader br = new BinaryReader(fs);
+                Byte[] bytes = br.ReadBytes((Int32)fs.Length);
+
+                Documentos doc = new Documentos()
+                {
+                    IdProforma = 1,
+                    Documento = bytes,
+                    Descripcion = FileBase.FileName
+                };
+                db.Documentos.Add(doc);
+                db.SaveChanges();
+                return PartialView("_ListaDocumentos", 1);
+            }
+            catch (Exception e)
+            {
+                return PartialView("_ListaDocumentos", null);
+            }
+        }
+
+
+        [Authorize(Roles = "Cliente")]
         public ActionResult ProformasCanceladas(string idUser)
         {
             var canceladas = db.Proformas.Where(x => x.IdUsuario == idUser && x.IdEstado == 1).ToList();
             return View(canceladas);
         }
 
+        [Authorize(Roles = "Cliente")]
         public ActionResult DuplicarProformaCliente(int? id)
         {
             if (id == null)
@@ -651,6 +699,7 @@ namespace Sistema_JYR.Controllers
         /// <param name="id">Id de la Proforma</param>
         /// <param name="idCliente">Id del usuario en session</param>
         /// <returns></returns>
+        [Authorize(Roles = "Cliente")]
         public ActionResult DetailsProformaCliente(int? id, string idCliente)
         {
             if (id == null)
@@ -689,6 +738,7 @@ namespace Sistema_JYR.Controllers
         }
 
         // GET: Proformas/Create
+        [Authorize(Roles = "Cliente")]
         public ActionResult CreateProfromaCliente(string id)
         {
             ViewBag.Fecha = DateTime.Now.ToShortDateString();
@@ -697,6 +747,7 @@ namespace Sistema_JYR.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Cliente")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateProfromaCliente([Bind(Include = "IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
@@ -733,7 +784,7 @@ namespace Sistema_JYR.Controllers
         }
         #endregion
 
-
+        [Authorize(Roles = "Cliente")]
         public ActionResult DetallesProformaCanceladaCliente(int id)
         {
             Proformas proformas = db.Proformas.Find(id);
@@ -746,6 +797,19 @@ namespace Sistema_JYR.Controllers
             return View(proformas);
         }
 
+        [Authorize(Roles = "Cliente")]
+        public ActionResult DetallesProformasRevaloracion(int id)
+        {
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("ProformasRevaloracion", "Proformas", new { idUser = User.Identity.GetUserId() });
+            }
+            return View(proformas);
+        }
+
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult RestaurarProforma(int id)
         {
             Proformas proformas = db.Proformas.Find(id);
@@ -762,6 +826,7 @@ namespace Sistema_JYR.Controllers
             return View("Index");
         }
 
+        [Authorize(Roles = "Cliente")]
         public ActionResult RestaurarProformaCliente(int id)
         {
             Proformas proformas = db.Proformas.Find(id);
@@ -787,6 +852,7 @@ namespace Sistema_JYR.Controllers
             base.Dispose(disposing);
         }
 
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult EliminarProdProforma(int? idD, int IdProforma)
         {
             Proformas proforma = db.Proformas.Find(IdProforma);
@@ -828,6 +894,7 @@ namespace Sistema_JYR.Controllers
         /// Cambiar la cantidad en una proforma
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult CambiarCantidadPedida(Ajax objeto)
         {
             int idProforma = Convert.ToInt32(objeto.idProforma);
@@ -891,6 +958,7 @@ namespace Sistema_JYR.Controllers
         /// Agrega un nuevo producto a la proforma
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult AgregarDetalle(AjaxDetalle objeto)
         {
             int idProforma = Convert.ToInt32(objeto.idProforma);
@@ -1014,7 +1082,7 @@ namespace Sistema_JYR.Controllers
                 proformas = proformasFiltradaId;
             }
 
-            return PartialView("_ListaProformas", proformas.ToList().Where(x=> x.IdEstado==2));
+            return PartialView("_ListaProformas", proformas);
         }
 
         /// <summary>
@@ -1069,6 +1137,7 @@ namespace Sistema_JYR.Controllers
         /// Convierte una proforma en un pedido
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult ConvertiraPedido(int? id)
         {
             if (id == null)
@@ -1121,6 +1190,7 @@ namespace Sistema_JYR.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Cliente")]
         public ActionResult ConvertiraPedidoCliente(int? id)
         {
             if (id == null)
@@ -1219,11 +1289,9 @@ namespace Sistema_JYR.Controllers
                 get;
                 set;
             }
-           
-
-           
         }
 
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult reporteProformaAPedido(string fechaAnterior, string fechaActual)
         {
             if (fechaAnterior != null && fechaActual != null)
@@ -1264,9 +1332,6 @@ namespace Sistema_JYR.Controllers
 
                             else
                             {
-
-
-
                                 var querys = from p in db.Proformas
                                              join e in db.EstadoProforma on p.IdEstado equals e.Id
                                              where p.Fecha >= anterior && p.Fecha <= actual
@@ -1284,15 +1349,9 @@ namespace Sistema_JYR.Controllers
                                                  Estado = g.Key.Descripcion,                                              
                                                  Porcentaje = g.Count() * 100 / db.Proformas.Count()
                                              };
-
-                           
                                 ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteProformaAPedido.rdlc");
-
-
                                 return PartialView("_reporteProformaAPedido", querys.ToList());
                             }
-
-
                         }
                     }
                 }
@@ -1325,9 +1384,6 @@ namespace Sistema_JYR.Controllers
                 iText.Kernel.Pdf.Canvas.PdfCanvas canvas1 = new iText.Kernel.Pdf.Canvas.PdfCanvas(page.NewContentStreamBefore(), page.GetResources(), pdfDoc);
                 new Canvas(canvas1, pdfDoc, rootArea)
                     .Add(getTable(docEvent));
-
-                
-                
              }
 
 
@@ -1368,8 +1424,6 @@ namespace Sistema_JYR.Controllers
            
         }
 
-
-
         public class FooterEventHandler : IEventHandler
         {
             public void HandleEvent(Event @event)
@@ -1381,11 +1435,7 @@ namespace Sistema_JYR.Controllers
                 iText.Kernel.Pdf.Canvas.PdfCanvas canvas1 = new iText.Kernel.Pdf.Canvas.PdfCanvas(page.NewContentStreamAfter(), page.GetResources(), pdfDoc);
                 new Canvas(canvas1, pdfDoc, rootArea)
                     .Add(getTable(docEvent));
-
-
-
             }
-
 
             public Table getTable(PdfDocumentEvent docEvent)
             {

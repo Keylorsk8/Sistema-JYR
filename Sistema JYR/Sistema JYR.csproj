@@ -642,6 +642,10 @@
     <Content Include="Views\Pedido\_SeguimientoPedido.cshtml" />
     <Content Include="Views\Productos\_listaProductos.cshtml" />
     <Content Include="Views\Pedido\DetalleCliente.cshtml" />
+    <Content Include="Views\Proformas\ProformasRevaloracion.cshtml" />
+    <Content Include="Views\Proformas\DetallesProformasRevaloracion.cshtml" />
+    <Content Include="Views\Proformas\EnviarRevaloracion.cshtml" />
+    <Content Include="Views\Proformas\_ListaDocumentos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

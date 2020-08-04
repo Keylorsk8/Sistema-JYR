@@ -41,14 +41,15 @@
                 Filtro:
             </div>
 
+            <div class="col-md-3">
+                <input type="number" min="0" class="form-control" placeholder="Número de Proforma" id="idProforma" name="idProforma" />
+
+            </div>
             <div class="col-md-6">
                 @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
 
             </div>
-            <div class="col-md-3">
-                <input type="number" min="0" class="form-control" placeholder="Número de Proforma" id="idProforma" />
 
-            </div>
             <div class="col-md-1">
                 <button type="submit" value="Buscar" class="btn btn-dark btn-block"><i class="fa fa-search"></i></button>
             </div>
