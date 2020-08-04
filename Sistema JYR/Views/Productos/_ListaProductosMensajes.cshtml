@@ -1,4 +1,13 @@
-﻿@if (Session["ListaProductos"] != null)
+﻿@model Sistema_JYR.Models.Pedidos
+
+
+@{
+    ViewBag.Title = "Detalle Pedido";
+    Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
+}
+
+
+@if (Session["ListaProductos"] != null)
 {
     switch (Session["ListaProductos"])
     {
@@ -57,7 +66,7 @@
                         position: 'top',
                         width: '1000px',
                         icon: 'success',
-                        title: 'Producto Agregado Correctamente', 
+                        title: 'Producto Agregado Correctamente',
                         showConfirmButton: false,
                         timer: 2500
                     });
@@ -89,3 +98,74 @@
     }
 }
 
+<div class="container" style="text-align: center" id="divDetalles">
+    <div class="panel panel-default">
+
+        <table class="table table-striped table-hover table-bordered table-responsive-lg">
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Producto
+                </th>
+                <th>
+                    Cantidad
+                </th>
+                <th>
+                    Cantidad Enviada
+                </th>
+                <th>
+                    Precio Unitario
+                </th>
+                <th>
+                    Descuento
+                </th>
+                <th>
+                    Cantidad a Enviar
+                </th>
+                <th>
+                    Acciones
+                </th>
+            </tr>
+
+            @foreach (var c in Model.PedidoDetalle)
+            {
+                <tr>
+                    <td>
+                        @c.Productos.Id
+                    </td>
+                    <td>
+                        @c.Productos.Nombre
+                    </td>
+                    <td>
+                        @c.Cantidad
+                    </td>
+                    <td>
+                        @c.CantidadEnviada
+                    </td>
+                    <td>
+                        ₡@c.PrecioUnitario
+                    </td>
+                    <td>
+                        ₡@c.Descuento
+                    </td>
+
+                    <td>
+                        <input type="text" class="form-control" value="" name="@c.Id" id="@c.Id" />
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-dark" onclick="x(@c.Id, @c.IdPedido)">
+                            <i class="fa fa-envelope"></i>Enviar
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+            }
+
+        </table>
+    </div>
+</div>
