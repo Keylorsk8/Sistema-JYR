@@ -1135,7 +1135,7 @@ namespace Sistema_JYR.Controllers
         /// Convierte una proforma en un pedido
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Admin,Vendedor")]
+
         public ActionResult ConvertiraPedido(int? id)
         {
             if (id == null)
