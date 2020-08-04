@@ -46,7 +46,7 @@
 
             </div>
             <div class="col-md-3">
-                <input type="number" min="0" class="form-control" placeholder="Número de Proforma" onchange="x(this.value )" id="numeroProforma" />
+                <input type="number" min="0" class="form-control" placeholder="Número de Proforma" id="idProforma" />
 
             </div>
             <div class="col-md-1">
@@ -370,6 +370,22 @@ var dataObjeto = JSON.stringify({
                     });
                 };
                 DuplicarProforma();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "Restaurada":
+            <script type="text/javascript">
+                function ProformaNull() {
+                    Swal.fire({
+                        title: 'Proforma Restaurada',
+                        icon: 'success',
+                        text: '¡La proforma ha sido restaurada con éxito!',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProformaNull();
             </script>
             Session["Proforma"] = null;
             break;

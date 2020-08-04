@@ -19,9 +19,7 @@
 <div class="container-fluid">
     <ol class="breadcrumb container-fluid">
         <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
-        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
-        <li class="breadcrumb-item active">@Html.ActionLink("Proformas", "Mantenimientos", "Home")</li>
-        <li class="breadcrumb-item active"> @Html.ActionLink("Mantenimiento Proformas", "Index", "Proformas")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas",new { idUser = usuario.Id })</li>
         <li class="breadcrumb-item active">Crear Proforma</li>
     </ol>
 </div>

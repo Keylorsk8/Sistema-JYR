@@ -1,0 +1,191 @@
+﻿@model Sistema_JYR.Models.Proformas
+@using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
+
+@{
+    ViewBag.Title = "Detalle Proforma";
+    Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
+    List<Sistema_JYR.Models.Telefonos> tels = db.Telefonos.Where(x => x.IdUsuario == Model.IdCliente).ToList();
+
+    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+    string id = HttpContext.Current.User.Identity.GetUserId();
+    usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+}
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas", new { idUser = Model.IdCliente })</li>
+        <li class="breadcrumb-item active">Detalles Proforma</li>
+    </ol>
+</div>
+<div class="container">
+    <h4>Proforma No. @ViewBag.Id - @Model.NombreProforma</h4>
+    <a class="btn btn-outline-dark" href="@Url.Action("ProformasCanceladas",new { idUser = usuario.Id })">
+        <i class="fa fa-arrow-left"></i> Volver
+    </a>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <h5>Cliente</h5>
+            <dl class="dl-horizontal">
+                <dt>
+                    Nombre del Cliente
+                </dt>
+                <dd>
+                    @Model.NombreCliente
+                </dd>
+                <dt>
+                    Dirección de Entrega
+                </dt>
+                <dd>
+                    @Model.DireccionEntrega
+                </dd>
+                <dt>
+                    Teléfonos
+                </dt>
+                @if (tels.Count != 0)
+                {
+                    foreach (var item in tels)
+                    {
+                        <dd> @item.Propietario - @item.Telefono </dd>
+                    }
+                }
+                else
+                {
+                    <dd>No hay teléfonos registrados</dd>
+                }
+            </dl>
+        </div>
+        <div class="col-md-4">
+            <h5>Total</h5>
+            <dl class="dl-horizontal">
+                <dt>
+                    Descuento Total
+                </dt>
+                <dd>
+                    @if (Model.TotalDescuento == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@Model.TotalDescuento.ToString("0,#.00")</label>
+                    }
+                </dd>
+                <dt>
+                    Impuesto Total
+                </dt>
+                <dd>
+                    @if (Model.TotalImpuesto == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@Model.TotalImpuesto.ToString("0,#.00")</label>
+                    }
+                </dd>
+                <dt>
+                    Total a pagar
+                </dt>
+                <dd>
+                    @if (Model.TotalPagar == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@Model.TotalPagar.ToString("0,#.00")</label>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-4">
+            <h5>Información</h5>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </dt>
+
+                <dd>
+                    @Model.Fecha.ToString("dd/M/yyyy")
+                </dd>
+                <dt>
+                    Estado
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.EstadoProforma.Descripcion)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <hr />
+    <div class="container"><b>Productos</b><br /></div><br />
+    <div class="container" style="text-align: center">
+        <div class="panel panel-default">
+            <table class="table table-striped table-hover table-bordered table-responsive-lg">
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Producto
+                    </th>
+                    <th>
+                        Precio Unitario
+                    </th>
+                    <th>
+                        Descuento
+                    </th>
+                    <th>
+                        Cantidad
+                    </th>
+                </tr>
+                @if (Model.ProformaDetalle.Count() != 0)
+                {
+                    foreach (var c in Model.ProformaDetalle)
+                    {
+                        <tr>
+                            <td>
+                                @c.Productos.Id
+                            </td>
+                            <td>
+                                @c.Productos.Nombre
+                            </td>
+                            <td>
+                                @if (c.PrecioUnitario == 0)
+                                {
+                                    <label>₡0,00</label>
+                                }
+                                else
+                                {
+                                    <label>₡@c.PrecioUnitario.ToString("0,#.00")</label>
+                                }
+                            </td>
+                            <td>
+                                @if (c.Descuento == 0)
+                                {
+                                    <label>₡0,00</label>
+                                }
+                                else
+                                {
+                                    <label>₡@c.Descuento.ToString("0,#.00")</label>
+                                }
+                            </td>
+                            <td>
+                                @c.Cantidad
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr style="text-align: center">
+                        <td colspan="7">Ningún producto encontrado</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+

@@ -511,7 +511,7 @@ namespace Sistema_JYR.Controllers
             if (id == null)
             {
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
-                return RedirectToAction("ListaProformas",User.Identity.GetUserId());
+                return RedirectToAction("ListaProformas", User.Identity.GetUserId());
             }
             Proformas proforma = db.Proformas.Find(id);
             if (proforma == null)
@@ -523,7 +523,7 @@ namespace Sistema_JYR.Controllers
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Cancelada";
-            return RedirectToAction("ListaProformas", User.Identity.GetUserId());
+            return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 
         // GET: Proformas/Edit/5
@@ -532,19 +532,19 @@ namespace Sistema_JYR.Controllers
             if (id == null)
             {
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
-                return RedirectToAction("Index");
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = idUser });
             }
             var usuario = db.AspNetUsers.Where(x => x.Id == idUser).First();
             if (usuario.Rol != 3 )
             {
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
-                return RedirectToAction("Index");
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = idUser });
             }
             Proformas proformas = db.Proformas.Find(id);
             if (proformas == null)
             {
                 Session["Proforma"] = "No existe la proforma";
-                return RedirectToAction("Index");
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = idUser });
             }
             ViewBag.Id = proformas.Id;
             ViewBag.TotalPagar = proformas.TotalPagar;
@@ -581,16 +581,23 @@ namespace Sistema_JYR.Controllers
             proformas.TotalDescuento = desc;
             proformas.TotalImpuesto = imp;
             proformas.TotalPagar = totalPagar;
+            proformas.IdUsuario = proformas.IdCliente;
             if (ModelState.IsValid)
             {
                 db.Entry(proformas).State = EntityState.Modified;
                 db.SaveChanges();
                 Session["Proforma"] = "¡Proforma actualizada correctamente!";
-                return RedirectToAction("Index");
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = proformas.IdCliente });
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == proformas.IdCliente), "Id", "Nombre");
             ViewBag.IdEstado = new SelectList(db.EstadoProforma.Where(x => x.Descripcion.Equals("Nueva")), "Id", "Descripcion");
-            return View(proformas);
+            return RedirectToAction("ListaProformas", "Proformas", new { idUser = proformas.IdCliente });
+        }
+
+        public ActionResult ProformasCanceladas(string idUser)
+        {
+            var canceladas = db.Proformas.Where(x => x.IdUsuario == idUser && x.IdEstado == 1).ToList();
+            return View(canceladas);
         }
 
         public ActionResult DuplicarProformaCliente(int? id)
@@ -725,6 +732,51 @@ namespace Sistema_JYR.Controllers
             return View(proformas);
         }
         #endregion
+
+
+        public ActionResult DetallesProformaCanceladaCliente(int id)
+        {
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("ProformasCanceladas", "Proformas", new { idUser = User.Identity.GetUserId() });
+            }
+
+            return View(proformas);
+        }
+
+        public ActionResult RestaurarProforma(int id)
+        {
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return View("Index");
+            }
+
+            proformas.IdEstado = 2;
+            db.Entry(proformas).State = EntityState.Modified;
+            db.SaveChanges();
+            Session["Proforma"] = "Restaurada";
+            return View("Index");
+        }
+
+        public ActionResult RestaurarProformaCliente(int id)
+        {
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("ProformasCanceladas","Proformas",new { idUser = User.Identity.GetUserId() });
+            }
+
+            proformas.IdEstado = 2;
+            db.Entry(proformas).State = EntityState.Modified;
+            db.SaveChanges();
+            Session["Proforma"] = "Restaurada";
+            return RedirectToAction("ProformasCanceladas", "Proformas", new { idUser = User.Identity.GetUserId() });
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -923,16 +975,46 @@ namespace Sistema_JYR.Controllers
         /// Filtra por nombre de proforma 
         /// </summary>
         /// <returns></returns>
-        public ActionResult filtrarProformasAjax(string terminoBusqueda)
+        public ActionResult filtrarProformasAjax(Ajax objeto)
         {
+            string terminoBusqueda = Convert.ToString(objeto.terminoBusqueda);
+            int idProforma = Convert.ToInt32(objeto.idProforma);
 
+            List<Proformas> proformas = new List<Proformas>();
+            List<Proformas> proformasFiltradasNombre = new List<Proformas>();
+            List<Proformas> proformasFiltradaId = new List<Proformas>();
+            proformas = db.Proformas.Where(x => x.AspNetUsers.Rol == 2 && x.IdEstado == 2 || x.AspNetUsers.Rol == 1 && x.IdEstado == 2).ToList();
+            
             if (terminoBusqueda != null)
-            {            
-                var lista = db.Proformas.Where(x => x.NombreProforma.Contains(terminoBusqueda)
-                 /*&& x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1*/);
-                return PartialView("_ListaProformas", lista.ToList().Where(x=> x.IdEstado==2));
+            {
+                foreach (var item in proformas)
+                {
+                    if (item.NombreProforma.ToLower().Contains(terminoBusqueda.ToLower()))
+                    {
+                        proformasFiltradasNombre.Add(item);
+                    }
+                }
+                proformas = proformasFiltradasNombre;
             }
-            return View();
+
+
+            if (idProforma != 0)
+            {
+                foreach (var item in proformas)
+                {
+                    if (item.Id == idProforma)
+                    {
+                        proformasFiltradaId = new List<Proformas>
+                        {
+                            item
+                        };
+                        break;
+                    }
+                }
+                proformas = proformasFiltradaId;
+            }
+
+            return PartialView("_ListaProformas", proformas.ToList().Where(x=> x.IdEstado==2));
         }
 
         /// <summary>
@@ -1037,6 +1119,58 @@ namespace Sistema_JYR.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        public ActionResult ConvertiraPedidoCliente(int? id)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas","Profromas", new { idUser = User.Identity.GetUserId() });
+            }
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("ListaProformas", "Profromas", new { idUser = User.Identity.GetUserId() });
+            }
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            proformas.ProformaDetalle = detalles;
+            Pedidos pedido = new Pedidos
+            {
+                IdUsuario = proformas.IdUsuario,
+                IdEstado = 7,
+                Fecha = DateTime.Now,
+                TotalPagar = proformas.TotalPagar,
+                TotalDescuento = proformas.TotalDescuento,
+                TotalImpuesto = proformas.TotalImpuesto,
+                IdCliente = proformas.IdCliente,
+                NombreCliente = proformas.NombreCliente,
+                DireccionEntrega = proformas.DireccionEntrega,
+                NombrePedido = proformas.NombreProforma,
+                NumeroProforma = proformas.Id
+            };
+            db.Pedidos.Add(pedido);
+            db.SaveChanges();
+            PedidoDetalle pedidoDetalle = new PedidoDetalle();
+            foreach (var item in detalles)
+            {
+                pedidoDetalle.IdPedido = pedido.Id;
+                pedidoDetalle.IdProducto = item.IdProducto;
+                pedidoDetalle.Cantidad = item.Cantidad;
+                pedidoDetalle.PrecioUnitario = item.PrecioUnitario;
+                pedidoDetalle.Descuento = item.Descuento;
+                db.PedidoDetalle.Add(pedidoDetalle);
+                db.SaveChanges();
+            }
+            Session["Proforma"] = "¡Proforma convertida en Pedido exitosamente!";
+            Session["NumPedido"] = pedido.Id;
+
+            proformas.IdEstado = 4;
+            db.Entry(proformas).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 
         public class Ajax
@@ -1281,6 +1415,20 @@ namespace Sistema_JYR.Controllers
                 tableEvent.AddCell(cell);
 
                 return tableEvent;
+            }
+
+            public class Ajax
+            {
+                public string TerminoBusqueda
+                {
+                    get;
+                    set;
+                }
+                public string IdProforma
+                {
+                    get;
+                    set;
+                }
             }
         }
     }

@@ -636,6 +636,8 @@
     <Content Include="Views\Productos\_ListaProductosMensajes.cshtml" />
     <Content Include="Views\Pedido\_ListaProductosMensajes.cshtml" />
     <Content Include="Views\Proformas\_ListaProductosMensajes.cshtml" />
+    <Content Include="Views\Proformas\ProformasCanceladas.cshtml" />
+    <Content Include="Views\Proformas\DetallesProformaCanceladaCliente.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

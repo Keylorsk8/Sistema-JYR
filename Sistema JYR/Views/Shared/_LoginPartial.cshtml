@@ -91,11 +91,11 @@
                 <li class="nav-item">
                     @if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
                     {
-                        @Html.ActionLink(num, "Edit", "Pedido", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                        @Html.ActionLink(num, "", "Pedido", new { id = ((Documento)Session["Documento"]).NumerosDocumento, idUsuario = usuario.Id }, new { @class = "nav-link", @style = "color: white !important" })
                     }
                     else
                     {
-                        @Html.ActionLink(num, "Edit", "Proformas", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                        @Html.ActionLink(num, "EditProformaCliente", "Proformas", new { id = ((Documento)Session["Documento"]).NumerosDocumento, idUser = usuario.Id }, new { @class = "nav-link", @style = "color: white !important" })
                     }
 
                 </li>
