@@ -852,7 +852,6 @@ namespace Sistema_JYR.Controllers
             base.Dispose(disposing);
         }
 
-        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult EliminarProdProforma(int? idD, int IdProforma)
         {
             Proformas proforma = db.Proformas.Find(IdProforma);
@@ -894,7 +893,6 @@ namespace Sistema_JYR.Controllers
         /// Cambiar la cantidad en una proforma
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult CambiarCantidadPedida(Ajax objeto)
         {
             int idProforma = Convert.ToInt32(objeto.idProforma);
