@@ -208,7 +208,7 @@ namespace Sistema_JYR.Controllers
 
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
-                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta", 1);
+                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tu cuenta", 1);
 
                     Session["MensajeIndex"] = "Confirma tú cuenta";
                     return RedirectToAction("Index", "Home");
