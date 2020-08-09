@@ -93,8 +93,8 @@ namespace Sistema_JYR.Controllers
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
 
-                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tú cuenta-Reenviado", 1);
-                    Session["MensajeIndex"] = "Confirma tú cuenta-Reenviado";
+                    string callbackUrl = await EnviarCorreoAsync(user.Id, "Confirma tu cuenta-Reenviado", 1);
+                    Session["MensajeIndex"] = "Confirma tu cuenta-Reenviado";
                     ViewBag.errorMessage = "Debe confirmar su correo para iniciar sesión."
                         + "La confirmación ha sido reenviada a su correo electrónico.";
                     return RedirectToAction("Index", "Home");

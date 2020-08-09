@@ -596,6 +596,8 @@ namespace Sistema_JYR.Controllers
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
             }
+
+            ViewBag.Id = proforma.Id;
             return View(proforma);
         }
 
@@ -608,6 +610,7 @@ namespace Sistema_JYR.Controllers
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
             }
             var proforma = db.Proformas.Find(id);
+            ViewBag.Id = proforma.Id;
             proforma.IdEstado = 5;
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
@@ -1249,6 +1252,7 @@ namespace Sistema_JYR.Controllers
             PedidoDetalle pedidoDetalle = new PedidoDetalle();
             foreach (var item in detalles)
             {
+                pedidoDetalle.CantidadEnviada = 0;
                 pedidoDetalle.IdPedido = pedido.Id;
                 pedidoDetalle.IdProducto = item.IdProducto;
                 pedidoDetalle.Cantidad = item.Cantidad;
