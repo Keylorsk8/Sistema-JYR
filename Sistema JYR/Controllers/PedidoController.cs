@@ -384,6 +384,7 @@ namespace Sistema_JYR.Controllers
             pedidos.TotalDescuento = 0;
             pedidos.TotalImpuesto = 0;
             pedidos.TotalPagar = 0;
+            
             if (pedidos.DireccionEntrega == null)
             {
                 pedidos.DireccionEntrega = "Retirar en la ferretería";
@@ -704,17 +705,25 @@ namespace Sistema_JYR.Controllers
                                 db.Entry(det).State = EntityState.Modified;
                                 db.SaveChanges();
                                 List<PedidoDetalle> d = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
-                                    foreach (var de in d)
+                            int count = 0;
+                            foreach (var de in d)
                                     {
                                         if(de.CantidadEnviada == de.Cantidad)
-                                {
-                                    pedido.IdEstado = 1;
-                                    db.Entry(pedido).State = EntityState.Modified;
-                                    db.SaveChanges();
-                                }
+                                        {
+                                            count++;                                   
+                                        }
+
+                                       
                                     }
 
-                                pedido.PedidoDetalle = d;
+                            if (count == d.Count())
+                            {
+                                pedido.IdEstado = 1;
+                                db.Entry(pedido).State = EntityState.Modified;
+                                db.SaveChanges();
+                            }
+
+                            pedido.PedidoDetalle = d;
                                 return PartialView("_detalle", pedido);
                                 }
 
