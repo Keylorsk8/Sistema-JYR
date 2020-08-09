@@ -199,41 +199,49 @@
         </p>
         <div class="card bg-light mb-12">
             <div class="card-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h5>Adjunta las proformas de otras instituciones</h5>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <input name="file" id="file" type="file" accept="application/pdf" />
-                                <button class="btn btn-dark" onclick="agregar()">Agregar</button>
+                @using (Html.BeginForm())
+                {
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Adjunta las proformas de otras instituciones</h5>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group" style="text-align: center">
+                                    <input name="file" id="file" type="file" accept="application/pdf" />
+                                    <input type="button" value="Agregar archivo" id="upload" class="btn btn-secondary" style="margin-left: 25px"/>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
+                @section scripts
+                 {
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $('#upload').click(function () {
+                                var data = new FormData();
+                                var file = $('form input[type=file]')[0].files[0];
+                                var idProfroma = @Model.Id;
+                                data.append('file', file);
+                                data.append('idProforma', idProfroma)
 
-                <script>
-                    function agregar() {
-                        var data = new FormData();
+                                jQuery.ajax({
+                                    url: '@Url.Action("agregardocumento", "Proformas", new { id = Model.Id })',
+                                    data: data,
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    method: 'POST',
+                                    success: function (data) {
+                                        $('#Documentos').html(data);
+                                    }
+                                })
+                            });
+                        });
 
-                        var inputFile = $('#file').val();
-                        //var file = inputFile.files[0];
-                        data.append('archivo', inputFile);
-
-                        jQuery.ajax({
-                            url: '@Url.Action("agregardocumento", "Proformas", new { id = Model.Id })',
-                            data: data,
-                            cache: false,
-                            contentType: false,
-                            processData: false,
-                            method: 'POST',
-                            success: function (data) {
-                                alert(data);
-                            }
-                        })
-                    }
-                </script>
+                    </script>
+                }
 
                 <div class="container">
                     <div id="Documentos" style="border: 1px solid lightgray;border-radius: 10px; padding: 5px">
@@ -244,20 +252,40 @@
                         }
                         @if (documentos.Count != 0)
                         {
-                            foreach (var item in documentos)
-                            {
-                                byte[] byteDocument = item.Documento;
-                                MemoryStream ms = new MemoryStream(byteDocument, 0, 0, true, true);
-                                Response.ContentType = "application/pdf";
-                                Response.AddHeader("content-disposition", "attachment;filename=" + "Proforma" + item.Descripcion);
-                                Response.Buffer = true;
-                                Response.Clear();
-                                Response.OutputStream.Write(ms.GetBuffer(), 0, ms.GetBuffer().Length);
-                                Response.OutputStream.Flush();
-                                Response.End();
-                                var file = new FileStreamResult(Response.OutputStream, "aplication/pdf");
-                                <a href="@file" download="@item.Descripcion">@item.Descripcion</a>
-                            }
+                            <div class="row" style="padding: 15px">
+                                @foreach (var item in documentos)
+                                {
+
+                                <div class="col-md-2" style="overflow:hidden; text-align: center; color: red">
+                                    <div style="text-align: left">
+                                        <a class="btnCerrar" href="#"> <span style="margin-left: 5px; margin-right: 5px">X</span></a>
+                                    </div>
+                                    <style>
+                                        .btnCerrar {
+                                            color: black;
+                                            text-decoration: none;
+                                            border-radius: 100%;
+                                            border: 1px solid black;
+                                            width: 50px;
+                                            height: 50px;
+                                            transition: all 0.5s;
+                                        }
+
+                                            .btnCerrar:hover {
+                                                background-color: black;
+                                                color: white;
+                                                text-decoration: none;
+                                            }
+                                    </style>
+                                    <a href="@Url.Action("PDFD",new { id = item.Id })">
+                                        <i class="fa fa-file-pdf-o" style="color: red !important; font-size:100px"></i>
+                                        <br />
+                                        @item.Descripcion
+                                    </a>
+                                </div>
+
+                                }
+                            </div>
                         }
                         else
                         {

@@ -192,6 +192,7 @@
           <Property Name="NombreCliente" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DireccionEntrega" Type="nvarchar(max)" Nullable="false" />
           <Property Name="NombreProforma" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Comentario" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -892,6 +893,7 @@
           <NavigationProperty Name="Documentos" Relationship="SistemaJYRModel.FK_Documentos_Proformas" FromRole="Proformas" ToRole="Documentos" />
           <Property Name="NombreProforma" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="NombreCliente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comentario" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Telefonos">
           <Key>
@@ -1277,6 +1279,7 @@
           <EntitySetMapping Name="Proformas">
             <EntityTypeMapping TypeName="SistemaJYRModel.Proformas">
               <MappingFragment StoreEntitySet="Proformas">
+                <ScalarProperty Name="Comentario" ColumnName="Comentario" />
                 <ScalarProperty Name="NombreCliente" ColumnName="NombreCliente" />
                 <ScalarProperty Name="NombreProforma" ColumnName="NombreProforma" />
                 <ScalarProperty Name="DireccionEntrega" ColumnName="DireccionEntrega" />

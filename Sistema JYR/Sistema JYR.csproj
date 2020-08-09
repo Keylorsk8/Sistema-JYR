@@ -244,6 +244,7 @@
     <Compile Include="Controllers\PedidoController.cs" />
     <Compile Include="Controllers\ProductosController.cs" />
     <Compile Include="Controllers\ProformasController.cs" />
+    <Compile Include="Controllers\RecomendacionesController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SweetController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -655,6 +656,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="App_LocalResources\" />
+    <Folder Include="Views\Recomendaciones\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -155,22 +155,23 @@
             </div>
         </div>
         <br />
-        <br />
-        <br />
-        <br />
-        <br />
         @if (Model.ProformaDetalle.Count == 0)
         {
-            <div class="container">
-                <div class="card bg-light mb-12" style="margin-top:-7%">
+            <div class="">
+                <div class="card bg-light mb-12">
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-info btn-block" disabled style="margin:5px"><i class="fa fa-line-chart" style="margin-right: 5px"></i>Solicitar Revaloración de Precios</button>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
-                                <button class="btn btn-danger btn-block" disabled><i class="fa fa-file-pdf-o"></i>Exportar a PDF</button>
+                                <button class="btn btn-danger btn-block" disabled style="margin:5px"><i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>Exportar a PDF</button>
                             </div>
                             <div class="col-md-6">
-                                <a class="btn btn-success btn-block disabled" href="@Url.Action("ConvertiraPedido", new { id = Model.Id })" disabled="disabled">
-                                    <i class="fa fa-send-o"></i>  Convertir a Pedido
+                                <a class="btn btn-success btn-block disabled" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" disabled="disabled" style="margin:5px">
+                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
                                 </a>
                             </div>
                         </div>
@@ -181,18 +182,25 @@
         }
         else
         {
-            <div class="container">
-                <div class="card bg-light mb-12" style="margin-top:-7%">
+            <div class="">
+                <div class="card bg-light mb-12" style="">
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-md-12">
+                                <a class="btn btn-info btn-block" href="@Url.Action("EnviarRevaloracion", new { id = Model.Id })" style="margin:5px">
+                                    <i class="fa fa-line-chart" style="margin-right: 5px"></i>  Solicitar Revaloración de Precios
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
-                                <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })">
-                                    <i class="fa fa-file-pdf-o"></i>  Exportar a PDF
+                                <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })" style="margin:5px">
+                                    <i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>  Exportar a PDF
                                 </a>
                             </div>
                             <div class="col-md-6">
-                                <a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedido", new { id = Model.Id })">
-                                    <i class="fa fa-send-o"></i>  Convertir a Pedido
+                                <a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" style="margin:5px">
+                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
                                 </a>
                             </div>
                         </div>

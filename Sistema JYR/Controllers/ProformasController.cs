@@ -24,6 +24,7 @@ using Image = iText.Layout.Element.Image;
 using Rectangle = iText.Kernel.Geom.Rectangle;
 using System.Web;
 using System.Web.Helpers;
+using System.Data.Entity.Validation;
 
 namespace Sistema_JYR.Controllers
 {
@@ -162,13 +163,13 @@ namespace Sistema_JYR.Controllers
             pdfDocument.AddEventHandler(PdfDocumentEvent.START_PAGE, new HeaderEventHandler(img));
             pdfDocument.AddEventHandler(PdfDocumentEvent.END_PAGE, new FooterEventHandler());
             List<Proformas> model = db.Proformas.Where(x => x.Id == id).ToList();
-         
+
             foreach (var item in model)
             {
                 List<AspNetUsers> user = db.AspNetUsers.Where(x => x.Id == item.IdCliente).ToList();
                 List<Telefonos> tel = db.Telefonos.Where(x => x.IdUsuario == item.IdCliente).ToList();
                 Table enc = new Table(4).UseAllAvailableWidth();
-                Cell cellenc = new Cell().Add(new Paragraph("Proforma No." + id ).SetFontSize(11)).
+                Cell cellenc = new Cell().Add(new Paragraph("Proforma No." + id).SetFontSize(11)).
                     SetTextAlignment(TextAlignment.LEFT).SetBorder(Border.NO_BORDER);
                 enc.AddCell(cellenc);
                 cellenc = new Cell().Add(new Paragraph("Día").SetFontSize(9)).
@@ -189,18 +190,18 @@ namespace Sistema_JYR.Controllers
                             SetTextAlignment(TextAlignment.CENTER).SetWidth(25).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
                 enc2.AddCell(cellenc2);
                 cellenc2 = new Cell().Add(new Paragraph(item.Fecha.Month.ToString()).SetFontSize(9)).
-                           SetTextAlignment(TextAlignment.CENTER).SetWidth(40).SetHorizontalAlignment(HorizontalAlignment.RIGHT) ;
+                           SetTextAlignment(TextAlignment.CENTER).SetWidth(40).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
                 enc2.AddCell(cellenc2);
                 cellenc2 = new Cell().Add(new Paragraph(item.Fecha.Year.ToString()).SetFontSize(9)).
-                           SetTextAlignment(TextAlignment.CENTER).SetWidth(30).SetHorizontalAlignment(HorizontalAlignment.RIGHT) ;
+                           SetTextAlignment(TextAlignment.CENTER).SetWidth(30).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
                 enc2.AddCell(cellenc2);
                 doc.Add(enc2);
                 Table _enc = new Table(2).UseAllAvailableWidth();
                 Cell _cellEnc = new Cell(2, 1).Add(new Paragraph("Información de Cliente").SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetWidth(100).SetBorderRight(Border.NO_BORDER);
                 _enc.AddCell(_cellEnc);
-               _cellEnc = new Cell(2, 1).Add(new Paragraph("Detalles").SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.LEFT).SetWidth(100).SetBorderLeft(Border.NO_BORDER);
+                _cellEnc = new Cell(2, 1).Add(new Paragraph("Detalles").SetFontSize(9)).
+                      SetTextAlignment(TextAlignment.LEFT).SetWidth(100).SetBorderLeft(Border.NO_BORDER);
                 _enc.AddCell(_cellEnc);
                 doc.Add(_enc);
                 Table _det = new Table(2).UseAllAvailableWidth();
@@ -208,20 +209,20 @@ namespace Sistema_JYR.Controllers
                      SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(100).SetBorderRight(Border.NO_BORDER);
                 _enc.AddCell(_cellDet);
                 _det.AddHeaderCell(_cellDet);
-                 _cellDet = new Cell(2, 1).Add(new Paragraph("Vendedor: " + item.AspNetUsers.Nombre + " " + item.AspNetUsers.Apellido1).SetFontSize(9)).
-                        SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(116).SetBorderLeft(Border.NO_BORDER);
-                        _enc.AddCell(_cellDet);
-                        _det.AddHeaderCell(_cellDet);
+                _cellDet = new Cell(2, 1).Add(new Paragraph("Vendedor: " + item.AspNetUsers.Nombre + " " + item.AspNetUsers.Apellido1).SetFontSize(9)).
+                       SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(116).SetBorderLeft(Border.NO_BORDER);
+                _enc.AddCell(_cellDet);
+                _det.AddHeaderCell(_cellDet);
                 doc.Add(_det);
                 Table _det2 = new Table(2).UseAllAvailableWidth();
                 Cell _cellDet2 = new Cell(2, 1).Add(new Paragraph(item.DireccionEntrega).SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER)
-                     .SetBorderBottom(Border.NO_BORDER).SetWidth(100).SetBorderRight(Border.NO_BORDER); 
+                     .SetBorderBottom(Border.NO_BORDER).SetWidth(100).SetBorderRight(Border.NO_BORDER);
                 _enc.AddCell(_cellDet2);
                 _det2.AddHeaderCell(_cellDet2);
                 _cellDet2 = new Cell(2, 1).Add(new Paragraph("Estado:" + item.EstadoProforma.Descripcion).SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetWidth(125)
-                     .SetBorderLeft(Border.NO_BORDER); 
+                     .SetBorderLeft(Border.NO_BORDER);
                 _enc.AddCell(_cellDet2);
                 _det2.AddHeaderCell(_cellDet2);
                 doc.Add(_det2);
@@ -264,7 +265,7 @@ namespace Sistema_JYR.Controllers
             _table.AddHeaderCell(_cell.AddStyle(styleCell));
             _cell = new Cell(2, 1).Add(new Paragraph("Descuento"));
             _table.AddHeaderCell(_cell.AddStyle(styleCell));
-            Style sty = new Style()             
+            Style sty = new Style()
                .SetTextAlignment(TextAlignment.CENTER)
                .SetFontSize(9);
             List<ProformaDetalle> det = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
@@ -299,10 +300,10 @@ namespace Sistema_JYR.Controllers
                 _foot = new Cell().Add(new Paragraph("Total Descuento").SetFontSize(9)).
                      SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
                 _footer.AddCell(_foot);
-                _foot = new Cell().Add(new Paragraph( item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).
+                _foot = new Cell().Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).
               SetTextAlignment(TextAlignment.CENTER);
-            _footer.AddCell(_foot);
-               doc.Add(_footer);
+                _footer.AddCell(_foot);
+                doc.Add(_footer);
                 Table _footer2 = new Table(anchos).UseAllAvailableWidth();
                 Cell _foot2 = new Cell().Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).
              SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER);
@@ -483,7 +484,7 @@ namespace Sistema_JYR.Controllers
             }
             Session["Documento"] = new Documento() { TipoDocumento = TipoDocumento.Proforma, NumerosDocumento = id };
             Session["Proforma"] = "Seleccionado";
-            return RedirectToAction("ListaProformas","Proformas",new { idUser = User.Identity.GetUserId() });
+            return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 
         [Authorize(Roles = "Cliente")]
@@ -517,7 +518,7 @@ namespace Sistema_JYR.Controllers
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = idUser });
             }
             var usuario = db.AspNetUsers.Where(x => x.Id == idUser).First();
-            if (usuario.Rol != 3 )
+            if (usuario.Rol != 3)
             {
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = idUser });
@@ -614,28 +615,47 @@ namespace Sistema_JYR.Controllers
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 
-        public ActionResult agregardocumento()
+        [HttpPost]
+        public ActionResult agregardocumento(int idProforma, HttpPostedFileBase file)
         {
             try
             {
-                HttpPostedFileBase FileBase = Request.Files[0];
-                Stream fs = FileBase.InputStream;
-                BinaryReader br = new BinaryReader(fs);
-                Byte[] bytes = br.ReadBytes((Int32)fs.Length);
-
-                Documentos doc = new Documentos()
+                if (Request.Files.Count != 0)
                 {
-                    IdProforma = 1,
-                    Documento = bytes,
-                    Descripcion = FileBase.FileName
-                };
-                db.Documentos.Add(doc);
-                db.SaveChanges();
-                return PartialView("_ListaDocumentos", 1);
+
+                    HttpPostedFileBase FileBase = Request.Files[0];
+                    Stream fs = FileBase.InputStream;
+                    BinaryReader br = new BinaryReader(fs);
+                    Byte[] bytes = br.ReadBytes((Int32)fs.Length);
+
+                    Documentos doc = new Documentos()
+                    {
+                        IdProforma = idProforma,
+                        Documento = bytes,
+                        Descripcion = FileBase.FileName
+                    };
+                    db.Documentos.Add(doc);
+                    db.SaveChanges();
+                    return PartialView("_ListaDocumentos", idProforma);
+                }
+                else
+                {
+                    return PartialView("_ListaDocumentos", idProforma);
+                }
             }
-            catch (Exception e)
+            catch (DbEntityValidationException e)
             {
-                return PartialView("_ListaDocumentos", null);
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
+                }
+                throw;
             }
         }
 
@@ -833,7 +853,7 @@ namespace Sistema_JYR.Controllers
             if (proformas == null)
             {
                 Session["Proforma"] = "No existe la proforma";
-                return RedirectToAction("ProformasCanceladas","Proformas",new { idUser = User.Identity.GetUserId() });
+                return RedirectToAction("ProformasCanceladas", "Proformas", new { idUser = User.Identity.GetUserId() });
             }
 
             proformas.IdEstado = 2;
@@ -850,6 +870,12 @@ namespace Sistema_JYR.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public FileResult PDFD(int id)
+        {
+            var arch = db.Documentos.Where(x => x.Id == id).First();
+            return File(arch.Documento, "application/pdf", arch.Descripcion + ".pdf");
         }
 
         public ActionResult EliminarProdProforma(int? idD, int IdProforma)
@@ -1050,7 +1076,7 @@ namespace Sistema_JYR.Controllers
             List<Proformas> proformasFiltradasNombre = new List<Proformas>();
             List<Proformas> proformasFiltradaId = new List<Proformas>();
             proformas = db.Proformas.Where(x => x.AspNetUsers.Rol == 2 && x.IdEstado == 2 || x.AspNetUsers.Rol == 1 && x.IdEstado == 2).ToList();
-            
+
             if (terminoBusqueda != null)
             {
                 foreach (var item in proformas)
@@ -1194,7 +1220,7 @@ namespace Sistema_JYR.Controllers
             if (id == null)
             {
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
-                return RedirectToAction("ListaProformas","Profromas", new { idUser = User.Identity.GetUserId() });
+                return RedirectToAction("ListaProformas", "Profromas", new { idUser = User.Identity.GetUserId() });
             }
             Proformas proformas = db.Proformas.Find(id);
             if (proformas == null)
@@ -1336,7 +1362,7 @@ namespace Sistema_JYR.Controllers
                                              group new { p.IdEstado, p.TotalPagar, p.TotalImpuesto, p.TotalDescuento }
                                              by new { e.Descripcion, e.Id, p.IdEstado }
                                              into g
-                                             orderby g.Sum(x=> x.TotalPagar)
+                                             orderby g.Sum(x => x.TotalPagar)
 
                                              select new
                                              {
@@ -1344,7 +1370,7 @@ namespace Sistema_JYR.Controllers
                                                  TotalDescuento = g.Sum(x => x.TotalDescuento),
                                                  TotalImpuesto = g.Sum(x => x.TotalImpuesto),
                                                  Cantidad = g.Count(),
-                                                 Estado = g.Key.Descripcion,                                              
+                                                 Estado = g.Key.Descripcion,
                                                  Porcentaje = g.Count() * 100 / db.Proformas.Count()
                                              };
                                 ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteProformaAPedido.rdlc");
@@ -1382,12 +1408,12 @@ namespace Sistema_JYR.Controllers
                 iText.Kernel.Pdf.Canvas.PdfCanvas canvas1 = new iText.Kernel.Pdf.Canvas.PdfCanvas(page.NewContentStreamBefore(), page.GetResources(), pdfDoc);
                 new Canvas(canvas1, pdfDoc, rootArea)
                     .Add(getTable(docEvent));
-             }
+            }
 
 
             public Table getTable(PdfDocumentEvent docEvent)
             {
- 
+
                 Table tableEvent = new Table(2).UseAllAvailableWidth().SetHeight(600);
 
                 Style styleCell = new Style()
@@ -1408,18 +1434,18 @@ namespace Sistema_JYR.Controllers
                     .AddStyle(styleText).AddStyle(styleCell)
                     .SetBorder(Border.NO_BORDER).SetWidth(450);
 
-     
+
                 tableEvent.AddCell(cell);
 
-               cell = new Cell().Add(Img.SetAutoScale(true)).SetBorder(Border.NO_BORDER)
-                    .SetHorizontalAlignment(HorizontalAlignment.RIGHT).SetTextAlignment(TextAlignment.RIGHT);
+                cell = new Cell().Add(Img.SetAutoScale(true)).SetBorder(Border.NO_BORDER)
+                     .SetHorizontalAlignment(HorizontalAlignment.RIGHT).SetTextAlignment(TextAlignment.RIGHT);
 
                 tableEvent.AddCell(cell).
                     SetTextAlignment(TextAlignment.RIGHT);
 
                 return tableEvent;
             }
-           
+
         }
 
         public class FooterEventHandler : IEventHandler
@@ -1447,14 +1473,14 @@ namespace Sistema_JYR.Controllers
                 Style styleCell = new Style()
                     .SetBorder(Border.NO_BORDER)
                     .SetPadding(5)
-                    .SetBorderTop(new SolidBorder(ColorConstants.BLACK,2));
+                    .SetBorderTop(new SolidBorder(ColorConstants.BLACK, 2));
 
                 Style styleText = new Style()
                     .SetTextAlignment(TextAlignment.RIGHT);
 
                 PdfFont bold = PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
                 Cell cell = new Cell()
-                    .Add(new Paragraph("Página " +pageNum + " de " + pageAll).SetFont(bold).SetFontSize(8))
+                    .Add(new Paragraph("Página " + pageNum + " de " + pageAll).SetFont(bold).SetFontSize(8))
                     .Add(new Paragraph("Proforma emitida el: " + DateTime.Now).SetFont(bold).SetFontSize(8))
                     .AddStyle(styleText).AddStyle(styleCell)
                     .SetBorder(Border.NO_BORDER).SetWidth(450);

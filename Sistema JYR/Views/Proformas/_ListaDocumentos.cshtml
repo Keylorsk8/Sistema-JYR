@@ -1,12 +1,12 @@
 ﻿@model int
 @using Microsoft.AspNet.Identity
 @using Sistema_JYR.Models
-@{ 
+@{
     SistemaJYREntities db = new SistemaJYREntities();
 }
 
 
-<div id="Documentos" style="border: 1px solid lightgray;border-radius: 10px; padding: 5px">
+
     <h6>Proformas adjuntas</h6>
     <hr />
     @{
@@ -14,20 +14,21 @@
     }
     @if (documentos.Count != 0)
     {
-        foreach (var item in documentos)
-        {
-            byte[] byteDocument = item.Documento;
-            MemoryStream ms = new MemoryStream(byteDocument, 0, 0, true, true);
-            Response.ContentType = "application/pdf";
-            Response.AddHeader("content-disposition", "attachment;filename=" + "Proforma" + item.Descripcion);
-            Response.Buffer = true;
-            Response.Clear();
-            Response.OutputStream.Write(ms.GetBuffer(), 0, ms.GetBuffer().Length);
-            Response.OutputStream.Flush();
-            Response.End();
-            var file = new FileStreamResult(Response.OutputStream, "aplication/pdf");
-            <a href="@file" download="@item.Descripcion">@item.Descripcion</a>
-        }
+        <div class="row" style="padding: 15px">
+            @foreach (var item in documentos)
+            {
+
+                <div class="col-md-2" style="overflow:hidden; text-align: center; color: red">
+
+                    <a href="@Url.Action("PDFD",new { id = item.Id })">
+                        <i class="fa fa-file-pdf-o" style="color: red !important; font-size:100px"></i>
+                        <br />
+                        @item.Descripcion
+                    </a>
+                </div>
+
+            }
+        </div>
     }
     else
     {
@@ -36,5 +37,5 @@
         </div>
 
     }
-</div>
+
 

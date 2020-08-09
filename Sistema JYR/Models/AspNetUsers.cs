@@ -11,8 +11,7 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class AspNetUsers
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -30,22 +29,13 @@ namespace Sistema_JYR.Models
         }
     
         public string Id { get; set; }
-
-        [Required(ErrorMessage = "Este campo es requerido")]
         public string Nombre { get; set; }
-
-        [Required(ErrorMessage = "Este campo es requerido")]
         public string Apellido1 { get; set; }
-        [Required(ErrorMessage = "Este campo es requerido")]
         public string Apellido2 { get; set; }
-        [Required(ErrorMessage = "Este campo es requerido")]
-        [Range(111111111, 999999999, ErrorMessage = "La cédula debe estar en un rango de 111111111 a 999999999")]
         public int Cedula { get; set; }
         public int Rol { get; set; }
-        [Required(ErrorMessage = "Este campo es requerido")]
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
-        [Required(ErrorMessage = "Este campo es requerido")]
         public string PasswordHash { get; set; }
         public string SecurityStamp { get; set; }
         public string PhoneNumber { get; set; }
