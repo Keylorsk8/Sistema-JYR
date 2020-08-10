@@ -435,11 +435,25 @@ namespace Sistema_JYR.Controllers
             proformas.TotalDescuento = desc;
             proformas.TotalImpuesto = imp;
             proformas.TotalPagar = totalPagar;
+            if (proformas.DireccionEntrega == null)
+            {
+                proformas.DireccionEntrega = "Retirar en la ferretería";
+            }
+            if (proformas.NombreProforma == null)
+            {
+                proformas.NombreProforma = "Proforma #";
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(proformas).State = EntityState.Modified;
                 db.SaveChanges();
                 Session["Proforma"] = "¡Proforma actualizada correctamente!";
+                if (proformas.NombreProforma == "Proforma #")
+                {
+                    proformas.NombreProforma += proformas.Id;
+                }
+                db.Entry(proformas).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1 && x.Estado == true), "Id", "Nombre", proformas.IdUsuario);
@@ -566,11 +580,25 @@ namespace Sistema_JYR.Controllers
             proformas.TotalImpuesto = imp;
             proformas.TotalPagar = totalPagar;
             proformas.IdUsuario = proformas.IdCliente;
+            if (proformas.DireccionEntrega == null)
+            {
+                proformas.DireccionEntrega = "Retirar en la ferretería";
+            }
+            if (proformas.NombreProforma == null)
+            {
+                proformas.NombreProforma = "Proforma #";
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(proformas).State = EntityState.Modified;
                 db.SaveChanges();
                 Session["Proforma"] = "¡Proforma actualizada correctamente!";
+                if (proformas.NombreProforma == "Proforma #")
+                {
+                    proformas.NombreProforma += proformas.Id;
+                }
+                db.Entry(proformas).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = proformas.IdCliente });
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == proformas.IdCliente), "Id", "Nombre");
@@ -602,8 +630,11 @@ namespace Sistema_JYR.Controllers
         }
 
         [HttpPost]
-        public ActionResult EnviarRevaloracionPOST(int id)
+        [ValidateAntiForgeryToken]
+        public ActionResult EnviarRevaloracion([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma,Comentario")] Proformas proformas)
         {
+            int id = proformas.Id;
+            string comentario = proformas.Comentario;
             if (id == 0)
             {
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
@@ -612,6 +643,7 @@ namespace Sistema_JYR.Controllers
             var proforma = db.Proformas.Find(id);
             ViewBag.Id = proforma.Id;
             proforma.IdEstado = 5;
+            proforma.Comentario = comentario;
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Revaloracion";
@@ -631,11 +663,22 @@ namespace Sistema_JYR.Controllers
                     BinaryReader br = new BinaryReader(fs);
                     Byte[] bytes = br.ReadBytes((Int32)fs.Length);
 
+                    string descrip = "";
+                    try
+                    {
+                        descrip = FileBase.FileName.Substring(0, 50);
+                    }
+                    catch (Exception)
+                    {
+
+                        descrip = FileBase.FileName;
+                    }
+
                     Documentos doc = new Documentos()
                     {
                         IdProforma = idProforma,
                         Documento = bytes,
-                        Descripcion = FileBase.FileName
+                        Descripcion = descrip
                     };
                     db.Documentos.Add(doc);
                     db.SaveChanges();
@@ -660,6 +703,15 @@ namespace Sistema_JYR.Controllers
                 }
                 throw;
             }
+        }
+
+        public ActionResult EliminarDocumentos(int id)
+        {
+            Documentos doc = db.Documentos.Find(id);
+            db.Documentos.Remove(doc);
+            db.SaveChanges();
+
+            return PartialView("_ListaDocumentos", doc.IdProforma);
         }
 
 
@@ -926,7 +978,16 @@ namespace Sistema_JYR.Controllers
         {
             int idProforma = Convert.ToInt32(objeto.idProforma);
             int id = Convert.ToInt32(objeto.id);
-            int cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
+            int cantidadCambio = 0;
+            try
+            {
+                cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
+            }
+            catch (Exception)
+            {
+                cantidadCambio = 2000000000;
+            }
+
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;

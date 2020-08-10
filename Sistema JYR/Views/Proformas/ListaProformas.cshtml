@@ -116,16 +116,23 @@
                                 <label> ₡@item.TotalPagar.ToString("0,#.00")</label>
                             }
                         </td>*@
-                <td>
-                    @if (Session["Documento"] != null)
-                    {
-                        if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Proforma)
+                    <td>
+                        @if (Session["Documento"] != null)
                         {
-                            if (((Documento)Session["Documento"]).NumerosDocumento == item.Id)
+                            if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Proforma)
                             {
-                                <button class="btn btn-dark" disabled>
-                                    Seleccionar
-                                </button>
+                                if (((Documento)Session["Documento"]).NumerosDocumento == item.Id)
+                                {
+                                    <button class="btn btn-dark" disabled>
+                                        Seleccionar
+                                    </button>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumentoCliente",new { id = item.Id })">
+                                        Seleccionar
+                                    </a>
+                                }
                             }
                             else
                             {
@@ -140,36 +147,25 @@
                                 Seleccionar
                             </a>
                         }
-                    }
-                    else
-                    {
-                        <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumentoCliente",new { id = item.Id })">
-                            Seleccionar
-                        </a>
-                    }
 
-                    <div class="btn-group">
-                        <a class="btn btn-dark" href="@Url.Action("EditProformaCliente",new { id = item.Id, idUser = item.IdCliente })">
-                            <i class="fa fa-pencil-square-o"></i>Editar
-                        </a>
-                        <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="@Url.Action("DetailsProformaCliente",new { id = item.Id, idCliente = usuario.Id })">
-                                <i class="fa fa-info" style="margin-right: 5px"></i>Detalles
+                        <div class="btn-group">
+                            <a class="btn btn-dark" href="@Url.Action("EditProformaCliente",new { id = item.Id, idUser = item.IdCliente })">
+                                <i class="fa fa-pencil-square-o"></i>Editar
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="@Url.Action("DuplicarProforma",new { id = item.Id })">
-                                <i class="fa fa-files-o" style="margin-right: 5px"></i>Duplicar
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="@Url.Action("CancelarProformaCliente",new { id = item.Id })" style="color: red">
-                                <i class="fa fa-close" style="margin-right: 5px"></i>Cancelar Proforma
-                            </a>
+                            <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="@Url.Action("DetailsProformaCliente",new { id = item.Id, idCliente = usuario.Id })">
+                                    <i class="fa fa-info" style="margin-right: 5px"></i>Detalles
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="@Url.Action("CancelarProformaCliente",new { id = item.Id })" style="color: red">
+                                    <i class="fa fa-close" style="margin-right: 5px"></i>Cancelar Proforma
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                </td>
+                    </td>
                 </tr>
             }    @if (Model.Count() == 0)
             {
@@ -318,6 +314,20 @@
                         toast: false,
                         timer: 4000,
                         timerProgressBar: true
+                    });
+                };
+                DuplicarProforma();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "Revaloracion":
+            <script type="text/javascript">
+                function DuplicarProforma() {
+                    Swal.fire({
+                        title: '¡Proforma Enviada a Revaloración!',
+                        text: 'La proforma ha sido enviada a revaloración, recibirás un correo electrónico una vez esta haya sido completada.',
+                        icon: 'success',
+                        toast: false,
                     });
                 };
                 DuplicarProforma();
