@@ -11,6 +11,7 @@ using System.IO;
 using System.Drawing;
 using System.Web.Helpers;
 using Sistema_JYR.Models.Session;
+using Microsoft.AspNet.Identity;
 
 namespace Sistema_JYR.Controllers
 {
@@ -29,6 +30,15 @@ namespace Sistema_JYR.Controllers
         //GET: Productos/ListaProductos
         public ActionResult ListaProductos()
         {
+            if(User.Identity.GetUserId() != null)
+            {
+                RecomendacionesController r = new RecomendacionesController();
+                var lista = r.RecomendarProductos(User.Identity.GetUserId());
+                var busqueda = r.RecomendarBusquedas(User.Identity.GetUserId());
+                ViewBag.Busqueda = busqueda;
+                ViewBag.Recomendacion = lista;
+            }
+
             var listaProductos = db.Productos.Where(x => x.Estado == true).ToList();
             return View(listaProductos);
         }
