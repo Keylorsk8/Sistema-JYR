@@ -7,35 +7,54 @@
 
 
 
-    <h6>Proformas adjuntas</h6>
-    <hr />
-    @{
-        List<Documentos> documentos = db.Documentos.Where(x => x.IdProforma == Model).ToList();
-    }
-    @if (documentos.Count != 0)
-    {
-        <div class="row" style="padding: 15px">
-            @foreach (var item in documentos)
-            {
+        <h6>Proformas adjuntas</h6>
+        <hr />
+        @{
+            List<Documentos> documentos = db.Documentos.Where(x => x.IdProforma == Model).ToList();
+        }
+        @if (documentos.Count != 0)
+        {
+            <div class="row" style="padding: 15px">
+                @foreach (var item in documentos)
+                {
 
-                <div class="col-md-2" style="overflow:hidden; text-align: center; color: red">
+                    <div class="col-md-2" style="overflow:hidden; text-align: center; color: red">
+                        <div style="text-align: left">
+                            <a class="btnCerrar" data-ajax="true" data-ajax-method="GET" date-ajax-mode="remplace" data-ajax-update="#Documentos" href="@Url.Action("EliminarDocumentos",new { id = item.Id })"> <span style="margin-left: 5px; margin-right: 5px">X</span></a>
+                        </div>
+                        <a href="@Url.Action("PDFD",new { id = item.Id })">
+                            <i class="fa fa-file-pdf-o" style="color: red !important; font-size:100px"></i>
+                            <br />
+                            @item.Descripcion
+                        </a>
+                    </div>
 
-                    <a href="@Url.Action("PDFD",new { id = item.Id })">
-                        <i class="fa fa-file-pdf-o" style="color: red !important; font-size:100px"></i>
-                        <br />
-                        @item.Descripcion
-                    </a>
-                </div>
+                }
+            </div>
+            <style>
+                .btnCerrar {
+                    color: black;
+                    text-decoration: none;
+                    border-radius: 100%;
+                    border: 1px solid black;
+                    width: 50px;
+                    height: 50px;
+                    transition: all 0.5s;
+                }
 
-            }
-        </div>
-    }
-    else
-    {
-        <div class="container" style="text-align: center">
-            <h7>Ningún adjunto</h7>
-        </div>
+                    .btnCerrar:hover {
+                        background-color: black;
+                        color: white;
+                        text-decoration: none;
+                    }
+            </style>
+        }
+        else
+        {
+            <div class="container" style="text-align: center; padding: 5px">
+                <h7>Ningún adjunto</h7>
+            </div>
 
-    }
+        }
 
 
