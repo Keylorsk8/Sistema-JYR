@@ -1,51 +1,50 @@
 ﻿@model Sistema_JYR.Models.Proformas
 
 
+<div id="carritoAjax">
+    <div class="card bg-light mb-12" style="width:auto">
+        <div class="card-header">Materiales en la Proforma</div>
+        <div class="card-body">
+            <table class="table table-responsive-lg">
+                <tr style="text-align:center">
+                    <th style="text-align:center">
+                        Id
+                    </th>
+                    <th style="text-align:center">
+                        Producto
+                    </th>
+                    <th>
+                        Cantidad
+                    </th>
 
-    <div id="carritoAjax">
-        <div class="card bg-light mb-12">
-            <div class="card-header">Materiales en la Proforma</div>
-            <div class="card-body">
-                <table class="table table-responsive-lg">
-                    <tr style="text-align:center">
-                        <th style="text-align:center">
-                            Id
-                        </th>
-                        <th style="text-align:center">
-                            Producto
-                        </th>
-                        <th>
-                            Cantidad
-                        </th>
+                    <th>
+                        Precio Unitario
+                    </th>
+                    <th>
+                        Impuesto
+                    </th>
+                    <th>
+                        Descuento
+                    </th>
 
-                        <th>
-                            Precio Unitario
-                        </th>
-                        <th>
-                            Impuesto
-                        </th>
-                        <th>
-                            Descuento
-                        </th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
 
-                        <th>Subtotal</th>
-                        <th></th>
-                    </tr>
-
-                    @foreach (var item in Model.ProformaDetalle)
-                    {
-                        <tr>
-                            <td style="text-align:center">
-                                @item.Productos.Id
-                            </td>
-                            <td style="text-align:center">
-                                @item.Productos.Nombre
-                            </td>
-                            <td style="text-align:center">
-                                @*Otra posible y mejor forma de hacerlo*@
-                                <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
-                                <input type="hidden" value="@item.IdProforma" id="idProforma" />
-                                <script>
+                @foreach (var item in Model.ProformaDetalle)
+                {
+                    <tr>
+                        <td style="text-align:center">
+                            @item.Productos.Id
+                        </td>
+                        <td style="text-align:center">
+                            @item.Productos.Nombre
+                        </td>
+                        <td style="text-align:center">
+                            @*Otra posible y mejor forma de hacerlo*@
+                            <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
+                            <input type="hidden" value="@item.IdProforma" id="idProforma" />
+                            <script>
                                             function CambiarCantidadPedida(id) {
                                                 var cantidad = $('#' + id).val();
                                                 var idProforma = $("#idProforma").val();
@@ -63,154 +62,88 @@
 
                                                 var url = "@Url.Action("CambiarCantidadPedida", "Proformas")";
                                                 var data = { terminoBusqueda: cantidad, id: id, idProforma: idProforma };
-                                        $.post(url, data).done(function (data) {
-                                            $("#carritoAjax").html(data);
+                                                $.post(url, data).done(function (data) {
+                                                    $("#carritoAjax").html(data);
+                                                })
+                                           }
+                            </script>
+                        </td>
 
-                                        })
-                                    }
-                                </script>
-                            </td>
 
+                        <td style="text-align:center">
+                            ₡@item.PrecioUnitario.ToString("0,#.00")
+                        </td>
+                        <td style="text-align:center">
+                            @item.Productos.Impuesto%
+                        </td>
+                        <td style="text-align:center">
+                            <input type="number" min="0" value="@item.Descuento" class="form-control" onchange="x(this.value,@item.IdProducto, @item.IdProforma)" id="descuento" />
 
-                            <td style="text-align:center">
-                                ₡@item.PrecioUnitario.ToString("0,#.00")
-                            </td>
-                            <td style="text-align:center">
-                                @item.Productos.Impuesto%
-                            </td>
-                            <td style="text-align:center">
-                                @if (item.Descuento == 0)
-                                {
-                                    <label>₡0,00</label>
-                                }
-                                else
-                                {
-                                    <label>₡ @item.Descuento.ToString("0,#.00")</label>
-                                }
+                        </td>
+                        <td style="text-align:center">
+                            @{var sub = (item.PrecioUnitario * item.Cantidad) - (item.Descuento / 100);}
+                            ₡@sub.ToString("0,#.00")
+                        </td>
+                        <td style="text-align:center">
 
-                            </td>
-                            <td style="text-align:center">
-                                @{var sub = item.PrecioUnitario * item.Cantidad;}
-                                ₡@sub.ToString("0,#.00")
-                            </td>
-                            <td style="text-align:center">
-
-                                @Ajax.ActionLink("Eliminar", "EliminarProdProforma", "Proformas", new { idD = item.Id, idProforma = item.IdProforma }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-danger btn-block" })
-                            </td>
-                        </tr>
-
-                    }
-                    <tr style="text-align:center">
-                        <td colspan="4"></td>
-                        <th colspan="2">
-                            <label>Descuento Total</label>
-                        </th>
-                        <th colspan="2">
-                            @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
-                            {
-                                <label>₡0,00</label>
-                            }
-                            else
-                            {
-                                <label>₡ @Model.TotalDescuento.ToString("0,#.00")</label>
-                            }
-
-                        </th>
-                    </tr>
-                    <tr style="text-align:center">
-                        <td colspan="4"></td>
-                        <th colspan="2">
-                            <label>Total de Impuestos</label>
-                        </th>
-                        <th colspan="2">
-                            @if (Model.TotalImpuesto == 0 || Model.TotalImpuesto == null)
-                            {
-                                <label>₡0,00</label>
-                            }
-                            else
-                            {
-                                <label>₡ @Model.TotalImpuesto.ToString("0,#.00")</label>
-                            }
-                        </th>
-                    </tr>
-                    <tr style="text-align:center">
-                        <td colspan="4"></td>
-                        <th colspan="2">
-                            <label>Total a Pagar</label>
-                        </th>
-                        <th colspan="2">
-                            @if (Model.TotalPagar == 0 || Model.TotalPagar == null)
-                            {
-                                <label>₡0,00</label>
-                            }
-                            else
-                            {
-                                <label>₡ @Model.TotalPagar.ToString("0,#.00")</label>
-                            }
-                        </th>
+                            @Ajax.ActionLink("Eliminar", "EliminarProdProforma", "Proformas", new { idD = item.Id, idProforma = item.IdProforma }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-danger btn-block" })
+                        </td>
                     </tr>
 
+                }
+                <tr style="text-align:center">
+                    <td colspan="4"></td>
+                    <th colspan="2">
+                        <label>Descuento Total</label>
+                    </th>
+                    <th colspan="2">
+                        @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
+                        {
+                            <label>₡0,00</label>
+                        }
+                        else
+                        {
+                            <label>₡ @Model.TotalDescuento.ToString("0,#.00")</label>
+                        }
 
-                </table>
-            </div>
+                    </th>
+                </tr>
+                <tr style="text-align:center">
+                    <td colspan="4"></td>
+                    <th colspan="2">
+                        <label>Total de Impuestos</label>
+                    </th>
+                    <th colspan="2">
+                        @if (Model.TotalImpuesto == 0 || Model.TotalImpuesto == null)
+                        {
+                            <label>₡0,00</label>
+                        }
+                        else
+                        {
+                            <label>₡ @Model.TotalImpuesto.ToString("0,#.00")</label>
+                        }
+                    </th>
+                </tr>
+                <tr style="text-align:center">
+                    <td colspan="4"></td>
+                    <th colspan="2">
+                        <label>Total a Pagar</label>
+                    </th>
+                    <th colspan="2">
+                        @if (Model.TotalPagar == 0 || Model.TotalPagar == null)
+                        {
+                            <label>₡0,00</label>
+                        }
+                        else
+                        {
+                            <label>₡ @Model.TotalPagar.ToString("0,#.00")</label>
+                        }
+                    </th>
+                </tr>
+            </table>
         </div>
-        <br />
-        @if (Model.ProformaDetalle.Count == 0)
-        {
-            <div class="">
-                <div class="card bg-light mb-12">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button class="btn btn-info btn-block" disabled style="margin:5px"><i class="fa fa-line-chart" style="margin-right: 5px"></i>Solicitar Revaloración de Precios</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button class="btn btn-danger btn-block" disabled style="margin:5px"><i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>Exportar a PDF</button>
-                            </div>
-                            <div class="col-md-6">
-                                <a class="btn btn-success btn-block disabled" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" disabled="disabled" style="margin:5px">
-                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="">
-                <div class="card bg-light mb-12" style="">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a class="btn btn-info btn-block" href="@Url.Action("EnviarRevaloracion", new { id = Model.Id })" style="margin:5px">
-                                    <i class="fa fa-line-chart" style="margin-right: 5px"></i>  Solicitar Revaloración de Precios
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })" style="margin:5px">
-                                    <i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>  Exportar a PDF
-                                </a>
-                            </div>
-                            <div class="col-md-6">
-                                <a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" style="margin:5px">
-                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        }
     </div>
-
+</div>
 
 
 

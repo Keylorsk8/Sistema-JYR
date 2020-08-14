@@ -339,9 +339,11 @@
                                                 </a>
                                             </div>
                                             <div class="col-md-6">
-                                                <a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" style="margin:5px">
+                                                @*<a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente",new { id = Model.Id } )" style="margin:5px">
                                                     <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                                </a>
+                                                </a>*@
+                                                <button class="btn btn-success btn-block" id="convertir" style="margin:5px">
+                                                <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido</button>
                                             </div>
                                         </div>
                                     </div>
@@ -355,6 +357,7 @@
         </div>
     }
 </div>
+
 
 
 @if (Session["Proforma"] != null)
@@ -409,3 +412,38 @@
     });
 </script>
 
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#convertir").click(function (event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Una vez convertido en pedido no se podrá realizar más modificaciones",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: '@Url.Action("ConvertiraPedidoCliente","Proformas", new { id = Model.Id})'
+
+                    }).done(function (data) {
+                        @{ 
+                           
+                        }
+                       
+                        window.location.href = '@Url.Action("ListaProformas","Proformas", new { idUser = id })';
+                        Session["Proforma"] = "¡Proforma convertida en Pedido exitosamente!";
+                       
+                    });
+
+                }
+            });
+        });
+    });
+</script>

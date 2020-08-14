@@ -11,7 +11,8 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class Pedidos
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,15 +23,33 @@ namespace Sistema_JYR.Models
     
         public int Id { get; set; }
         public string IdUsuario { get; set; }
+
+        [DisplayName("Estado")]
         public int IdEstado { get; set; }
         public System.DateTime Fecha { get; set; }
+
+        [DisplayName("Total Pagar")]
         public double TotalPagar { get; set; }
+
+        [DisplayName("Total Descuento")]
         public double TotalDescuento { get; set; }
+
+        [DisplayName("Total Impuesto")]
         public double TotalImpuesto { get; set; }
+
+        [DisplayName("Número Proforma")]
         public Nullable<int> NumeroProforma { get; set; }
+
+        [DisplayName("Cliente")]
         public string IdCliente { get; set; }
+
+        [DisplayName("Dirección de Entrega")]
         public string DireccionEntrega { get; set; }
+
+        [DisplayName("Nombre Pedido")]
         public string NombrePedido { get; set; }
+
+        [DisplayName("Cliente")]
         public string NombreCliente { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }

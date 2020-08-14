@@ -999,13 +999,92 @@ namespace Sistema_JYR.Controllers
         }
 
 
+        public ActionResult CambiarDescuento(AjaxDescuento objet)
+        {
 
+            int pedidoId = Convert.ToInt32(objet.pedidoId);
+            int id = Convert.ToInt32(objet.productoId);
+            int descuentoP = Convert.ToInt32(objet.descuento);
+            if (descuentoP < 0)
+            {
+                descuentoP = 0;
+            }
+            double totalPagar = 0;
+            double impuesto = 0;
+            double descuento = 0;
+            double desc = 0;
+            double imp = 0;
+            double total = 0;
+            double impuestoVenta = 0;
+            double descuentoCant = 0;
+            double impuestoC = 0;
+            double descCant = 0;
+            Pedidos p = db.Pedidos.Find(pedidoId);
+            List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidoId).ToList();
+
+            foreach (var item in detalles)
+            {
+                descuentoCant = (item.PrecioUnitario * item.Cantidad) * (item.Descuento / 100);
+                descCant += descuentoCant;
+                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                impuestoC += impuestoVenta;
+                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
+
+            }
+            foreach (var item in detalles)
+            {
+                PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
+
+
+                if (item.IdProducto == id)
+                {
+                    detalle.Id = item.Id;
+                    detalle.Cantidad = item.Cantidad;
+                    detalle.IdPedido= item.IdPedido;
+                    detalle.CantidadEnviada = item.CantidadEnviada;
+                    detalle.IdProducto = item.IdProducto;
+                    detalle.PrecioUnitario = item.PrecioUnitario;
+                    detalle.Descuento = descuentoP;
+
+                    db.Entry(detalle).State = EntityState.Modified;
+                    db.SaveChanges();
+
+
+                }
+                {
+                }
+                descuento = (item.PrecioUnitario * item.Cantidad) * (item.Descuento / 100);
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
+            }
+
+            p.TotalDescuento = desc;
+            p.TotalImpuesto = imp;
+            p.TotalPagar = totalPagar;
+            db.Entry(p).State = EntityState.Modified;
+            db.SaveChanges();
+
+
+            p.PedidoDetalle = detalles;
+            ViewBag.TotalPagar = p.TotalPagar;
+            ViewBag.TotalDescuento = p.TotalDescuento;
+            ViewBag.TotalImpuesto = p.TotalImpuesto;
+            return PartialView("_ListaPedidoCarrito", p);
+        }
         public ActionResult CambiarCantidadEnviada(AjaxCambio objet)
         {
 
             int pedidoId = Convert.ToInt32(objet.pedidoId);
             int id = Convert.ToInt32(objet.productoId);
             int cantidad = Convert.ToInt32(objet.cantidadEnviada);
+
+            if (cantidad < 0)
+            {
+                cantidad = 0;
+            }
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
@@ -1080,7 +1159,10 @@ namespace Sistema_JYR.Controllers
             int idPedido = Convert.ToInt32(objeto.idPedido);
             int id = Convert.ToInt32(objeto.id);
             int cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
-
+            if (cantidadCambio < 0)
+            {
+                cantidadCambio = 1;
+            }
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
@@ -1269,6 +1351,25 @@ namespace Sistema_JYR.Controllers
 
         }
 
+        public class AjaxDescuento
+        {
+            public string descuento
+            {
+                get;
+                set;
+            }
+            public string productoId
+            {
+                get;
+                set;
+            }
+
+            public string pedidoId
+            {
+                get;
+                set;
+            }
+        }
         public class AjaxFiltrarPedido
         {
             public string TerminoBusqueda

@@ -11,7 +11,9 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Productos
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -23,15 +25,37 @@ namespace Sistema_JYR.Models
         }
     
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "Nombre es requerido")]
         public string Nombre { get; set; }
+        [Required(ErrorMessage = "Descripción es requerida")]
+        [DisplayName("Descripción")]
         public string Descripcion { get; set; }
+
+        [Required(ErrorMessage = "Unidad de medida es requerido")]
+        [DisplayName("Unidad de Medida")]
         public string UnidadDeMedida { get; set; }
+
+        [Required(ErrorMessage = "Precio es requerido")]
+        [Range(0, 999999999999, ErrorMessage = "El precio debe ser igual o mayor a 0")]
         public double Precio { get; set; }
+
+        [DisplayName("Cantidad en Inventario")]
+        [Required(ErrorMessage = "Cantidad en inventario es requerida")]
+        [Range(0, 999999999, ErrorMessage = "La cantidad en inventario debe ser igual o mayor a 0")]
         public double CantidadEnInventario { get; set; }
+
+        [DisplayName("Categoría")]
         public int IdCategoria { get; set; }
+
+        [DisplayName("Fecha de Vencimiento")]
         public Nullable<System.DateTime> FechaVencimiento { get; set; }
+
+        [Range(0, 999999999, ErrorMessage = "La cantidad en inventario debe ser igual o mayor a 0")]
         public Nullable<int> Impuesto { get; set; }
         public bool Estado { get; set; }
+
+        [DisplayName("Imagen")]
         public byte[] imagen { get; set; }
     
         public virtual CategoriasProducto CategoriasProducto { get; set; }

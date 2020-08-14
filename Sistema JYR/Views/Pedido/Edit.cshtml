@@ -212,7 +212,7 @@
                                             </td>
                                             <td style="text-align:center">
                                                 @*Otra posible y mejor forma de hacerlo*@
-                                                <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
+                                                <input type="number" style="text-align:center" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
                                                 <input type="hidden" value="@item.IdPedido" id="idPedido" />
                                                 <script>
                                             function CambiarCantidadPedida(id) {
@@ -241,7 +241,7 @@
                                             </td>
 
                                             <td style="text-align:center">
-                                                <input type="number" min="0" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
+                                                <input type="number" min="0" style="text-align:center" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
 
 
                                                 <script>
@@ -278,17 +278,10 @@
                                                 @item.Productos.Impuesto%
                                             </td>
                                             <td style="text-align:center">
-                                                @if (item.Descuento == 0)
-                                                {
-                                                    <label>₡0,00</label>
-                                                }
-                                                else
-                                                {
-                                                    <label>₡ @item.Descuento.ToString("0,#.00")</label>
-                                                }
+                                                <input type="number" min="0" style="text-align:center" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
                                             </td>
                                             <td style="text-align:center">
-                                                @{var sub = item.PrecioUnitario * item.Cantidad;}
+                                                @{var sub = (item.PrecioUnitario * item.Cantidad) - (item.Descuento / 100);}
                                                 ₡@sub.ToString("0,#.00")
                                             </td>
                                             <td style="text-align:center">
@@ -373,6 +366,32 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+                                                function y(id, idP) {
+                                                    var descuento = $("#descuento").val();;
+                                                    var productoId = id;
+                                                    var pedidoId = idP;
+
+                                                    var dataObjeto = JSON.stringify({
+                                                        'descuento': descuento,
+                                                            'productoId': productoId,
+                                                            'pedidoId': pedidoId
+                                                        })
+
+                                                        var objeto = new Object();
+                                                        objeto.productoId = productoId;
+                                                    objeto.descuento = descuento;
+                                                    objeto.pedidoId = pedidoId;
+                                                    var url = "@Url.Action("CambiarDescuento","Pedido")";
+                                                    var datos = { productoId: productoId, descuento: descuento, pedidoId: pedidoId };
+
+                                                        $.post(url, datos).done(function (datos) {
+                                                            $("#carritoAjax").html(datos);
+                                                        })
+
+                                                }
+    </script>
 
     <script>
         $(function () {

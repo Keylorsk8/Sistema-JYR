@@ -1,12 +1,10 @@
 ﻿@model Sistema_JYR.Models.Pedidos
 
-
-
     <div id="carritoAjax">
         <div class="card bg-light mb-12">
             <div class="card-header">Materiales en la Orden</div>
             <div class="card-body">
-                <table class="table">
+                <table class="table table-responsive">
                     <tr style="text-align:center">
                         <th style="text-align:center">
                             Id
@@ -111,17 +109,10 @@
                                 @item.Productos.Impuesto%
                             </td>
                             <td style="text-align:center">
-                                @if (item.Descuento == 0)
-                                {
-                                    <label>₡0,00</label>
-                                }
-                                else
-                                {
-                                    <label>₡ @item.Descuento.ToString("0,#.00")</label>
-                                }
+                                <input type="number" min="0" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
                             </td>
                             <td style="text-align:center">
-                                @{var sub = item.PrecioUnitario * item.Cantidad;}
+                                @{var sub = (item.PrecioUnitario * item.Cantidad) - (item.Descuento / 100);}
                                 ₡@sub.ToString("0,#.00")
                             </td>
                             <td style="text-align:center">
@@ -154,7 +145,7 @@
                             <label>Total de Impuestos</label>
                         </th>
                         <th colspan="2">
-                            @if (Model.TotalImpuesto == 0 || Model.TotalImpuesto == null)
+                            @if (Model.TotalImpuesto == 0)
                             {
                                 <label>₡0,00</label>
                             }
@@ -170,7 +161,7 @@
                             <label>Total a Pagar</label>
                         </th>
                         <th colspan="2">
-                            @if (Model.TotalPagar == 0 || Model.TotalPagar == null)
+                            @if (Model.TotalPagar == 0)
                             {
                                 <label>₡0,00</label>
                             }
@@ -256,3 +247,28 @@
             break;
     }
 }
+<script>
+                                                function x(id, idP) {
+                                                    var descuento = $("#descuento").val();;
+                                                    var productoId = id;
+                                                    var pedidoId = idP;
+
+                                                    var dataObjeto = JSON.stringify({
+                                                        'descuento': descuento,
+                                                            'productoId': productoId,
+                                                            'pedidoId': pedidoId
+                                                        })
+
+                                                        var objeto = new Object();
+                                                        objeto.productoId = productoId;
+                                                    objeto.descuento = descuento;
+                                                    objeto.pedidoId = pedidoId;
+                                                    var url = "@Url.Action("CambiarDescuento","Pedido")";
+                                                    var datos = { productoId: productoId, descuento: descuento, pedidoId: pedidoId };
+
+                                                        $.post(url, datos).done(function (datos) {
+                                                            $("#carritoAjax").html(datos);
+                                                        })
+
+                                                }
+</script>

@@ -209,7 +209,7 @@
                                             </td>
                                             <td style="text-align:center">
                                                 @*Otra posible y mejor forma de hacerlo*@
-                                                <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
+                                                <input type="number" min="0" style="text-align:center" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
                                                 <input type="hidden" value="@item.IdProforma" id="idProforma" />
                                                 <script>
                                             function CambiarCantidadPedida(id) {
@@ -244,18 +244,11 @@
                                                 @item.Productos.Impuesto%
                                             </td>
                                             <td style="text-align:center">
-                                                @if (item.Descuento == 0)
-                                                {
-                                                    <label>₡0,00</label>
-                                                }
-                                                else
-                                                {
-                                                    <label>₡ @item.Descuento.ToString("0,#.00")</label>
-                                                }
+                                                <input type="number" style="text-align:center" min="0" value="@item.Descuento" class="form-control" onchange="x(this.value,@item.IdProducto, @item.IdProforma)" id="descuento" />
 
                                             </td>
                                             <td style="text-align:center">
-                                                @{var sub = item.PrecioUnitario * item.Cantidad;}
+                                                @{var sub = (item.PrecioUnitario * item.Cantidad) - (item.Descuento / 100);}
                                                 ₡@sub.ToString("0,#.00")
                                             </td>
                                             <td style="text-align:center">
@@ -345,6 +338,34 @@
 
 @section Scripts {
 
+
+
+
+    <script>
+                                                function x(e, id, idP) {
+                                                    var descuento = e;
+                                                    var productoId = id;
+                                                    var proformaId = idP;
+
+                                                    var dataObjeto = JSON.stringify({
+                                                        'descuento': descuento,
+                                                            'productoId': productoId,
+                                                            'proformaId': proformaId
+                                                        })
+
+                                                        var objeto = new Object();
+                                                        objeto.productoId = productoId;
+                                                    objeto.descuento = descuento;
+                                                    objeto.proformaId = proformaId;
+                                                    var url = "@Url.Action("CambiarDescuento","Proformas")";
+                                                    var datos = { productoId: productoId, descuento: descuento, proformaId: proformaId };
+
+                                                        $.post(url, datos).done(function (datos) {
+                                                            $("#carritoAjax").html(datos);
+                                                        })
+
+                                                }
+    </script>
     <script>
         $(function () {
             $("#agregar").click(function () {
@@ -388,6 +409,22 @@
                 function ProductoInvalido() {
                     Swal.fire({
                         title: 'Producto es inválido. Digite un código de producto nuevamente',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Proforma"] = null;
+            break;
+
+        case "Debe digitar un descuento menor al precio unitario":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'Debe digitar un descuento menor al precio unitario',
                         icon: 'error',
                         toast: false,
                         timer: 4000,

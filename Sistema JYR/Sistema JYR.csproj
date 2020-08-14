@@ -355,6 +355,7 @@
     <Content Include="Content\imagenes\Carrusel\imagen3.jpg" />
     <Content Include="Content\imagenes\Carrusel\imagen4.jpg" />
     <Content Include="Content\imagenes\Carrusel\imagen5.jpg" />
+    <Content Include="Content\imagenes\ff.png" />
     <Content Include="Content\imagenes\hoja.png" />
     <Content Include="Content\imagenes\Index\Compromise.png" />
     <Content Include="Content\imagenes\Index\Generosity.png" />

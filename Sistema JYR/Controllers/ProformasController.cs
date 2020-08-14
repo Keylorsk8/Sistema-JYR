@@ -982,10 +982,19 @@ namespace Sistema_JYR.Controllers
             try
             {
                 cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
+
+                if(cantidadCambio < 0)
+                {
+                    cantidadCambio = 1;
+                }
             }
             catch (Exception)
             {
                 cantidadCambio = 2000000000;
+                if (cantidadCambio < 0)
+                {
+                    cantidadCambio = 1;
+                }
             }
 
             double totalPagar = 0;
@@ -1040,6 +1049,84 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalDescuento = proforma.TotalDescuento;
             ViewBag.TotalImpuesto = proforma.TotalImpuesto;
             return PartialView("_ListaProformaCarrito", proforma);
+        }
+
+
+        public ActionResult CambiarDescuento(AjaxDescuento objet)
+        {
+
+            int proId = Convert.ToInt32(objet.proformaId);
+            int id = Convert.ToInt32(objet.productoId);
+            int descuentoP = Convert.ToInt32(objet.descuento);
+            if(descuentoP < 0)
+            {
+                descuentoP = 0;
+            }
+            double totalPagar = 0;
+            double impuesto = 0;
+            double descuento = 0;
+            double desc = 0;
+            double imp = 0;
+            double total = 0;
+            double impuestoVenta = 0;
+            double descuentoCant = 0;
+            double impuestoC = 0;
+            double descCant = 0;
+            Proformas prof = db.Proformas.Find(proId);
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proId).ToList();
+
+            foreach (var item in detalles)
+            {
+                descuentoCant = (item.PrecioUnitario * item.Cantidad) * (item.Descuento/100);
+                descCant += descuentoCant;
+                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                impuestoC += impuestoVenta;
+                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
+
+            }
+            foreach (var item in detalles)
+            {
+                ProformaDetalle detalle = db.ProformaDetalle.Find(item.Id);
+
+
+                if (item.IdProducto == id)
+                {
+                   
+
+                    detalle.Id = item.Id;
+                    detalle.Cantidad = item.Cantidad;
+                    detalle.IdProforma = item.IdProforma;
+                    detalle.IdProducto = item.IdProducto;
+                    detalle.PrecioUnitario = item.PrecioUnitario;
+                    detalle.Descuento = descuentoP;
+                    
+                    db.Entry(detalle).State = EntityState.Modified;
+                    db.SaveChanges();
+
+
+                }
+                {
+                }
+                descuento = (item.PrecioUnitario * item.Cantidad) * (item.Descuento/100);
+                desc += descuento;
+                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                imp += impuesto;
+                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+
+            }
+
+            prof.TotalDescuento = desc;
+            prof.TotalImpuesto = imp;
+            prof.TotalPagar = totalPagar;
+            db.Entry(prof).State = EntityState.Modified;
+            db.SaveChanges();
+       
+
+            prof.ProformaDetalle = detalles;
+            ViewBag.TotalPagar = prof.TotalPagar;
+            ViewBag.TotalDescuento = prof.TotalDescuento;
+            ViewBag.TotalImpuesto = prof.TotalImpuesto;
+            return PartialView("_ListaProformaCarrito", prof);
         }
 
         /// <summary>
@@ -1322,7 +1409,7 @@ namespace Sistema_JYR.Controllers
                 db.PedidoDetalle.Add(pedidoDetalle);
                 db.SaveChanges();
             }
-            Session["Proforma"] = "¡Proforma convertida en Pedido exitosamente!";
+            
             Session["NumPedido"] = pedido.Id;
 
             proformas.IdEstado = 4;
@@ -1346,6 +1433,26 @@ namespace Sistema_JYR.Controllers
             }
 
             public string idProforma
+            {
+                get;
+                set;
+            }
+        }
+
+        public class AjaxDescuento
+        {
+            public string descuento
+            {
+                get;
+                set;
+            }
+            public string productoId
+            {
+                get;
+                set;
+            }
+
+            public string proformaId
             {
                 get;
                 set;
