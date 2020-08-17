@@ -91,8 +91,6 @@ namespace Sistema_JYR.Controllers
 
                     Pedidos ped = db.Pedidos.Find(idPedido);
                     double totalPagar = 0;
-                    double impuesto = 0;
-                    double descuento = 0;
                     double desc = 0;
                     double imp = 0;
 
@@ -137,12 +135,16 @@ namespace Sistema_JYR.Controllers
 
                     foreach (var item in detallesPedido)
                     {
-                        descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                        desc += descuento;
-                        impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                        imp += impuesto;
-                        totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                        double precioBase = item.PrecioUnitario;
+                        double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                        double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                        double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                        double descuento = precioBase - (precioConDescuento - iva);
+                        double subTotal = precioBase + iva - descuento;
 
+                        desc += descuento * item.Cantidad;
+                        imp += iva * item.Cantidad;
+                        totalPagar += subTotal * item.Cantidad;
                     }
 
                     ped.TotalDescuento = desc;
@@ -165,8 +167,6 @@ namespace Sistema_JYR.Controllers
                     Proformas ped = db.Proformas.Find(idProforma);
 
                     double totalPagar = 0;
-                    double impuesto = 0;
-                    double descuento = 0;
                     double desc = 0;
                     double imp = 0;
 
@@ -202,11 +202,9 @@ namespace Sistema_JYR.Controllers
                     List<ProformaDetalle> detallesProforma = db.ProformaDetalle.Where(x => x.IdProforma == idProforma).ToList();
                     foreach (var item in detallesProforma)
                     {
-                        descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                        desc += descuento;
-                        impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                        imp += impuesto;
-                        totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                        desc += ((item.PrecioUnitario * item.Descuento) / 100) * item.Cantidad;
+                        imp += (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                        totalPagar += ((item.PrecioUnitario * item.Cantidad) + imp) - desc;
                     }
                     ped.TotalDescuento = desc;
                     ped.TotalImpuesto = imp;

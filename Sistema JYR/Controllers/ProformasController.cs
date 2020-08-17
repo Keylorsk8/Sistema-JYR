@@ -77,6 +77,11 @@ namespace Sistema_JYR.Controllers
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Cancelada";
+            Documento doc = ((Documento)Session["Documento"]);
+            if(doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            {
+                Session["Documento"] = null;
+            }
             return RedirectToAction("Index");
         }
 
@@ -206,7 +211,7 @@ namespace Sistema_JYR.Controllers
                 doc.Add(_enc);
                 Table _det = new Table(2).UseAllAvailableWidth();
                 Cell _cellDet = new Cell(2, 1).Add(new Paragraph(item.NombreCliente).SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(100).SetBorderRight(Border.NO_BORDER);
+                     SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(120).SetBorderRight(Border.NO_BORDER);
                 _enc.AddCell(_cellDet);
                 _det.AddHeaderCell(_cellDet);
                 _cellDet = new Cell(2, 1).Add(new Paragraph("Vendedor: " + item.AspNetUsers.Nombre + " " + item.AspNetUsers.Apellido1).SetFontSize(9)).
@@ -214,6 +219,7 @@ namespace Sistema_JYR.Controllers
                 _enc.AddCell(_cellDet);
                 _det.AddHeaderCell(_cellDet);
                 doc.Add(_det);
+
                 Table _det2 = new Table(2).UseAllAvailableWidth();
                 Cell _cellDet2 = new Cell(2, 1).Add(new Paragraph(item.DireccionEntrega).SetFontSize(9)).
                      SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER)
@@ -221,12 +227,13 @@ namespace Sistema_JYR.Controllers
                 _enc.AddCell(_cellDet2);
                 _det2.AddHeaderCell(_cellDet2);
                 _cellDet2 = new Cell(2, 1).Add(new Paragraph("Estado:" + item.EstadoProforma.Descripcion).SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetWidth(125)
+                     SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetWidth(116)
                      .SetBorderLeft(Border.NO_BORDER);
                 _enc.AddCell(_cellDet2);
                 _det2.AddHeaderCell(_cellDet2);
                 doc.Add(_det2);
-                Table _det3 = new Table(2).UseAllAvailableWidth();
+
+                Table _det3 = new Table(2).UseAllAvailableWidth().SetBorderRight(new SolidBorder(ColorConstants.BLACK,1)).SetBorderLeft(new SolidBorder(ColorConstants.BLACK,1));
                 if (tel.Count() == 0)
                 {
                     Cell _cellDet3 = new Cell(2, 1).Add(new Paragraph("Tel: N/A").SetFontSize(9)).
@@ -240,12 +247,12 @@ namespace Sistema_JYR.Controllers
                     foreach (var t in tel)
                     {
 
-                        Cell _cellDet3 = new Cell(2, 1).Add(new Paragraph("Tel:" + t.Telefono).SetFontSize(9)).
-                   SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
-                        _enc.AddCell(_cellDet3);
+                        Cell _cellDet3 = new Cell(1, 1).Add(new Paragraph("Tel:" + t.Telefono).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                        //_enc.AddCell(_cellDet3);
                         _det3.AddHeaderCell(_cellDet3);
-                        doc.Add(_det3);
+
                     }
+                    doc.Add(_det3);
                 }
             }
             //Productos
@@ -291,41 +298,65 @@ namespace Sistema_JYR.Controllers
             doc.Add(_table);
             foreach (var item in model)
             {
-                float[] anchos = { 300f, 70f, 80f };
-                Table _footer = new Table(anchos).UseAllAvailableWidth();
-                Cell _foot = new Cell().Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).
-             SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
-                _footer.AddCell(_foot);
+                //   float[] anchos = { 300f, 70f, 80f };
+                //   Table _footer = new Table(anchos).UseAllAvailableWidth();
+                //   Cell _foot = new Cell().Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).
+                //SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
+                //   _footer.AddCell(_foot);
 
-                _foot = new Cell().Add(new Paragraph("Total Descuento").SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
-                _footer.AddCell(_foot);
-                _foot = new Cell().Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).
-              SetTextAlignment(TextAlignment.CENTER);
-                _footer.AddCell(_foot);
-                doc.Add(_footer);
-                Table _footer2 = new Table(anchos).UseAllAvailableWidth();
-                Cell _foot2 = new Cell().Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).
-             SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER);
-                _footer2.AddCell(_foot2);
-                _foot2 = new Cell().Add(new Paragraph("Total Impuesto").SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
-                _footer2.AddCell(_foot2);
-                _foot2 = new Cell().Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).
-              SetTextAlignment(TextAlignment.CENTER);
-                _footer2.AddCell(_foot2);
-                doc.Add(_footer2);
-                Table _footer3 = new Table(anchos).UseAllAvailableWidth();
-                Cell _foot3 = new Cell().Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).
-             SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
-                _footer3.AddCell(_foot3);
-                _foot3 = new Cell().Add(new Paragraph("Total Pagar").SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
-                _footer3.AddCell(_foot3);
-                _foot3 = new Cell().Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).
-              SetTextAlignment(TextAlignment.CENTER);
-                _footer3.AddCell(_foot3);
-                doc.Add(_footer3);
+                //   _foot = new Cell().Add(new Paragraph("Total Descuento").SetFontSize(9)).
+                //        SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
+                //   _footer.AddCell(_foot);
+                //   _foot = new Cell().Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).
+                // SetTextAlignment(TextAlignment.CENTER);
+                //   _footer.AddCell(_foot);
+                //   doc.Add(_footer);
+
+                //   Table _footer2 = new Table(anchos).UseAllAvailableWidth();
+                //   Cell _foot2 = new Cell().Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).
+                //SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER);
+                //   _footer2.AddCell(_foot2);
+                //   _foot2 = new Cell().Add(new Paragraph("Total Impuesto").SetFontSize(9)).
+                //        SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
+                //   _footer2.AddCell(_foot2);
+                //   _foot2 = new Cell().Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).
+                // SetTextAlignment(TextAlignment.CENTER);
+                //   _footer2.AddCell(_foot2);
+                //   doc.Add(_footer2);
+
+                //   Table _footer3 = new Table(anchos).UseAllAvailableWidth();
+                //   Cell _foot3 = new Cell().Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).
+                //SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                //   _footer3.AddCell(_foot3);
+                //   _foot3 = new Cell().Add(new Paragraph("Total Pagar").SetFontSize(9)).
+                //        SetTextAlignment(TextAlignment.RIGHT);
+                //   _footer3.AddCell(_foot3);
+                //   _foot3 = new Cell().Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).
+                // SetTextAlignment(TextAlignment.CENTER);
+                //   _footer3.AddCell(_foot3);
+                //   doc.Add(_footer3);
+
+                Table foot = new Table(5).UseAllAvailableWidth();
+
+                Cell f1 = new Cell(1, 3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetBorderBottom(Border.NO_BORDER).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f2 = new Cell(1,1).Add(new Paragraph("Total Descuento").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f3 = new Cell(1, 1).Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f4 = new Cell(1,3).Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER); 
+                Cell f5 = new Cell(1, 1).Add(new Paragraph("Total Impuesto").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f6 = new Cell(1, 1).Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f7 = new Cell(1,3).Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).SetBorderTop(Border.NO_BORDER); 
+                Cell f8 = new Cell(1, 1).Add(new Paragraph("Total Pagar").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f9 = new Cell(1, 1).Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                foot.AddCell(f1);
+                foot.AddCell(f2);
+                foot.AddCell(f3);
+                foot.AddCell(f4);
+                foot.AddCell(f5);
+                foot.AddCell(f6);
+                foot.AddCell(f7);
+                foot.AddCell(f8);
+                foot.AddCell(f9);
+                doc.Add(foot);
             }
             doc.Close();
             byte[] bytesStream = ms.ToArray();
@@ -418,23 +449,26 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
         {
-            double descuento = 0;
             double desc = 0;
-            double impuesto = 0;
             double imp = 0;
             double totalPagar = 0;
             List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proformas.Id).ToList();
             foreach (var item in detalles)
             {
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
             }
             proformas.TotalDescuento = desc;
             proformas.TotalImpuesto = imp;
-            proformas.TotalPagar = totalPagar;
+            proformas.TotalPagar = Math.Round(totalPagar);
             if (proformas.DireccionEntrega == null)
             {
                 proformas.DireccionEntrega = "Retirar en la ferretería";
@@ -519,6 +553,11 @@ namespace Sistema_JYR.Controllers
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Cancelada";
+            Documento doc = ((Documento)Session["Documento"]);
+            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            {
+                Session["Documento"] = null;
+            }
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 
@@ -562,19 +601,22 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditProformaCliente([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma")] Proformas proformas)
         {
-            double descuento = 0;
             double desc = 0;
-            double impuesto = 0;
             double imp = 0;
             double totalPagar = 0;
             List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proformas.Id).ToList();
             foreach (var item in detalles)
             {
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
             }
             proformas.TotalDescuento = desc;
             proformas.TotalImpuesto = imp;
@@ -647,6 +689,11 @@ namespace Sistema_JYR.Controllers
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Revaloracion";
+            Documento doc = ((Documento)Session["Documento"]);
+            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            {
+                Session["Documento"] = null;
+            }
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 
@@ -939,8 +986,6 @@ namespace Sistema_JYR.Controllers
             ProformaDetalle detalles = db.ProformaDetalle.Find(idD);
             var prod = db.Productos.Where(x => x.Id == detalles.IdProducto);
             double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
             double desc = 0;
             double imp = 0;
             db.ProformaDetalle.Remove(detalles);
@@ -952,11 +997,16 @@ namespace Sistema_JYR.Controllers
             proforma.Fecha = proforma.Fecha;
             foreach (var item in detallesPedido)
             {
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
             }
             proforma.TotalDescuento = desc;
             proforma.TotalImpuesto = imp;
@@ -998,8 +1048,6 @@ namespace Sistema_JYR.Controllers
             }
 
             double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
             double desc = 0;
             double imp = 0;
             Proformas proforma = db.Proformas.Find(idProforma);
@@ -1033,11 +1081,17 @@ namespace Sistema_JYR.Controllers
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
                 }
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
+
             }
             proforma.TotalDescuento = desc;
             proforma.TotalImpuesto = imp;
@@ -1057,71 +1111,60 @@ namespace Sistema_JYR.Controllers
 
             int proId = Convert.ToInt32(objet.proformaId);
             int id = Convert.ToInt32(objet.productoId);
-            int descuentoP = Convert.ToInt32(objet.descuento);
-            if(descuentoP < 0)
+            int descuentoP = 0;
+            try
+            {
+                descuentoP = Convert.ToInt32(objet.descuento);
+                if (descuentoP < 0)
+                {
+                    descuentoP = 0;
+                }
+                if (descuentoP > 30)
+                {
+                    descuentoP = 30;
+                }
+            }
+            catch (Exception)
             {
                 descuentoP = 0;
             }
+
             double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
             double desc = 0;
             double imp = 0;
-            double total = 0;
-            double impuestoVenta = 0;
-            double descuentoCant = 0;
-            double impuestoC = 0;
-            double descCant = 0;
             Proformas prof = db.Proformas.Find(proId);
             List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proId).ToList();
 
             foreach (var item in detalles)
             {
-                descuentoCant = (item.PrecioUnitario * item.Cantidad) * (item.Descuento/100);
-                descCant += descuentoCant;
-                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                impuestoC += impuestoVenta;
-                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
-
-            }
-            foreach (var item in detalles)
-            {
                 ProformaDetalle detalle = db.ProformaDetalle.Find(item.Id);
-
-
                 if (item.IdProducto == id)
                 {
-                   
-
                     detalle.Id = item.Id;
                     detalle.Cantidad = item.Cantidad;
                     detalle.IdProforma = item.IdProforma;
                     detalle.IdProducto = item.IdProducto;
                     detalle.PrecioUnitario = item.PrecioUnitario;
                     detalle.Descuento = descuentoP;
-                    
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
-
-
                 }
-                {
-                }
-                descuento = (item.PrecioUnitario * item.Cantidad) * (item.Descuento/100);
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
 
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
             }
-
             prof.TotalDescuento = desc;
             prof.TotalImpuesto = imp;
             prof.TotalPagar = totalPagar;
             db.Entry(prof).State = EntityState.Modified;
             db.SaveChanges();
-       
-
             prof.ProformaDetalle = detalles;
             ViewBag.TotalPagar = prof.TotalPagar;
             ViewBag.TotalDescuento = prof.TotalDescuento;
@@ -1141,8 +1184,6 @@ namespace Sistema_JYR.Controllers
             int cant = Convert.ToInt32(objeto.cantidad);
             Proformas ped = db.Proformas.Find(idProforma);
             double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
             double desc = 0;
             double imp = 0;
             if (cant == 0)
@@ -1196,11 +1237,16 @@ namespace Sistema_JYR.Controllers
             List<ProformaDetalle> detallesProforma = db.ProformaDetalle.Where(x => x.IdProforma == idProforma).ToList();
             foreach (var item in detallesProforma)
             {
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento*item.Cantidad;
+                imp += iva*item.Cantidad;
+                totalPagar += subTotal*item.Cantidad;
             }
             ped.TotalDescuento = desc;
             ped.TotalImpuesto = imp;
@@ -1285,19 +1331,14 @@ namespace Sistema_JYR.Controllers
         /// <returns></returns>
         public ActionResult filtrarNumeroProforma(string numeroProforma)
         {
-
-
             if (numeroProforma != null)
             {
                 int id = Convert.ToInt32(numeroProforma);
                 var lista = db.Proformas.Where(x => x.Id == id);
                 return PartialView("_ListaProformas", lista.ToList().Where(x => x.AspNetUsers.Rol == 2 || x.AspNetUsers.Rol == 1));
             }
-
-
             return View();
         }
-
 
         /// <summary>
         /// Retorna la vista para clientes no registrados creando una nueva proforma
@@ -1361,6 +1402,11 @@ namespace Sistema_JYR.Controllers
             proformas.IdEstado = 4;
             db.Entry(proformas).State = EntityState.Modified;
             db.SaveChanges();
+            Documento doc = ((Documento)Session["Documento"]);
+            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            {
+                Session["Documento"] = null;
+            }
 
             return RedirectToAction("Index");
         }
@@ -1415,6 +1461,11 @@ namespace Sistema_JYR.Controllers
             proformas.IdEstado = 4;
             db.Entry(proformas).State = EntityState.Modified;
             db.SaveChanges();
+            Documento doc = ((Documento)Session["Documento"]);
+            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            {
+                Session["Documento"] = null;
+            }
 
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }

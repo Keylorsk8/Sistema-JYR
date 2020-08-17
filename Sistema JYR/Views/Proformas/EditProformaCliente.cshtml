@@ -8,6 +8,7 @@
     SistemaJYREntities db = new SistemaJYREntities();
     string id = HttpContext.Current.User.Identity.GetUserId();
     usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+    Sistema_JYR.Models.AspNetUsers user = db.AspNetUsers.Find(id);
 }
 
 <div class="container-fluid">
@@ -137,7 +138,7 @@
 
                     <div id="carritoAjax">
                         <div class="card bg-light mb-12" style="width:auto">
-                            <div class="card-header">Materiales en la Proforma</div>
+                            <div class="card-header">Materiales en la Proforma - Moneda: Colones ( ¢ )</div>
                             <div class="card-body">
                                 <table class="table table-responsive-lg">
                                     <tr style="text-align:center">
@@ -160,7 +161,6 @@
                                         <th>
                                             Descuento
                                         </th>
-
                                         <th>Subtotal</th>
                                         <th></th>
                                     </tr>
@@ -177,128 +177,116 @@
                                                 <td style="text-align:center">
                                                     @item.Productos.Nombre
                                                 </td>
-                                                <td style="text-align:center">
+                                                <td style="text-align:center; width:10% auto">
                                                     @*Otra posible y mejor forma de hacerlo*@
                                                     <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
                                                     <input type="hidden" value="@item.IdProforma" id="idProforma" />
-                                                    <script>
-                                                        function CambiarCantidadPedida(id) {
-                                                        var cantidad = $('#' + id).val();
-                                                        var idProforma = $("#idProforma").val();
-
-                                                        var dataObject = JSON.stringify({
-                                                            'terminoBusqueda': cantidad,
-                                                            'id': id,
-                                                            'idProforma': idProforma
-
-                                                        })
-                                                var objeto = new Object();
-                                                objeto.terminoBusqueda = cantidad;
-                                                objeto.id = id;
-                                                objeto.idProforma = idProforma
-
-                                                var url = "@Url.Action("CambiarCantidadPedida", "Proformas")";
-                                                var data = { terminoBusqueda: cantidad, id: id, idProforma: idProforma };
-                                                $.post(url, data).done(function (data) {
-                                                    $("#carritoAjax").html(data);
-                                                })
-                                                        }
-                                                    </script>
                                                 </td>
-
-
                                                 <td style="text-align:center">
-                                                    ₡@item.PrecioUnitario.ToString("0,#.00")
+                                                    @item.PrecioUnitario.ToString("0,#.00")
                                                 </td>
                                                 <td style="text-align:center">
                                                     @item.Productos.Impuesto%
                                                 </td>
-                                                <td style="text-align:center">
-                                                    @if (item.Descuento == 0)
+                                                    @if (user.Rol == 3)
                                                     {
-                                                        <label>₡0,00</label>
+                                                        <td style="text-align:center">
+                                                            @item.Descuento %
+                                                        </td>
                                                     }
                                                     else
                                                     {
-                                                        <label>₡ @item.Descuento.ToString("0,#.00")</label>
+                                                        <td style="text-align:center">
+                                                            <input type="number" min="0" value="@item.Descuento" class="form-control" onchange="x(this.value,@item.IdProducto, @item.IdProforma)" id="descuento" style="text-align:center"/>
+                                                        </td>
+                                                    }
+                                                    <td style="text-align:center">
+                                                        @{
+
+
+                                                            double precioBase = item.PrecioUnitario;
+                                                            double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                                                            double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                                                            double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                                                            double descuento = precioBase - (precioConDescuento - iva);
+                                                            double subTotal = precioBase + iva - descuento;
+                                                            double sub = Math.Round(subTotal * item.Cantidad);
+
+                                                        }
+                                                        @sub.ToString("0,#.00")
+                                                    </td>
+                                                    <td style="text-align:center">
+                                                        <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#carritoAjax" href="@Url.Action("EliminarProdProforma","Proformas",new { idD = item.Id, idProforma = item.IdProforma })" class="btn btn-danger btn-block">
+                                                            <i class="fa fa-times"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+                                            }
+                                            <tr style="text-align:center">
+                                                <td colspan="5"></td>
+                                                <th colspan="2">
+                                                    <label>Descuento Total</label>
+                                                </th>
+                                                <th colspan="2">
+                                                    @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
+                                                    {
+                                                        <label>0,00</label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label>@Math.Round(Model.TotalDescuento).ToString("0,#.00")</label>
                                                     }
 
-                                                </td>
-                                                <td style="text-align:center">
-                                                    @{var sub = item.PrecioUnitario * item.Cantidad;}
-                                                    ₡@sub.ToString("0,#.00")
-                                                </td>
-                                                <td style="text-align:center">
-
-                                                    @Ajax.ActionLink("Eliminar", "EliminarProdProforma", "Proformas", new { idD = item.Id, idProforma = item.IdProforma }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-danger btn-block" })
-                                                </td>
+                                                </th>
                                             </tr>
-
+                                            <tr style="text-align:center">
+                                                <td colspan="5"></td>
+                                                <th colspan="2">
+                                                    <label>Total de Impuestos</label>
+                                                </th>
+                                                <th colspan="2">
+                                                    @if (Model.TotalImpuesto == 0)
+                                                    {
+                                                        <label>0,00</label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label>@Math.Round(Model.TotalImpuesto).ToString("0,#.00")</label>
+                                                    }
+                                                </th>
+                                            </tr>
+                                            <tr style="text-align:center">
+                                                <td colspan="5"></td>
+                                                <th colspan="2">
+                                                    <label>Total a Pagar</label>
+                                                </th>
+                                                <th colspan="2">
+                                                    @if (Model.TotalPagar == 0)
+                                                    {
+                                                        <label>0,00</label>
+                                                    }
+                                                    else
+                                                    {
+                                                        <label>@Math.Round(Model.TotalPagar).ToString("0,#.00")</label>
+                                                    }
+                                                </th>
+                                            </tr>
                                         }
-                                        <tr style="text-align:center">
-                                            <td colspan="4"></td>
-                                            <th colspan="2">
-                                                <label>Descuento Total</label>
-                                            </th>
-                                            <th colspan="2">
-                                                @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
-                                                {
-                                                    <label>₡0,00</label>
-                                                }
-                                                else
-                                                {
-                                                    <label>₡ @Model.TotalDescuento.ToString("0,#.00")</label>
-                                                }
-
-                                            </th>
-                                        </tr>
-                                        <tr style="text-align:center">
-                                            <td colspan="4"></td>
-                                            <th colspan="2">
-                                                <label>Total de Impuestos</label>
-                                            </th>
-                                            <th colspan="2">
-                                                @if (Model.TotalImpuesto == 0)
-                                                {
-                                                    <label>₡0,00</label>
-                                                }
-                                                else
-                                                {
-                                                    <label>₡ @Model.TotalImpuesto.ToString("0,#.00")</label>
-                                                }
-                                            </th>
-                                        </tr>
-                                        <tr style="text-align:center">
-                                            <td colspan="4"></td>
-                                            <th colspan="2">
-                                                <label>Total a Pagar</label>
-                                            </th>
-                                            <th colspan="2">
-                                                @if (Model.TotalPagar == 0)
-                                                {
-                                                    <label>₡0,00</label>
-                                                }
-                                                else
-                                                {
-                                                    <label>₡ @Model.TotalPagar.ToString("0,#.00")</label>
-                                                }
-                                            </th>
-                                        </tr>
-                                    }
-                                    else
-                                    {
-                                        <tr style="text-align: center">
-                                            <td colspan="7">Ningún producto encontrado</td>
-                                        </tr>
-                                    }
+                                        else
+                                        {
+                                            <tr style="text-align: center">
+                                                <td colspan="7">Ningún producto encontrado</td>
+                                            </tr>
+                                        }
                                 </table>
                             </div>
                         </div>
                         <br />
                         @if (Model.ProformaDetalle.Count == 0)
                         {
-                            <div class="">
-                                <div class="card bg-light mb-12" style="margin-top:-7%">
+                            <div>
+                                <div class="card bg-light mb-12">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-12">
@@ -334,16 +322,17 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })" style="margin:5px">
+                                                <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })" target="_blank" style="margin:5px">
                                                     <i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>  Exportar a PDF
                                                 </a>
                                             </div>
                                             <div class="col-md-6">
                                                 @*<a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente",new { id = Model.Id } )" style="margin:5px">
-                                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                                </a>*@
+                                                        <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
+                                                    </a>*@
                                                 <button class="btn btn-success btn-block" id="convertir" style="margin:5px">
-                                                <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido</button>
+                                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -358,7 +347,29 @@
     }
 </div>
 
+<script>
+function CambiarCantidadPedida(id) {
+var cantidad = $('#' + id).val();
+var idProforma = $("#idProforma").val();
 
+var dataObject = JSON.stringify({
+'terminoBusqueda': cantidad,
+'id': id,
+'idProforma': idProforma
+
+})
+var objeto = new Object();
+objeto.terminoBusqueda = cantidad;
+objeto.id = id;
+objeto.idProforma = idProforma
+
+var url = "@Url.Action("CambiarCantidadPedida", "Proformas")";
+var data = { terminoBusqueda: cantidad, id: id, idProforma: idProforma };
+$.post(url, data).done(function (data) {
+$("#carritoAjax").html(data);
+})
+}
+</script>
 
 @if (Session["Proforma"] != null)
 {
@@ -433,13 +444,13 @@
                         url: '@Url.Action("ConvertiraPedidoCliente","Proformas", new { id = Model.Id})'
 
                     }).done(function (data) {
-                        @{ 
-                           
+                        @{
+
                         }
-                       
+
                         window.location.href = '@Url.Action("ListaProformas","Proformas", new { idUser = id })';
                         Session["Proforma"] = "¡Proforma convertida en Pedido exitosamente!";
-                       
+
                     });
 
                 }
