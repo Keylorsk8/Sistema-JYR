@@ -1183,9 +1183,13 @@ namespace Sistema_JYR.Controllers
             int nuevoId = Convert.ToInt32(objeto.idProducto);
             int cant = Convert.ToInt32(objeto.cantidad);
             Proformas ped = db.Proformas.Find(idProforma);
+        
             double totalPagar = 0;
             double desc = 0;
             double imp = 0;
+
+     
+
             if (cant == 0)
             {
                 ViewBag.TotalPagar = ped.TotalPagar;

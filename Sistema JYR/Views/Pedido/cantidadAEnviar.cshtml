@@ -1,6 +1,5 @@
 ﻿@model Sistema_JYR.Models.Pedidos
 
-
 @{
     ViewBag.Title = "Detalle Pedido";
     Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
@@ -145,6 +144,9 @@
                         Cantidad a Enviar
                     </th>
                     <th>
+                        Cantidad en Inventario
+                    </th>
+                    <th>
                         Acciones
                     </th>
                 </tr>
@@ -173,6 +175,13 @@
 
                         <td>
                             <input type="text" class="form-control" value="" name="@c.Id" id="@c.Id" />
+                        </td>
+                        <td>
+                            @{ 
+                                Sistema_JYR.Models.Productos pro = db.Productos.Find(c.Productos.Id);
+                                var cantidadEnInventario = pro.CantidadEnInventario;
+                            }
+                            @cantidadEnInventario
                         </td>
                         <td>
                             <a class="btn btn-outline-dark" onclick="x(@c.Id, @c.IdPedido)">

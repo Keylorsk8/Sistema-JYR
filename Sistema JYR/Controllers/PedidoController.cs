@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -693,18 +694,30 @@ namespace Sistema_JYR.Controllers
 
                         foreach (var item in deta)
                         {
+                            Productos p = db.Productos.Find(item.IdProducto);
+                            
+                            if(p.CantidadEnInventario < cant)
+                    {
+                        Session["Pedidos"] = "Cantidad en inventario menor";
+                        return PartialView("_detalle", pedido);
+                    }
 
                             if (item.CantidadEnviada < item.Cantidad)
                             {
 
                                 if (cant <= item.Cantidad)
                                 {
+
                        
                                 PedidoDetalle det = db.PedidoDetalle.Find(item.Id);
                                 det.CantidadEnviada = cant;
                                 db.Entry(det).State = EntityState.Modified;
                                 db.SaveChanges();
-                                List<PedidoDetalle> d = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
+
+                            p.CantidadEnInventario -= cant;
+                            db.Entry(p).State = EntityState.Modified;
+                            db.SaveChanges();
+                            List<PedidoDetalle> d = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
                             int count = 0;
                             foreach (var de in d)
                                     {
@@ -1095,7 +1108,17 @@ namespace Sistema_JYR.Controllers
             double descuentoCant = 0;
             double impuestoC = 0;
             double descCant = 0;
+            double d = 0;
+            double i = 0;
+            double subtotal = 0;
             Pedidos ped = db.Pedidos.Find(pedidoId);
+            Productos p = db.Productos.Find(id);
+
+            if(p.CantidadEnInventario < cantidad)
+            {
+                Session["Pedidos"] = "Cantidad en inventario menor";
+                return PartialView("_ListaPedidoCarrito", ped);
+            }
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidoId).ToList();
 
             foreach (var item in detalles)
@@ -1120,7 +1143,7 @@ namespace Sistema_JYR.Controllers
                         ViewBag.TotalPagar = total;
                         ViewBag.TotalDescuento = descCant;
                         ViewBag.TotalImpuesto = impuestoC;
-                        Session["Pedido"] = "Debe digitar una cantidad menor a la cantidad";
+                        Session["Pedidos"] = "Debe digitar una cantidad menor a la cantidad";
                         return PartialView("_ListaPedidoCarrito", ped);
                     }
 
@@ -1138,11 +1161,21 @@ namespace Sistema_JYR.Controllers
                 }
                 {
                 }
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                //descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
+                //desc += descuento;
+                ////impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
+                //imp += impuesto;
+                //totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                impuesto = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                descuento = impuesto - (impuesto / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                imp = descuento - (descuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                desc = precioBase - (descuento - imp);
+                 subtotal = precioBase + imp - desc;
+
+              d += desc * item.Cantidad;
+                i += imp * item.Cantidad;
+                totalPagar += subtotal * item.Cantidad;
 
             }
 
@@ -1150,6 +1183,7 @@ namespace Sistema_JYR.Controllers
             ViewBag.TotalPagar = ped.TotalPagar;
             ViewBag.TotalDescuento = ped.TotalDescuento;
             ViewBag.TotalImpuesto = ped.TotalImpuesto;
+            ViewBag.SubTotal = subtotal;
             return PartialView("_ListaPedidoCarrito", ped);
         }
 
@@ -1213,7 +1247,7 @@ namespace Sistema_JYR.Controllers
                         ViewBag.TotalPagar = total;
                         ViewBag.TotalDescuento = descCant;
                         ViewBag.TotalImpuesto = impuestoC;
-                        Session["Pedido"] = "Debe digitar una cantidad mayor a la cantidad enviada";
+                        Session["Pedidos"] = "Debe digitar una cantidad mayor a la cantidad enviada";
 
                         return PartialView("_ListaPedidoCarrito", pedidos);
                     }
@@ -1259,18 +1293,25 @@ namespace Sistema_JYR.Controllers
 
 
             Pedidos ped = db.Pedidos.Find(idPedido);
+            Productos p = db.Productos.Find(nuevoId);
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
             double desc = 0;
             double imp = 0;
 
+            if(p.CantidadEnInventario < cant)
+            {
+                Session["Pedidos"] = "Cantidad en inventario menor";
+                return PartialView("_ListaPedidoCarrito", ped);
+            }
+
             if (cant == 0)
             {
                 ViewBag.TotalPagar = ped.TotalPagar;
                 ViewBag.TotalDescuento = ped.TotalDescuento;
                 ViewBag.TotalImpuesto = ped.TotalImpuesto;
-                Session["Pedido"] = "Debe digitar una cantidad mayor a 0";
+                Session["Pedidos"] = "Debe digitar una cantidad mayor a 0";
                 return PartialView("_ListaPedidoCarrito", ped);
             }
 
@@ -1288,6 +1329,8 @@ namespace Sistema_JYR.Controllers
 
             if (validacion != null)
             {
+
+
 
                 validacion.Cantidad += cant;
                 db.Entry(validacion).State = EntityState.Modified;
@@ -1318,7 +1361,7 @@ namespace Sistema_JYR.Controllers
                     ViewBag.TotalPagar = ped.TotalPagar;
                     ViewBag.TotalDescuento = ped.TotalDescuento;
                     ViewBag.TotalImpuesto = ped.TotalImpuesto;
-                    Session["Pedido"] = "Producto es inválido. Digite un código de producto nuevamente";
+                    Session["Pedidos"] = "Producto es inválido. Digite un código de producto nuevamente";
                     return PartialView("_ListaPedidoCarrito", ped);
 
                 }
@@ -1638,7 +1681,7 @@ namespace Sistema_JYR.Controllers
 
                 if (anterior.Year > actual.Year)
                 {
-                    Session["Pedido"] = "Seleccione una fecha válida";
+                    Session["Pedidos"] = "Seleccione una fecha válida";
                     TempData["mensajeReporte"] = "Seleccione una fecha inválida";
 
                 }
@@ -1646,7 +1689,7 @@ namespace Sistema_JYR.Controllers
                 {
                     if (anterior.Year == actual.Year && anterior.Month > actual.Month)
                     {
-                        Session["Pedido"] = "Seleccione una fecha válida";
+                        Session["Pedidos"] = "Seleccione una fecha válida";
                         TempData["mensajeReporte"] = "Seleccione una fecha inválida";
 
                     }
@@ -1654,7 +1697,7 @@ namespace Sistema_JYR.Controllers
                     {
                         if (anterior.Year == actual.Year && anterior.Month == actual.Month && anterior.Day > actual.Day)
                         {
-                            Session["Pedido"] = "Seleccione una fecha válida";
+                            Session["Pedidos"] = "Seleccione una fecha válida";
                             TempData["mensajeReporte"] = "Seleccione una fecha inválida";
 
                         }
@@ -1663,7 +1706,7 @@ namespace Sistema_JYR.Controllers
                         {
                             if (actual > DateTime.Now)
                             {
-                                Session["Pedido"] = "Seleccione una fecha válida";
+                                Session["Pedidos"] = "Seleccione una fecha válida";
                                 TempData["mensajeReporte"] = "Seleccione una fecha inválida";
                             }
 
