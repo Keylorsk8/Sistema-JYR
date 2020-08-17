@@ -536,7 +536,26 @@
             </script>
             Session["Pedidos"] = null;
             break;
-        default:
+
+        case "No se puede eliminar":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se puede eliminar este producto, debido a que ya se ha hecho entrega parte del pedido',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+           
+
+default:
             break;
     }
 }

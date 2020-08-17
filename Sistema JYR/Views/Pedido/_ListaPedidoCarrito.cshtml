@@ -53,31 +53,31 @@
                                 <input type="number" min="0" style="text-align:center" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
                             </td>
 
-                            <td style="text-align:center">
-                                ₡@item.PrecioUnitario.ToString("0,#.00")
-                            </td>
-                            <td>
-                                @item.Productos.Impuesto%
-                            </td>
-                            <td style="text-align:center">
-                                <input type="number" min="0" style="text-align:center" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
-                            </td>
-                            <td style="text-align:center">
-                                @{
+                        <td style="text-align:center">
+                            ₡@item.PrecioUnitario.ToString("0,#.00")
+                        </td>
+                        <td>
+                            @item.Productos.Impuesto%
+                        </td>
+                        <td style="text-align:center">
+                            <input type="number" min="0" style="text-align:center" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
+                        </td>
+                        <td style="text-align:center">
+                            @{
 
 
-                                    double precioBase = item.PrecioUnitario;
-                                    double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
-                                    double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
-                                    double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
-                                    double descuento = precioBase - (precioConDescuento - iva);
-                                    double subTotal = precioBase + iva - descuento;
-                                    double sub = Math.Round(subTotal * item.Cantidad);
+                                double precioBase = item.PrecioUnitario;
+                                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                                double descuento = precioBase - (precioConDescuento - iva);
+                                double subTotal = precioBase + iva - descuento;
+                                double sub = Math.Round(subTotal * item.Cantidad);
 
-                                }
-                                @sub.ToString("0,#.00")
-                            </td>
-                            <td style="text-align:center">
+                            }
+                            @sub.ToString("0,#.00")
+                        </td>
+                        <td style="text-align:center">
 
                                 <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#carritoAjax" href="@Url.Action("EliminarCarrito","Pedido",new { idD = item.Id, idPedido = item.IdPedido })" class="btn btn-danger btn-block">
                                     <i class="fa fa-times"></i>
@@ -242,6 +242,23 @@
                 function ProductoCantidad() {
                     Swal.fire({
                         title: 'Debe digitar una cantidad mayor a 0',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+
+        case "No se puede eliminar":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se puede eliminar este producto, debido a que ya se ha realizado una entrega parcial o total del producto',
                         icon: 'error',
                         toast: false,
                         timer: 4000,
