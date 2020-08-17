@@ -70,27 +70,31 @@
     <br />
     <br />
     <div id="divProductos">
-        @if (ViewBag.Recomendacion != null)
+        @{List<Sistema_JYR.Models.Productos> recomendaciones = ViewBag.Recomendacion; }
+        @if (recomendaciones != null)
         {
-            <div id="wrap">
-                <h3 class="wow animate__animated animate__fadeInLeft"><i class="fa fa-thumbs-o-up" style="margin-right: 10px"></i>Recomendaciones</h3>
-                <hr />
-                <div id="columns" class="columns_4">
-                    @foreach (var item in ViewBag.Recomendacion)
-                    {
-                        <figure style="text-align: center" class="wow animate__animated animate__fadeInRight">
-                            <img src="@Url.Action("getImage", "Productos", new { id = item.Id })">
-                            <figcaption>@item.Nombre</figcaption>
-                            <span class="price">₡@item.Precio</span>
-                            <br />
-                            <br />
-                            <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#Mensajes" href="@Url.Action("AgregaraDocumento",new { id = item.Id })" class="button"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar</span></a>
-                            <br />
-                            <p style="font-size:smaller;color:gray">Producto #@item.Id</p>
-                        </figure>
-                    }
+            if (recomendaciones.Count != 0)
+            {
+                <div id="wrap">
+                    <h3 class="wow animate__animated animate__fadeInLeft"><i class="fa fa-thumbs-o-up" style="margin-right: 10px"></i>Recomendaciones</h3>
+                    <hr />
+                    <div id="columns" class="columns_4">
+                        @foreach (var item in ViewBag.Recomendacion)
+                        {
+                            <figure style="text-align: center" class="wow animate__animated animate__fadeInRight">
+                                <img src="@Url.Action("getImage", "Productos", new { id = item.Id })">
+                                <figcaption>@item.Nombre</figcaption>
+                                <span class="price">₡@item.Precio</span>
+                                <br />
+                                <br />
+                                <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#Mensajes" href="@Url.Action("AgregaraDocumento",new { id = item.Id })" class="button"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar</span></a>
+                                <br />
+                                <p style="font-size:smaller;color:gray">Producto #@item.Id</p>
+                            </figure>
+                        }
+                    </div>
                 </div>
-            </div>
+            }
         }
         <div id="wrap">
             <h3 class="wow animate__animated animate__fadeInLeft"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i>Lista de Productos</h3>

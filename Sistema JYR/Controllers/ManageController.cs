@@ -115,18 +115,27 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+                // Generar el token y enviarlo
+                Telefonos tel = new Telefonos();
+                tel.Propietario = model.Name;
+                tel.Telefono = model.Number;
+                tel.IdUsuario = User.Identity.GetUserId();
+
+                db.Telefonos.Add(tel);
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+
                 return View(model);
             }
-            // Generar el token y enviarlo
-            Telefonos tel = new Telefonos();
-            tel.Propietario = model.Name;
-            tel.Telefono = model.Number;
-            tel.IdUsuario = User.Identity.GetUserId();
 
-            db.Telefonos.Add(tel);
-            db.SaveChanges();
             var userId = User.Identity.GetUserId();
             var model2 = new IndexViewModel
             {
@@ -369,6 +378,7 @@ namespace Sistema_JYR.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
+                Session["Cuenta"] = 1;
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
             AddErrors(result);

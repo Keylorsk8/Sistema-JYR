@@ -97,3 +97,27 @@
 
     </dl>
 </div>
+
+@if (Session["Cuenta"] != null)
+{
+    switch (Session["Cuenta"])
+    {
+        case "Duplicada":
+            <script type="text/javascript">
+                function ProformaNull() {
+                    Swal.fire({
+                        title: 'Contraseña actualizada con éxito',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProformaNull();
+            </script>
+            Session["Cuenta"] = null;
+            break;
+        default:
+            break;
+    }
+}

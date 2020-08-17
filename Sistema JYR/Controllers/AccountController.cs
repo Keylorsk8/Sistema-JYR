@@ -196,9 +196,25 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            SistemaJYREntities db = new SistemaJYREntities();
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Cedula = model.Cedula, Nombre = model.Nombre, Apellido1 = model.Apellido1, Apellido2 = model.Apellido2, Rol = 3, Estado = true };
+                AspNetUsers validacion = null;
+                try
+                {
+                    validacion = db.AspNetUsers.Where(x => x.Cedula == model.Cedula).First();
+                }
+                catch (System.Exception)
+                {
+                    validacion = null;
+                }
+                
+                if (validacion != null)
+                {
+                    Session["Ced"] = "Duplicada";
+                    return View(model);
+                }
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -459,6 +475,7 @@ namespace Sistema_JYR.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session["usuario"] = null;
+            Session["Documento"] = null;
             return RedirectToAction("Index", "Home");
         }
 

@@ -41,6 +41,7 @@ namespace Sistema_JYR.Models
         public string DireccionEntrega { get; set; }
         [DisplayName("Nombre Proforma")]
         public string NombreProforma { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
         [DisplayName("Cliente")]
         public string NombreCliente { get; set; }
         public string Comentario { get; set; }

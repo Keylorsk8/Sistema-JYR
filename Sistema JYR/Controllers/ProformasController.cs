@@ -174,6 +174,7 @@ namespace Sistema_JYR.Controllers
                 List<AspNetUsers> user = db.AspNetUsers.Where(x => x.Id == item.IdCliente).ToList();
                 List<Telefonos> tel = db.Telefonos.Where(x => x.IdUsuario == item.IdCliente).ToList();
                 Table enc = new Table(4).UseAllAvailableWidth();
+
                 Cell cellenc = new Cell().Add(new Paragraph("Proforma No." + id).SetFontSize(11)).
                     SetTextAlignment(TextAlignment.LEFT).SetBorder(Border.NO_BORDER);
                 enc.AddCell(cellenc);
@@ -201,58 +202,50 @@ namespace Sistema_JYR.Controllers
                            SetTextAlignment(TextAlignment.CENTER).SetWidth(30).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
                 enc2.AddCell(cellenc2);
                 doc.Add(enc2);
+
                 Table _enc = new Table(2).UseAllAvailableWidth();
-                Cell _cellEnc = new Cell(2, 1).Add(new Paragraph("Información de Cliente").SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.LEFT).SetWidth(100).SetBorderRight(Border.NO_BORDER);
+                Cell _cellEnc = new Cell(2, 1).Add(new Paragraph("Información de Cliente").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
                 _enc.AddCell(_cellEnc);
-                _cellEnc = new Cell(2, 1).Add(new Paragraph("Detalles").SetFontSize(9)).
-                      SetTextAlignment(TextAlignment.LEFT).SetWidth(100).SetBorderLeft(Border.NO_BORDER);
+                _cellEnc = new Cell(2, 1).Add(new Paragraph("Detalles").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderLeft(Border.NO_BORDER);
                 _enc.AddCell(_cellEnc);
+
+                Cell _cellDet1 = new Cell(1, 1).Add(new Paragraph(item.NombreCliente).SetFontSize(9)).
+                     SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                Cell _cellDet2 = new Cell(1, 1).Add(new Paragraph("Vendedor: " + item.AspNetUsers.Nombre + " " + item.AspNetUsers.Apellido1).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER);
+                Cell _cellDet3 = new Cell(1, 1).Add(new Paragraph(item.DireccionEntrega).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                Cell _cellDet4 = new Cell(1, 1).Add(new Paragraph("Estado:" + item.EstadoProforma.Descripcion).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER);
+                Cell _cellDet5 = new Cell(1, 2).Add(new Paragraph("Moneda: Colones ( ¢ )").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER);
+
+                _enc.AddCell(_cellDet1);
+                _enc.AddCell(_cellDet2);
+                _enc.AddCell(_cellDet3);
+                _enc.AddCell(_cellDet4);
+                _enc.AddCell(_cellDet5);
                 doc.Add(_enc);
-                Table _det = new Table(2).UseAllAvailableWidth();
-                Cell _cellDet = new Cell(2, 1).Add(new Paragraph(item.NombreCliente).SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(120).SetBorderRight(Border.NO_BORDER);
-                _enc.AddCell(_cellDet);
-                _det.AddHeaderCell(_cellDet);
-                _cellDet = new Cell(2, 1).Add(new Paragraph("Vendedor: " + item.AspNetUsers.Nombre + " " + item.AspNetUsers.Apellido1).SetFontSize(9)).
-                       SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetWidth(116).SetBorderLeft(Border.NO_BORDER);
-                _enc.AddCell(_cellDet);
-                _det.AddHeaderCell(_cellDet);
-                doc.Add(_det);
 
-                Table _det2 = new Table(2).UseAllAvailableWidth();
-                Cell _cellDet2 = new Cell(2, 1).Add(new Paragraph(item.DireccionEntrega).SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER)
-                     .SetBorderBottom(Border.NO_BORDER).SetWidth(100).SetBorderRight(Border.NO_BORDER);
-                _enc.AddCell(_cellDet2);
-                _det2.AddHeaderCell(_cellDet2);
-                _cellDet2 = new Cell(2, 1).Add(new Paragraph("Estado:" + item.EstadoProforma.Descripcion).SetFontSize(9)).
-                     SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetWidth(116)
-                     .SetBorderLeft(Border.NO_BORDER);
-                _enc.AddCell(_cellDet2);
-                _det2.AddHeaderCell(_cellDet2);
-                doc.Add(_det2);
 
-                Table _det3 = new Table(2).UseAllAvailableWidth().SetBorderRight(new SolidBorder(ColorConstants.BLACK,1)).SetBorderLeft(new SolidBorder(ColorConstants.BLACK,1));
+                Table tels = new Table(2).UseAllAvailableWidth().SetBorderRight(new SolidBorder(ColorConstants.BLACK,1)).SetBorderLeft(new SolidBorder(ColorConstants.BLACK,1));
+                Cell ctels1 = new Cell(1, 2).Add(new Paragraph("Teléfonos").SetFontSize(9));
+                tels.AddCell(ctels1);
                 if (tel.Count() == 0)
                 {
-                    Cell _cellDet3 = new Cell(2, 1).Add(new Paragraph("Tel: N/A").SetFontSize(9)).
-                                    SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
-                    _enc.AddCell(_cellDet3);
-                    _det3.AddHeaderCell(_cellDet3);
-                    doc.Add(_det3);
+                    Cell ctels2 = new Cell(1, 2).Add(new Paragraph("Tel: N/A").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
+                    tels.AddCell(ctels2);
+                    doc.Add(tels);
                 }
                 else
                 {
                     foreach (var t in tel)
                     {
 
-                        Cell _cellDet3 = new Cell(1, 1).Add(new Paragraph("Tel:" + t.Telefono).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
-                        //_enc.AddCell(_cellDet3);
-                        _det3.AddHeaderCell(_cellDet3);
+                        Cell ctels2 = new Cell(1, 1).Add(new Paragraph("Propietario: " + t.Propietario).SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                        Cell ctels3 = new Cell(1, 1).Add(new Paragraph("Tel: " + t.Telefono).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER);
+                        
+                        tels.AddCell(ctels2);
+                        tels.AddCell(ctels3);
 
                     }
-                    doc.Add(_det3);
+                    doc.Add(tels);
                 }
             }
             //Productos
@@ -298,47 +291,9 @@ namespace Sistema_JYR.Controllers
             doc.Add(_table);
             foreach (var item in model)
             {
-                //   float[] anchos = { 300f, 70f, 80f };
-                //   Table _footer = new Table(anchos).UseAllAvailableWidth();
-                //   Cell _foot = new Cell().Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).
-                //SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
-                //   _footer.AddCell(_foot);
-
-                //   _foot = new Cell().Add(new Paragraph("Total Descuento").SetFontSize(9)).
-                //        SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
-                //   _footer.AddCell(_foot);
-                //   _foot = new Cell().Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).
-                // SetTextAlignment(TextAlignment.CENTER);
-                //   _footer.AddCell(_foot);
-                //   doc.Add(_footer);
-
-                //   Table _footer2 = new Table(anchos).UseAllAvailableWidth();
-                //   Cell _foot2 = new Cell().Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).
-                //SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER);
-                //   _footer2.AddCell(_foot2);
-                //   _foot2 = new Cell().Add(new Paragraph("Total Impuesto").SetFontSize(9)).
-                //        SetTextAlignment(TextAlignment.RIGHT).SetBorderRight(Border.NO_BORDER);
-                //   _footer2.AddCell(_foot2);
-                //   _foot2 = new Cell().Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).
-                // SetTextAlignment(TextAlignment.CENTER);
-                //   _footer2.AddCell(_foot2);
-                //   doc.Add(_footer2);
-
-                //   Table _footer3 = new Table(anchos).UseAllAvailableWidth();
-                //   Cell _foot3 = new Cell().Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).
-                //SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
-                //   _footer3.AddCell(_foot3);
-                //   _foot3 = new Cell().Add(new Paragraph("Total Pagar").SetFontSize(9)).
-                //        SetTextAlignment(TextAlignment.RIGHT);
-                //   _footer3.AddCell(_foot3);
-                //   _foot3 = new Cell().Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).
-                // SetTextAlignment(TextAlignment.CENTER);
-                //   _footer3.AddCell(_foot3);
-                //   doc.Add(_footer3);
-
                 Table foot = new Table(5).UseAllAvailableWidth();
 
-                Cell f1 = new Cell(1, 3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetBorderBottom(Border.NO_BORDER).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f1 = new Cell(1, 3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetBorderBottom(Border.NO_BORDER).SetTextAlignment(TextAlignment.LEFT); 
                 Cell f2 = new Cell(1,1).Add(new Paragraph("Total Descuento").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
                 Cell f3 = new Cell(1, 1).Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
                 Cell f4 = new Cell(1,3).Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER); 

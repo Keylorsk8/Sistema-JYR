@@ -20,6 +20,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
+                                @if (Session["Ced"] != null)
+                                {
+                                    if (Session["Ced"].ToString().Equals("Duplicada"))
+                                    {
+                                        <p style="color:red">Está cédula ya se encuentra registrada, inténtelo con otro documento.</p>
+                                    }
+                                }
                                 @Html.LabelFor(m => m.Cedula, new { @class = "col-md-12 control-label" })
                                 <div class="col-md-12">
                                     @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control" })
