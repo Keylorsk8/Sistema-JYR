@@ -65,9 +65,9 @@
 </div>
 
 
-@if (Session["Pedido"] != null)
+@if (Session["Pedidos"] != null)
 {
-    switch (Session["Pedido"])
+    switch (Session["Pedidos"])
     {
 
         case "Seleccione una fecha válida":
@@ -83,7 +83,7 @@
                 };
                 EdicionPed();
             </script>
-            Session["Pedido"] = null;
+            Session["Pedidos"] = null;
             break;
         case "No hay elementos":
             <script type="text/javascript">
@@ -98,7 +98,7 @@
                 };
                 EdicionPed();
             </script>
-            Session["Pedido"] = null;
+            Session["Pedidos"] = null;
             break;
 
         default:

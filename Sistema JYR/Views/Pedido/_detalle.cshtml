@@ -34,6 +34,9 @@
                     Cantidad a Enviar
                 </th>
                 <th>
+                    Cantidad en Inventario
+                </th>
+                <th>
                     Acciones
                 </th>
             </tr>
@@ -64,6 +67,13 @@
                         <input type="text" class="form-control" value="" name="@c.Id" id="@c.Id" />
                     </td>
                     <td>
+                        @{
+                            Sistema_JYR.Models.Productos pro = db.Productos.Find(c.Productos.Id);
+                            var cantidadEnInventario = pro.CantidadEnInventario;
+                        }
+                        @cantidadEnInventario
+                    </td>
+                    <td>
                         <a class="btn btn-outline-dark" onclick="x(@c.Id, @c.IdPedido)">
                             <i class="fa fa-envelope"></i>Enviar
                         </a>
@@ -77,6 +87,7 @@
 
         </table>
     </div>
+
 </div>
 <script>
                                                 function x(id, idPedido) {
@@ -142,6 +153,25 @@
             </script>
             Session["Pedidos"] = null;
             break;
+
+        case "Cantidad en inventario menor":
+            <script type="text/javascript">
+                function Cat() {
+                    Swal.fire({
+                        title: 'Error',
+                        text:'La cantidad en inventario es menor a la cantidad requerida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                Cat();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+
+
 
         default:
             break;

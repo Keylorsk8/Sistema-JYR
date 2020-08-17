@@ -183,6 +183,23 @@
             </script>
             Session["Proforma"] = null;
             break;
+
+
+        case "La cantidad en inventario es menor a la requerida":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'La cantidad en inventario es menor a la requerida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Proforma"] = null;
+            break;
         default:
             break;
     }
