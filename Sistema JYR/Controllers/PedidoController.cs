@@ -935,7 +935,17 @@ namespace Sistema_JYR.Controllers
         {
             Pedidos pedidos = db.Pedidos.Find(IdPedido);
             PedidoDetalle detalles = db.PedidoDetalle.Find(idD);
+
+
             var prod = db.Productos.Where(x => x.Id == detalles.IdProducto);
+
+            if (detalles.CantidadEnviada > 0)
+                    {
+                        Session["Pedidos"] = "No se puede eliminar";
+                        return PartialView("_ListaPedidoCarrito", pedidos);
+            }
+              
+           
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
@@ -946,12 +956,14 @@ namespace Sistema_JYR.Controllers
             db.SaveChanges();
 
 
-            List<PedidoDetalle> detallesPedido = db.PedidoDetalle.Where(x => x.IdPedido == IdPedido).ToList();
+          
 
             pedidos.Id = pedidos.Id;
             pedidos.IdUsuario = pedidos.IdUsuario;
             pedidos.IdEstado = pedidos.IdEstado;
             pedidos.Fecha = pedidos.Fecha;
+
+            List<PedidoDetalle> detallesPedido = db.PedidoDetalle.Where(x => x.IdPedido == IdPedido).ToList();
 
             foreach (var item in detallesPedido)
             {
@@ -1049,6 +1061,7 @@ namespace Sistema_JYR.Controllers
             {
                 cantidad = 0;
             }
+
             double desc = 0;
             double imp = 0;
             double totalPagar = 0;
@@ -1086,20 +1099,35 @@ namespace Sistema_JYR.Controllers
                     desc += descuento * item.Cantidad;
                     imp += iva * item.Cantidad;
                     totalPagar += subTotal * item.Cantidad;
+                    if(item.CantidadEnviada > cantidad)
+                    {
+                        int diferencia = (int)(item.CantidadEnviada - cantidad);
+                        p.CantidadEnInventario += diferencia;
+                        db.Entry(p).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }                  
+           
+                    if(cantidad >= item.CantidadEnviada)
+                    {
+                        int diferencia = (int)(cantidad- item.CantidadEnviada);
+                        p.CantidadEnInventario -= diferencia;
+                        db.Entry(p).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
                     detalle.CantidadEnviada = cantidad;
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
-
-
+                   
                 }
 
             }
             ped.TotalDescuento = desc;
             ped.TotalImpuesto = imp;
             ped.TotalPagar = totalPagar;
-            ped.PedidoDetalle = detalles;
             db.Entry(ped).State = EntityState.Modified;
             db.SaveChanges();
+            ped.PedidoDetalle = detalles;
+         
             return PartialView("_ListaPedidoCarrito", ped);
         }
 
@@ -1192,11 +1220,7 @@ namespace Sistema_JYR.Controllers
             double desc = 0;
             double imp = 0;
 
-            if(p.CantidadEnInventario < cant)
-            {
-                Session["Pedidos"] = "Cantidad en inventario menor";
-                return PartialView("_ListaPedidoCarrito", ped);
-            }
+           
 
             if (cant == 0)
             {           

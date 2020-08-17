@@ -171,7 +171,7 @@
 
                     <div id="carritoAjax">
                         <div class="card bg-light mb-12">
-                            <div class="card-header">Materiales en la Orden</div>
+                            <div class="card-header">Materiales en la Proforma - Moneda: Colones (₡)</div>
                             <div class="card-body">
                                 <table class="table table-responsive">
                                     <tr style="text-align:center">
@@ -314,7 +314,7 @@
                                             }
                                             else
                                             {
-                                                <label>₡ @Model.TotalDescuento.ToString("0,#.00")</label>
+                                                <label>@Math.Round(Model.TotalDescuento).ToString("0,#.00")</label>
                                             }
 
                                         </th>
@@ -331,7 +331,7 @@
                                             }
                                             else
                                             {
-                                                <label>₡ @Model.TotalImpuesto.ToString("0,#.00")</label>
+                                                <label>@Math.Round(Model.TotalImpuesto).ToString("0,#.00")</label>
                                             }
                                         </th>
                                     </tr>
@@ -347,7 +347,7 @@
                                             }
                                             else
                                             {
-                                                <label>₡ @Model.TotalPagar.ToString("0,#.00")</label>
+                                                <label>@Math.Round(Model.TotalPagar).ToString("0,#.00")</label>
                                             }
                                         </th>
                                     </tr>
@@ -520,7 +520,26 @@
             </script>
             Session["Pedidos"] = null;
             break;
-        default:
+
+        case "No se puede eliminar":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se puede eliminar este producto, debido a que ya se ha hecho entrega parte del pedido',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+           
+
+default:
             break;
     }
 }
