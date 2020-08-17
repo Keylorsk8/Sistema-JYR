@@ -281,7 +281,19 @@
                                                 <input type="number" min="0" style="text-align:center" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
                                             </td>
                                             <td style="text-align:center">
-                                                ViewBag.SubTotal
+                                                @{
+
+
+                                                    double precioBase = item.PrecioUnitario;
+                                                    double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                                                    double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                                                    double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                                                    double descuento = precioBase - (precioConDescuento - iva);
+                                                    double subTotal = precioBase + iva - descuento;
+                                                    double sub = Math.Round(subTotal * item.Cantidad);
+
+                                                }
+                                                @sub.ToString("0,#.00")
                                             </td>
                                             <td style="text-align:center">
 
@@ -296,7 +308,7 @@
                                             <label>Descuento Total</label>
                                         </th>
                                         <th colspan="2">
-                                            @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
+                                            @if (Model.TotalDescuento == 0)
                                             {
                                                 <label>₡0,00</label>
                                             }
