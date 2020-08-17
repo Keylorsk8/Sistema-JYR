@@ -126,14 +126,15 @@
                             </div>
                         </div>
                     </div>
-
+                </div>
+                <div class="row">
                     <div class="col-md-12">
                         <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
-                        <hr />
                     </div>
-
                 </div>
 
+                <hr />
+                <h5 id="PRO">Productos</h5>
 
                 <div id="detalleAjax" class="row container">
                     <div class="col-md-4">
@@ -156,24 +157,18 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-
                         <div class="col-md-12">
                             <input type="button" id="agregar" style="margin-top:32px; background-color:#043443; color:white" value="Agregar" class="form-control" />
-
                         </div>
-
                     </div>
-
                 </div>
-
-
-                <div class="container">
+                <div class="container table-responsive">
 
                     <div id="carritoAjax">
-                        <div class="card bg-light mb-12">
-                            <div class="card-header">Materiales en la Orden</div>
+                        <div class="card bg-light mb-12" style="width:auto">
+                            <div class="card-header">Materiales en la Orden - Moneda: Colones ( ¢ )</div>
                             <div class="card-body">
-                                <table class="table table-responsive">
+                                <table class="table table-responsive-lg">
                                     <tr style="text-align:center">
                                         <th style="text-align:center">
                                             Id
@@ -201,50 +196,156 @@
                                         <th></th>
                                     </tr>
 
-                                    @foreach (var item in Model.PedidoDetalle)
+                                    @if (Model.PedidoDetalle.Count != 0)
                                     {
-                                        <tr>
-                                            <td style="text-align:center">
-                                                @item.Productos.Id
-                                            </td>
-                                            <td style="text-align:center">
-                                                @item.Productos.Nombre
-                                            </td>
-                                            <td style="text-align:center">
-                                                @*Otra posible y mejor forma de hacerlo*@
-                                                <input type="number" style="text-align:center" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
-                                                <input type="hidden" value="@item.IdPedido" id="idPedido" />
-                                                <script>
-                                            function CambiarCantidadPedida(id) {
-                                                var cantidad = $('#' + id).val();
-                                                var idPedido = $("#idPedido").val();
+                                        foreach (var item in Model.PedidoDetalle)
+                                        {
+                                            <tr>
+                                                <td style="text-align:center">
+                                                    @item.Productos.Id
+                                                </td>
+                                                <td style="text-align:center">
+                                                    @item.Productos.Nombre
+                                                </td>
+                                                <td style="text-align:center">
+                                                    @*Otra posible y mejor forma de hacerlo*@
+                                                    <input type="number" style="text-align:center" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
+                                                    <input type="hidden" value="@item.IdPedido" id="idPedido" />
+                                                </td>
 
-                                                var dataObject = JSON.stringify({
-                                                    'terminoBusqueda': cantidad,
-                                                    'id': id,
-                                                    'idPedido': idPedido
+                                                <td style="text-align:center">
+                                                    <input type="number" min="0" style="text-align:center" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
+                                                </td>
 
-                                        })
-                                                var objeto = new Object();
-                                                objeto.terminoBusqueda = cantidad;
-                                                objeto.id = id;
-                                                objeto.idPedido = idPedido
+                                                <td style="text-align:center">
+                                                    ₡@item.PrecioUnitario.ToString("0,#.00")
+                                                </td>
+                                                <td>
+                                                    @item.Productos.Impuesto%
+                                                </td>
+                                                <td style="text-align:center">
+                                                    <input type="number" min="0" style="text-align:center" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
+                                                </td>
+                                                <td style="text-align:center">
+                                                    @{
 
-                                                var url = "@Url.Action("CambiarCantidadPedida", "Pedido")";
-                                                var data = { terminoBusqueda: cantidad, id: id, idPedido: idPedido };
-                                        $.post(url, data).done(function (data) {
-                                            $("#carritoAjax").html(data);
 
-                                        })
+                                                        double precioBase = item.PrecioUnitario;
+                                                        double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                                                        double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                                                        double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                                                        double descuento = precioBase - (precioConDescuento - iva);
+                                                        double subTotal = precioBase + iva - descuento;
+                                                        double sub = Math.Round(subTotal * item.Cantidad);
+
+                                                    }
+                                                    @sub.ToString("0,#.00")
+                                                </td>
+                                                <td style="text-align:center">
+
+                                                    <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#carritoAjax" href="@Url.Action("EliminarCarrito","Pedido",new { idD = item.Id, idPedido = item.IdPedido })" class="btn btn-danger btn-block">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                        <tr style="text-align:center">
+                                            <td colspan="6"></td>
+                                            <th colspan="2">
+                                                <label>Descuento Total</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalDescuento == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalDescuento).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td colspan="6"></td>
+                                            <th colspan="2">
+                                                <label>Total de Impuestos</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalImpuesto == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalImpuesto).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td colspan="6"></td>
+                                            <th colspan="2">
+                                                <label>Total a Pagar</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalPagar == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalPagar).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
                                     }
-                                                </script>
-                                            </td>
+                                    else
+                                    {
+                                        <tr style="text-align: center">
+                                            <td colspan="8">Ningún producto encontrado</td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                        <br />
+                        <div>
+                            <div class="card bg-light mb-12">
+                                <div class="card-body">
+                                    @if (Model.PedidoDetalle.Count == 0)
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button class="btn btn-danger btn-block" disabled style="margin:5px"><i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>Exportar a PDF</button>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <a class="btn btn-danger btn-block" href="@Url.Action("Pdf", new { id = Model.Id })" target="_blank">
+                                                    <i class="fa fa-file-pdf-o"></i> Exportar a PDF
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
-                                            <td style="text-align:center">
-                                                <input type="number" min="0" style="text-align:center" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
 
 
-                                                <script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
                                                 function x(e, id) {
                                                     var cantidadEnviada = e;
                                                     var productoId = id;
@@ -268,116 +369,31 @@
                                                         })
 
                                                 }
-                                                </script>
-                                            </td>
+    </script>
+    <script>
+                                            function CambiarCantidadPedida(id) {
+                                                var cantidad = $('#' + id).val();
+                                                var idPedido = $("#idPedido").val();
 
-                                            <td style="text-align:center">
-                                                ₡@item.PrecioUnitario.ToString("0,#.00")
-                                            </td>
-                                            <td>
-                                                @item.Productos.Impuesto%
-                                            </td>
-                                            <td style="text-align:center">
-                                                <input type="number" min="0" style="text-align:center" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
-                                            </td>
-                                            <td style="text-align:center">
-                                                @{
+                                                var dataObject = JSON.stringify({
+                                                    'terminoBusqueda': cantidad,
+                                                    'id': id,
+                                                    'idPedido': idPedido
 
+                                        })
+                                                var objeto = new Object();
+                                                objeto.terminoBusqueda = cantidad;
+                                                objeto.id = id;
+                                                objeto.idPedido = idPedido
 
-                                                    double precioBase = item.PrecioUnitario;
-                                                    double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
-                                                    double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
-                                                    double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
-                                                    double descuento = precioBase - (precioConDescuento - iva);
-                                                    double subTotal = precioBase + iva - descuento;
-                                                    double sub = Math.Round(subTotal * item.Cantidad);
+                                                var url = "@Url.Action("CambiarCantidadPedida", "Pedido")";
+                                                var data = { terminoBusqueda: cantidad, id: id, idPedido: idPedido };
+                                        $.post(url, data).done(function (data) {
+                                            $("#carritoAjax").html(data);
 
-                                                }
-                                                @sub.ToString("0,#.00")
-                                            </td>
-                                            <td style="text-align:center">
-
-                                                @Ajax.ActionLink("Eliminar", "EliminarCarrito", "Pedido", new { idD = item.Id, idPedido = item.IdPedido }, new AjaxOptions { HttpMethod = "GET", UpdateTargetId = "carritoAjax", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "btn btn-success btn-block" })
-                                            </td>
-                                        </tr>
-
+                                        })
                                     }
-                                    <tr style="text-align:center">
-                                        <td colspan="4"></td>
-                                        <th colspan="2">
-                                            <label>Descuento Total</label>
-                                        </th>
-                                        <th colspan="2">
-                                            @if (Model.TotalDescuento == 0)
-                                            {
-                                                <label>₡0,00</label>
-                                            }
-                                            else
-                                            {
-                                                <label>₡ @Model.TotalDescuento.ToString("0,#.00")</label>
-                                            }
-
-                                        </th>
-                                    </tr>
-                                    <tr style="text-align:center">
-                                        <td colspan="4"></td>
-                                        <th colspan="2">
-                                            <label>Total de Impuestos</label>
-                                        </th>
-                                        <th colspan="2">
-                                            @if (Model.TotalImpuesto == 0)
-                                            {
-                                                <label>₡0,00</label>
-                                            }
-                                            else
-                                            {
-                                                <label>₡ @Model.TotalImpuesto.ToString("0,#.00")</label>
-                                            }
-                                        </th>
-                                    </tr>
-                                    <tr style="text-align:center">
-                                        <td colspan="4"></td>
-                                        <th colspan="2">
-                                            <label>Total a Pagar</label>
-                                        </th>
-                                        <th colspan="2">
-                                            @if (Model.TotalPagar == 0)
-                                            {
-                                                <label>₡0,00</label>
-                                            }
-                                            else
-                                            {
-                                                <label>₡ @Model.TotalPagar.ToString("0,#.00")</label>
-                                            }
-                                        </th>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-
-    <div class="card bg-light mb-12">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <a class="btn btn-danger btn-block" href="@Url.Action("Pdf", new { id = Model.Id })" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> Exportar a PDF
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-
+    </script>
     <script>
                                                 function y(id, idP) {
                                                     var descuento = $("#descuento").val();;

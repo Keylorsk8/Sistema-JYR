@@ -38,7 +38,22 @@
             }
             <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
             <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-            <li class="nav-item">@Html.ActionLink("Pedidos de Clientes", "SeguimientoPedidoEmpresa", "Pedido", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            var pedidos = db.Pedidos.Where(x => x.IdEstado == 7).ToList().Count();
+            <li class="nav-item">@Html.ActionLink("Pedidos de Clientes", "SeguimientoPedidoEmpresa", "Pedido", new { }, new { @class = "nav-link", @style = "color: white !important;display: inline-block" })
+                        @if (pedidos != 0)
+                        {
+                            <span class="badge badge-pill badge-danger" style="display:inline-block">@pedidos</span>
+                        }
+            </li>
+             
+            var revaloraciones = db.Proformas.Where(x => x.IdEstado == 5).ToList().Count();
+            
+            <li class="nav-item">@Html.ActionLink("Revaloraciones", "Revaloracion", "Proformas", new { }, new { @class = "nav-link", @style = "color: white !important;display: inline-block" })
+            @if (revaloraciones != 0)
+            {
+                <span class="badge badge-pill badge-danger" style="display:inline-block">@revaloraciones</span>
+            }
+        </li>
 
             <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:5px">|</li>
             <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">

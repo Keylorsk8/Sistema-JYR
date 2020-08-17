@@ -42,6 +42,34 @@ namespace Sistema_JYR.Controllers
         }
 
         [Authorize(Roles = "Admin,Vendedor")]
+        public ActionResult Revaloracion()
+        {
+            var proformas = db.Proformas.Where(x => x.IdEstado == 5).OrderByDescending(x => x.Id);
+            return View(proformas.ToList());
+        }
+
+        public ActionResult DetailsRevaloracion(int id)
+        {
+            Proformas proforma = null;
+            try
+            {
+                 proforma = db.Proformas.Find(id);
+            }
+            catch (Exception)
+            {
+
+                proforma = null;
+            }
+            
+            if (proforma == null)
+            {
+                Session["Revaloracion"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+            return View(proforma);
+        }
+
+        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult SeleccionarDocumento(int id)
         {
             try

@@ -653,6 +653,8 @@
     <Content Include="Views\Proformas\DetallesProformasRevaloracion.cshtml" />
     <Content Include="Views\Proformas\EnviarRevaloracion.cshtml" />
     <Content Include="Views\Proformas\_ListaDocumentos.cshtml" />
+    <Content Include="Views\Proformas\Revaloracion.cshtml" />
+    <Content Include="Views\Proformas\DetailsRevaloracion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

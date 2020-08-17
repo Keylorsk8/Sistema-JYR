@@ -1108,11 +1108,25 @@ namespace Sistema_JYR.Controllers
         {
             int idPedido = Convert.ToInt32(objeto.idPedido);
             int id = Convert.ToInt32(objeto.id);
-            int cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
-            if (cantidadCambio < 0)
+            int cantidadCambio = 0;
+            try
             {
-                cantidadCambio = 1;
+                cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
+
+                if (cantidadCambio < 0)
+                {
+                    cantidadCambio = 1;
+                }
             }
+            catch (Exception)
+            {
+                cantidadCambio = 2000000000;
+                if (cantidadCambio < 0)
+                {
+                    cantidadCambio = 1;
+                }
+            }
+
             double totalPagar = 0;
             double desc = 0;
             double imp = 0;
