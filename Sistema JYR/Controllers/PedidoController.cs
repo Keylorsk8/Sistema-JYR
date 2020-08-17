@@ -990,27 +990,12 @@ namespace Sistema_JYR.Controllers
                 descuentoP = 0;
             }
             double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
             double desc = 0;
             double imp = 0;
-            double total = 0;
-            double impuestoVenta = 0;
-            double descuentoCant = 0;
-            double impuestoC = 0;
-            double descCant = 0;
+       
             Pedidos p = db.Pedidos.Find(pedidoId);
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidoId).ToList();
 
-            foreach (var item in detalles)
-            {
-                descuentoCant = (item.PrecioUnitario * item.Cantidad) * (item.Descuento / 100);
-                descCant += descuentoCant;
-                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                impuestoC += impuestoVenta;
-                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
-
-            }
             foreach (var item in detalles)
             {
                 PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
@@ -1018,12 +1003,6 @@ namespace Sistema_JYR.Controllers
 
                 if (item.IdProducto == id)
                 {
-                    detalle.Id = item.Id;
-                    detalle.Cantidad = item.Cantidad;
-                    detalle.IdPedido= item.IdPedido;
-                    detalle.CantidadEnviada = item.CantidadEnviada;
-                    detalle.IdProducto = item.IdProducto;
-                    detalle.PrecioUnitario = item.PrecioUnitario;
                     detalle.Descuento = descuentoP;
 
                     db.Entry(detalle).State = EntityState.Modified;
@@ -1033,11 +1012,16 @@ namespace Sistema_JYR.Controllers
                 }
                 {
                 }
-                descuento = (item.PrecioUnitario * item.Cantidad) * (item.Descuento / 100);
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
 
             }
 
@@ -1065,19 +1049,9 @@ namespace Sistema_JYR.Controllers
             {
                 cantidad = 0;
             }
-            double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
             double desc = 0;
             double imp = 0;
-            double total = 0;
-            double impuestoVenta = 0;
-            double descuentoCant = 0;
-            double impuestoC = 0;
-            double descCant = 0;
-            double d = 0;
-            double i = 0;
-            double subtotal = 0;
+            double totalPagar = 0;
             Pedidos ped = db.Pedidos.Find(pedidoId);
             Productos p = db.Productos.Find(id);
 
@@ -1087,16 +1061,7 @@ namespace Sistema_JYR.Controllers
                 return PartialView("_ListaPedidoCarrito", ped);
             }
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidoId).ToList();
-
-            foreach (var item in detalles)
-            {
-                descuentoCant = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                descCant += descuentoCant;
-                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                impuestoC += impuestoVenta;
-                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
-
-            }
+   
             foreach (var item in detalles)
             {
                 PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
@@ -1107,50 +1072,34 @@ namespace Sistema_JYR.Controllers
                     if (cantidad > item.Cantidad)
                     {
 
-                        ViewBag.TotalPagar = total;
-                        ViewBag.TotalDescuento = descCant;
-                        ViewBag.TotalImpuesto = impuestoC;
                         Session["Pedidos"] = "Debe digitar una cantidad menor a la cantidad";
                         return PartialView("_ListaPedidoCarrito", ped);
                     }
 
-                    detalle.Id = item.Id;
-                    detalle.Cantidad = item.Cantidad;
-                    detalle.IdPedido = item.IdPedido;
-                    detalle.IdProducto = item.IdProducto;
-                    detalle.PrecioUnitario = item.PrecioUnitario;
-                    detalle.Descuento = item.Descuento;
+                    double precioBase = item.PrecioUnitario;
+                    double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                    double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                    double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                    double descuento = precioBase - (precioConDescuento - iva);
+                    double subTotal = precioBase + iva - descuento;
+
+                    desc += descuento * item.Cantidad;
+                    imp += iva * item.Cantidad;
+                    totalPagar += subTotal * item.Cantidad;
                     detalle.CantidadEnviada = cantidad;
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
 
 
                 }
-                {
-                }
-                //descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                //desc += descuento;
-                ////impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                //imp += impuesto;
-                //totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
-                double precioBase = item.PrecioUnitario;
-                impuesto = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
-                descuento = impuesto - (impuesto / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
-                imp = descuento - (descuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
-                desc = precioBase - (descuento - imp);
-                 subtotal = precioBase + imp - desc;
-
-              d += desc * item.Cantidad;
-                i += imp * item.Cantidad;
-                totalPagar += subtotal * item.Cantidad;
 
             }
-
+            ped.TotalDescuento = desc;
+            ped.TotalImpuesto = imp;
+            ped.TotalPagar = totalPagar;
             ped.PedidoDetalle = detalles;
-            ViewBag.TotalPagar = ped.TotalPagar;
-            ViewBag.TotalDescuento = ped.TotalDescuento;
-            ViewBag.TotalImpuesto = ped.TotalImpuesto;
-            ViewBag.SubTotal = subtotal;
+            db.Entry(ped).State = EntityState.Modified;
+            db.SaveChanges();
             return PartialView("_ListaPedidoCarrito", ped);
         }
 
@@ -1165,26 +1114,12 @@ namespace Sistema_JYR.Controllers
                 cantidadCambio = 1;
             }
             double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
             double desc = 0;
             double imp = 0;
-            double total = 0;
-            double impuestoVenta = 0;
-            double descuentoCant = 0;
-            double impuestoC = 0;
-            double descCant = 0;
+           
             Pedidos pedidos = db.Pedidos.Find(idPedido);
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
 
-            foreach (var item in detalles)
-            {
-                descuentoCant = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                descCant += descuentoCant;
-                impuestoVenta = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                impuestoC += impuestoVenta;
-                total += ((item.PrecioUnitario * item.Cantidad) + impuestoVenta) - descuentoCant;
-            }
             foreach (var item in detalles)
             {
 
@@ -1209,32 +1144,27 @@ namespace Sistema_JYR.Controllers
                     }
 
                     if (cantidadCambio < item.CantidadEnviada)
-                    {
-
-                        ViewBag.TotalPagar = total;
-                        ViewBag.TotalDescuento = descCant;
-                        ViewBag.TotalImpuesto = impuestoC;
+                    {                
                         Session["Pedidos"] = "Debe digitar una cantidad mayor a la cantidad enviada";
-
                         return PartialView("_ListaPedidoCarrito", pedidos);
                     }
-
-                    detalle.Id = item.Id;
-                    detalle.Cantidad = cantidadCambio;
-                    detalle.IdPedido = item.IdPedido;
-                    detalle.IdProducto = item.IdProducto;
-                    detalle.PrecioUnitario = item.PrecioUnitario;
-                    detalle.Descuento = item.Descuento;
+           
+                    detalle.Cantidad = cantidadCambio;           
                     detalle.CantidadEnviada = item.CantidadEnviada;
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
 
                 }
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
             }
 
             pedidos.TotalDescuento = desc;
@@ -1244,10 +1174,7 @@ namespace Sistema_JYR.Controllers
             db.SaveChanges();
             pedidos.PedidoDetalle = detalles;
 
-            ViewBag.TotalPagar = pedidos.TotalPagar;
-            ViewBag.TotalDescuento = pedidos.TotalDescuento;
-            ViewBag.TotalImpuesto = pedidos.TotalImpuesto;
-            return PartialView("_ListaPedidoCarrito", pedidos);
+                      return PartialView("_ListaPedidoCarrito", pedidos);
         }
 
 
@@ -1261,9 +1188,7 @@ namespace Sistema_JYR.Controllers
 
             Pedidos ped = db.Pedidos.Find(idPedido);
             Productos p = db.Productos.Find(nuevoId);
-            double totalPagar = 0;
-            double impuesto = 0;
-            double descuento = 0;
+            double totalPagar = 0;       
             double desc = 0;
             double imp = 0;
 
@@ -1274,10 +1199,7 @@ namespace Sistema_JYR.Controllers
             }
 
             if (cant == 0)
-            {
-                ViewBag.TotalPagar = ped.TotalPagar;
-                ViewBag.TotalDescuento = ped.TotalDescuento;
-                ViewBag.TotalImpuesto = ped.TotalImpuesto;
+            {           
                 Session["Pedidos"] = "Debe digitar una cantidad mayor a 0";
                 return PartialView("_ListaPedidoCarrito", ped);
             }
@@ -1340,14 +1262,19 @@ namespace Sistema_JYR.Controllers
 
             foreach (var item in detallesPedido)
             {
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
 
             }
-
+          
             ped.TotalDescuento = desc;
             ped.TotalImpuesto = imp;
             ped.TotalPagar = totalPagar;
