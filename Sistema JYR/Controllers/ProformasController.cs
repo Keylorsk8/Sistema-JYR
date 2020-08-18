@@ -749,10 +749,21 @@ namespace Sistema_JYR.Controllers
                 }
                 db.Entry(proformas).State = EntityState.Modified;
                 db.SaveChanges();
+
+                if (Session["Documento"] != null)
+                {
+                    Documento doc = ((Documento)Session["Documento"]);
+                    if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == proformas.Id)
+                    {
+                        Session["Documento"] = null;
+                    }
+                }
+
                 return RedirectToAction("Index");
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1 && x.Estado == true), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
+         
             return View(proformas);
         }
         #endregion
@@ -1865,12 +1876,15 @@ namespace Sistema_JYR.Controllers
             proformas.IdEstado = 4;
             db.Entry(proformas).State = EntityState.Modified;
             db.SaveChanges();
-            Documento doc = ((Documento)Session["Documento"]);
-            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
-            {
-                Session["Documento"] = null;
-            }
 
+            if (Session["Documento"] != null)
+            {
+                Documento doc = ((Documento)Session["Documento"]);
+                if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+                {
+                    Session["Documento"] = null;
+                }
+            }
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 

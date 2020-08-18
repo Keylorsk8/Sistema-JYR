@@ -411,9 +411,7 @@ namespace Sistema_JYR.Controllers
         public ActionResult Edit([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,NumeroProforma,IdCliente,NombreCliente,DireccionEntrega,NombrePedido")] Pedidos pedidos)
         {
 
-            double descuento = 0;
             double desc = 0;
-            double impuesto = 0;
             double imp = 0;
             double totalPagar = 0;
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidos.Id).ToList();
@@ -421,11 +419,17 @@ namespace Sistema_JYR.Controllers
             foreach (var item in detalles)
             {
 
-                descuento = (item.PrecioUnitario * item.Cantidad) * item.Descuento;
-                desc += descuento;
-                impuesto = (item.PrecioUnitario * item.Cantidad) * (double)item.Productos.Impuesto / 100;
-                imp += impuesto;
-                totalPagar += ((item.PrecioUnitario * item.Cantidad) + impuesto) - descuento;
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
+
 
             }
 
@@ -440,6 +444,14 @@ namespace Sistema_JYR.Controllers
 
                 db.SaveChanges();
                 Session["Pedido"] = "¡Pedido actualizado correctamente!";
+                if (Session["Documento"] != null)
+                {
+                    Documento doc = ((Documento)Session["Documento"]);
+                    if (doc.TipoDocumento == TipoDocumento.Pedido && doc.NumerosDocumento == pedidos.Id)
+                    {
+                        Session["Documento"] = null;
+                    }
+                }
                 return RedirectToAction("Index");
             }
 
