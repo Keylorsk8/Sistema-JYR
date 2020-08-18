@@ -282,15 +282,15 @@ namespace Sistema_JYR.Controllers
             {
 
                 Table foot = new Table(5).UseAllAvailableWidth();
-                Cell f1 = new Cell(1,3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
-                Cell f2 = new Cell(1,1).Add(new Paragraph("Total Descuento").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER).SetBorderRight(Border.NO_BORDER);
-                Cell f3 = new Cell(1,1).Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
-                Cell f4 = new Cell(1,3).Add(new Paragraph("La devolución de inventario debe realizarse con la factura,").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetBorderTop(Border.NO_BORDER);
-                Cell f5 = new Cell(1,1).Add(new Paragraph("Total Impuesto").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER).SetBorderRight(Border.NO_BORDER);
-                Cell f6 = new Cell(1,1).Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
-                Cell f7 = new Cell(1,3).Add(new Paragraph("se contará con 15 días de plazo a partir de su compra (" + item.Fecha.ToShortDateString() + ").").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
-                Cell f8 = new Cell(1,1).Add(new Paragraph("Total Pagar").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER).SetBorderRight(Border.NO_BORDER);
-                Cell f9 = new Cell(1,1).Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f1 = new Cell(1, 3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
+                Cell f2 = new Cell(1, 1).Add(new Paragraph("Total Descuento").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER).SetBorderRight(Border.NO_BORDER);
+                Cell f3 = new Cell(1, 1).Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f4 = new Cell(1, 3).Add(new Paragraph("La devolución de inventario debe realizarse con la factura,").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetBorderTop(Border.NO_BORDER);
+                Cell f5 = new Cell(1, 1).Add(new Paragraph("Total Impuesto").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER).SetBorderRight(Border.NO_BORDER);
+                Cell f6 = new Cell(1, 1).Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f7 = new Cell(1, 3).Add(new Paragraph("se contará con 15 días de plazo a partir de su compra (" + item.Fecha.ToShortDateString() + ").").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
+                Cell f8 = new Cell(1, 1).Add(new Paragraph("Total Pagar").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER).SetBorderRight(Border.NO_BORDER);
+                Cell f9 = new Cell(1, 1).Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
                 foot.AddCell(f1);
                 foot.AddCell(f2);
                 foot.AddCell(f3);
@@ -342,7 +342,7 @@ namespace Sistema_JYR.Controllers
             pedidos.TotalDescuento = 0;
             pedidos.TotalImpuesto = 0;
             pedidos.TotalPagar = 0;
-            
+
             if (pedidos.DireccionEntrega == null)
             {
                 pedidos.DireccionEntrega = "Retirar en la ferretería";
@@ -653,78 +653,89 @@ namespace Sistema_JYR.Controllers
             if (objeto.cantEnviada != null)
             {
                 int cant = Convert.ToInt32(objeto.cantEnviada);
-                
+
                 int idDetalle = Convert.ToInt32(objeto.detalleId);
 
-               
-                    List<PedidoDetalle> deta = db.PedidoDetalle.Where(x => x.IdPedido == idPedido && x.Id == idDetalle).ToList();
 
-                        foreach (var item in deta)
-                        {
-                            Productos p = db.Productos.Find(item.IdProducto);
-                            
-                            if(p.CantidadEnInventario < cant)
+                List<PedidoDetalle> deta = db.PedidoDetalle.Where(x => x.IdPedido == idPedido && x.Id == idDetalle).ToList();
+
+                foreach (var item in deta)
+                {
+                    Productos p = db.Productos.Find(item.IdProducto);
+
+                    if (p.CantidadEnInventario < cant)
                     {
                         Session["Pedidos"] = "Cantidad en inventario menor";
                         return PartialView("_detalle", pedido);
                     }
 
-                            if (item.CantidadEnviada < item.Cantidad)
+
+                    if (item.CantidadEnviada < item.Cantidad)
+                    {
+
+                        if (cant <= item.Cantidad)
+                        {
+                            if ((item.Cantidad - item.CantidadEnviada) >= cant)
                             {
 
-                                if (cant <= item.Cantidad)
-                                {
-
-                       
                                 PedidoDetalle det = db.PedidoDetalle.Find(item.Id);
-                                det.CantidadEnviada = cant;
+                                det.CantidadEnviada += cant;
                                 db.Entry(det).State = EntityState.Modified;
                                 db.SaveChanges();
 
-                            p.CantidadEnInventario -= cant;
-                            db.Entry(p).State = EntityState.Modified;
-                            db.SaveChanges();
-                            List<PedidoDetalle> d = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
-                            int count = 0;
-                            foreach (var de in d)
-                                    {
-                                        if(de.CantidadEnviada == de.Cantidad)
-                                        {
-                                            count++;                                   
-                                        }
+                                p.CantidadEnInventario -= cant;
+                                db.Entry(p).State = EntityState.Modified;
+                                db.SaveChanges();
 
-                                       
+
+                                List<PedidoDetalle> d = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
+                                int count = 0;
+                                foreach (var de in d)
+                                {
+                                    if (de.CantidadEnviada == de.Cantidad)
+                                    {
+                                        count++;
                                     }
 
-                            if (count == d.Count())
-                            {
-                                pedido.IdEstado = 1;
-                                db.Entry(pedido).State = EntityState.Modified;
-                                db.SaveChanges();
-                            }
 
-                            pedido.PedidoDetalle = d;
-                                return PartialView("_detalle", pedido);
                                 }
 
-                                else
+                                if (count == d.Count())
                                 {
-                                    Session["Pedidos"] = 2;
-                                    return PartialView("_detalle",pedido);
-                          
+                                    pedido.IdEstado = 1;
+                                    db.Entry(pedido).State = EntityState.Modified;
+                                    db.SaveChanges();
                                 }
-                        
+
+                                pedido.PedidoDetalle = d;
+                                return PartialView("_detalle", pedido);
                             }
+                            else
+                            {
+                                Session["Pedidos"] = 2;
+                                return PartialView("_detalle", pedido);
+                            }
+
+                        }
+
+                        else
+                        {
+                            Session["Pedidos"] = 2;
+                            return PartialView("_detalle", pedido);
+
+                        }
+
+                    }
 
                     else
                     {
                         Session["Pedidos"] = 2;
                         return PartialView("_detalle", pedido);
                     }
-                  
+
                 }
 
-      //validar 
+                //validar 
 
             }
 
@@ -744,7 +755,7 @@ namespace Sistema_JYR.Controllers
             {
                 if (objet.estado.Equals("nuevo"))
                 {
-            
+
                     var pedidos = db.Pedidos.Where(x => x.IdEstado == 7).ToList();
                     return PartialView("_SeguimientoPedidoEmpresa", pedidos.ToList());
 
@@ -752,14 +763,14 @@ namespace Sistema_JYR.Controllers
 
                 if (objet.estado.Equals("procesando"))
                 {
-                
-                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 3).ToList();                 
+
+                    var pedidos = db.Pedidos.Where(x => x.IdEstado == 3).ToList();
                     return PartialView("_SeguimientoPedidoEmpresa", pedidos.ToList());
                 }
 
                 if (objet.estado.Equals("finalizado"))
                 {
-                   
+
                     var pedidos = db.Pedidos.Where(x => x.IdEstado == 1).ToList();
                     return PartialView("_SeguimientoPedidoEmpresa", pedidos.ToList());
                 }
@@ -779,7 +790,7 @@ namespace Sistema_JYR.Controllers
         public ActionResult SeguimientoPedido()
         {
             string idUsuario = User.Identity.GetUserId();
-            var list = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado== 7).ToList();
+            var list = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 7).ToList();
             return View(list);
         }
 
@@ -795,7 +806,7 @@ namespace Sistema_JYR.Controllers
                 if (objet.estado.Equals("nuevo"))
                 {
                     var pedidos = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 7).ToList();
-                    return PartialView("_SeguimientoPedido",pedidos);
+                    return PartialView("_SeguimientoPedido", pedidos);
                 }
                 if (objet.estado.Equals("procesando"))
                 {
@@ -809,7 +820,7 @@ namespace Sistema_JYR.Controllers
                 }
                 if (objet.estado.Equals("cancelado"))
                 {
-                    var pedidos = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 4 || x.IdUsuario == idUsuario && x.IdEstado == 6 ).ToList();
+                    var pedidos = db.Pedidos.Where(x => x.IdUsuario == idUsuario && x.IdEstado == 4 || x.IdUsuario == idUsuario && x.IdEstado == 6).ToList();
                     return PartialView("_SeguimientoPedido", pedidos);
                 }
             }
@@ -820,8 +831,8 @@ namespace Sistema_JYR.Controllers
         {
             Pedidos pedidos = db.Pedidos.Find(Id);
             pedidos.IdEstado = 4;
-     
-          
+
+
             if (ModelState.IsValid)
             {
 
@@ -940,12 +951,12 @@ namespace Sistema_JYR.Controllers
             var prod = db.Productos.Where(x => x.Id == detalles.IdProducto);
 
             if (detalles.CantidadEnviada > 0)
-                    {
-                        Session["Pedidos"] = "No se puede eliminar";
-                        return PartialView("_ListaPedidoCarrito", pedidos);
+            {
+                Session["Pedidos"] = "No se puede eliminar";
+                return PartialView("_ListaPedidoCarrito", pedidos);
             }
-              
-           
+
+
             double totalPagar = 0;
             double impuesto = 0;
             double descuento = 0;
@@ -956,7 +967,7 @@ namespace Sistema_JYR.Controllers
             db.SaveChanges();
 
 
-          
+
 
             pedidos.Id = pedidos.Id;
             pedidos.IdUsuario = pedidos.IdUsuario;
@@ -1004,7 +1015,7 @@ namespace Sistema_JYR.Controllers
             double totalPagar = 0;
             double desc = 0;
             double imp = 0;
-       
+
             Pedidos p = db.Pedidos.Find(pedidoId);
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidoId).ToList();
 
@@ -1068,13 +1079,13 @@ namespace Sistema_JYR.Controllers
             Pedidos ped = db.Pedidos.Find(pedidoId);
             Productos p = db.Productos.Find(id);
 
-            if(p.CantidadEnInventario < cantidad)
+            if (p.CantidadEnInventario < cantidad)
             {
                 Session["Pedidos"] = "Cantidad en inventario menor";
                 return PartialView("_ListaPedidoCarrito", ped);
             }
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == pedidoId).ToList();
-   
+
             foreach (var item in detalles)
             {
                 PedidoDetalle detalle = db.PedidoDetalle.Find(item.Id);
@@ -1099,17 +1110,17 @@ namespace Sistema_JYR.Controllers
                     desc += descuento * item.Cantidad;
                     imp += iva * item.Cantidad;
                     totalPagar += subTotal * item.Cantidad;
-                    if(item.CantidadEnviada > cantidad)
+                    if (item.CantidadEnviada > cantidad)
                     {
                         int diferencia = (int)(item.CantidadEnviada - cantidad);
                         p.CantidadEnInventario += diferencia;
                         db.Entry(p).State = EntityState.Modified;
                         db.SaveChanges();
-                    }                  
-           
-                    if(cantidad >= item.CantidadEnviada)
+                    }
+
+                    if (cantidad >= item.CantidadEnviada)
                     {
-                        int diferencia = (int)(cantidad- item.CantidadEnviada);
+                        int diferencia = (int)(cantidad - item.CantidadEnviada);
                         p.CantidadEnInventario -= diferencia;
                         db.Entry(p).State = EntityState.Modified;
                         db.SaveChanges();
@@ -1117,7 +1128,7 @@ namespace Sistema_JYR.Controllers
                     detalle.CantidadEnviada = cantidad;
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
-                   
+
                 }
 
             }
@@ -1127,7 +1138,7 @@ namespace Sistema_JYR.Controllers
             db.Entry(ped).State = EntityState.Modified;
             db.SaveChanges();
             ped.PedidoDetalle = detalles;
-         
+
             return PartialView("_ListaPedidoCarrito", ped);
         }
 
@@ -1158,7 +1169,7 @@ namespace Sistema_JYR.Controllers
             double totalPagar = 0;
             double desc = 0;
             double imp = 0;
-           
+
             Pedidos pedidos = db.Pedidos.Find(idPedido);
             List<PedidoDetalle> detalles = db.PedidoDetalle.Where(x => x.IdPedido == idPedido).ToList();
 
@@ -1186,12 +1197,12 @@ namespace Sistema_JYR.Controllers
                     }
 
                     if (cantidadCambio < item.CantidadEnviada)
-                    {                
+                    {
                         Session["Pedidos"] = "Debe digitar una cantidad mayor a la cantidad enviada";
                         return PartialView("_ListaPedidoCarrito", pedidos);
                     }
-           
-                    detalle.Cantidad = cantidadCambio;           
+
+                    detalle.Cantidad = cantidadCambio;
                     detalle.CantidadEnviada = item.CantidadEnviada;
                     db.Entry(detalle).State = EntityState.Modified;
                     db.SaveChanges();
@@ -1216,7 +1227,7 @@ namespace Sistema_JYR.Controllers
             db.SaveChanges();
             pedidos.PedidoDetalle = detalles;
 
-                      return PartialView("_ListaPedidoCarrito", pedidos);
+            return PartialView("_ListaPedidoCarrito", pedidos);
         }
 
 
@@ -1230,14 +1241,14 @@ namespace Sistema_JYR.Controllers
 
             Pedidos ped = db.Pedidos.Find(idPedido);
             Productos p = db.Productos.Find(nuevoId);
-            double totalPagar = 0;       
+            double totalPagar = 0;
             double desc = 0;
             double imp = 0;
 
-           
+
 
             if (cant == 0)
-            {           
+            {
                 Session["Pedidos"] = "Debe digitar una cantidad mayor a 0";
                 return PartialView("_ListaPedidoCarrito", ped);
             }
@@ -1312,7 +1323,7 @@ namespace Sistema_JYR.Controllers
                 totalPagar += subTotal * item.Cantidad;
 
             }
-          
+
             ped.TotalDescuento = desc;
             ped.TotalImpuesto = imp;
             ped.TotalPagar = totalPagar;
@@ -1388,7 +1399,7 @@ namespace Sistema_JYR.Controllers
                 get;
                 set;
             }
-   
+
 
 
         }
@@ -1436,7 +1447,7 @@ namespace Sistema_JYR.Controllers
         }
         public class AjaxSeguimiento
         {
-       
+
             public string usuarioId
             {
                 get;
@@ -1477,9 +1488,9 @@ namespace Sistema_JYR.Controllers
                 get;
                 set;
             }
-          
 
-        
+
+
         }
 
         public ActionResult reporteTopProducto(string fechaAnterior, string fechaActual, string IdCategoria)
@@ -1542,7 +1553,7 @@ namespace Sistema_JYR.Controllers
                                                 group new { d.Cantidad, d.PrecioUnitario }
                                                 by new { p.Id, p.Nombre, c.Descripcion }
                                                 into g
-                                                 orderby g.Sum(x=> x.PrecioUnitario * x.Cantidad) descending
+                                                orderby g.Sum(x => x.PrecioUnitario * x.Cantidad) descending
 
                                                 select new
                                                 {
@@ -1559,24 +1570,24 @@ namespace Sistema_JYR.Controllers
                                 }
 
                                 var querys = from d in db.PedidoDetalle
-                                            join p in db.Productos on d.IdProducto equals p.Id
-                                            join c in db.CategoriasProducto on p.IdCategoria equals c.Id
-                                            join o in db.Pedidos on d.IdPedido equals o.Id
+                                             join p in db.Productos on d.IdProducto equals p.Id
+                                             join c in db.CategoriasProducto on p.IdCategoria equals c.Id
+                                             join o in db.Pedidos on d.IdPedido equals o.Id
                                              where o.Fecha >= anterior && o.Fecha <= actual && p.IdCategoria == categoria
                                              group new { d.Cantidad, d.PrecioUnitario }
                                             by new { p.Id, p.Nombre, c.Descripcion }
                                                into g
-                                            orderby g.Sum(x => x.PrecioUnitario * x.Cantidad) descending
+                                             orderby g.Sum(x => x.PrecioUnitario * x.Cantidad) descending
 
-                                            select new
-                                            {
-                                                Id = g.Key.Id,
-                                                Producto = g.Key.Nombre,
-                                                Categoria = g.Key.Descripcion,
-                                                cantidadTotal = g.Sum(x => x.Cantidad),
-                                                Total = g.Sum(x => x.PrecioUnitario * x.Cantidad)
+                                             select new
+                                             {
+                                                 Id = g.Key.Id,
+                                                 Producto = g.Key.Nombre,
+                                                 Categoria = g.Key.Descripcion,
+                                                 cantidadTotal = g.Sum(x => x.Cantidad),
+                                                 Total = g.Sum(x => x.PrecioUnitario * x.Cantidad)
 
-                                            };
+                                             };
 
 
 
