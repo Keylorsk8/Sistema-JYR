@@ -25,6 +25,10 @@ using Rectangle = iText.Kernel.Geom.Rectangle;
 using System.Web;
 using System.Web.Helpers;
 using System.Data.Entity.Validation;
+using System.Threading.Tasks;
+using System.Net.Mail;
+using System.Net.Mime;
+using iText.Pdfa;
 
 namespace Sistema_JYR.Controllers
 {
@@ -41,7 +45,6 @@ namespace Sistema_JYR.Controllers
             return View(proformas.ToList());
         }
 
-        [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Revaloracion()
         {
             var proformas = db.Proformas.Where(x => x.IdEstado == 5).OrderByDescending(x => x.Id);
@@ -68,6 +71,54 @@ namespace Sistema_JYR.Controllers
             }
             return View(proforma);
         }
+
+        public ActionResult RevalorarProforma(int? id)
+        {
+            if (id == null)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("Index");
+            }
+            Proformas proformas = db.Proformas.Find(id);
+            if (proformas == null)
+            {
+                Session["Proforma"] = "No existe la proforma";
+                return RedirectToAction("Index");
+            }
+            ViewBag.Id = proformas.Id;
+            ViewBag.TotalPagar = proformas.TotalPagar;
+            ViewBag.TotalDescuento = proformas.TotalDescuento;
+            ViewBag.TotalImpuesto = proformas.TotalImpuesto;
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            proformas.ProformaDetalle = detalles;
+            ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
+            return View(proformas);
+           
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RevalorarProforma([Bind(Include = "Id,IdUsuario,IdEstado,Fecha,TotalPagar,TotalDescuento,TotalImpuesto,IdCliente,NombreCliente,DireccionEntrega,NombreProforma,Comentario")] Proformas proformas)
+        {
+            int id = proformas.Id;
+            string comentario = proformas.Comentario;
+            if (id == 0)
+            {
+                Session["Proforma"] = "Proforma inválida. Especifique una proforma";
+                return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
+            }
+            var proforma = db.Proformas.Find(id);
+            ViewBag.Id = proforma.Id;
+            proforma.IdEstado = 2;
+            proforma.Comentario = comentario;
+            db.Entry(proforma).State = EntityState.Modified;
+            db.SaveChanges();
+            EnviarCorreoAsync(proforma.IdUsuario, id, proforma.Comentario);
+            Session["Proforma"] = "Revalorada";
+
+            return RedirectToAction("Revaloracion", "Proformas");
+        }
+
 
         [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult SeleccionarDocumento(int id)
@@ -105,10 +156,13 @@ namespace Sistema_JYR.Controllers
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Cancelada";
-            Documento doc = ((Documento)Session["Documento"]);
-            if(doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            if (Session["Documento"] != null)
             {
-                Session["Documento"] = null;
+                Documento doc = ((Documento)Session["Documento"]);
+                if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+                {
+                    Session["Documento"] = null;
+                }
             }
             return RedirectToAction("Index");
         }
@@ -349,6 +403,230 @@ namespace Sistema_JYR.Controllers
             return new FileStreamResult(ms, "application/pdf");
         }
 
+        public MemoryStream PDFCorreo(int id)
+        {
+            MemoryStream ms = new MemoryStream();
+            PdfWriter pw = new PdfWriter(ms);
+            PdfDocument pdfDocument = new PdfDocument(pw);
+            Document doc = new Document(pdfDocument, PageSize.LETTER);
+            doc.SetMargins(122, 35, 70, 35);
+            string pathLogo = Server.MapPath("~/Content/imagenes/LOGO2.png");
+            Image img = new Image(ImageDataFactory.Create(pathLogo));
+            pdfDocument.AddEventHandler(PdfDocumentEvent.START_PAGE, new HeaderEventHandler(img));
+            pdfDocument.AddEventHandler(PdfDocumentEvent.END_PAGE, new FooterEventHandler());
+            List<Proformas> model = db.Proformas.Where(x => x.Id == id).ToList();
+
+            foreach (var item in model)
+            {
+                List<AspNetUsers> user = db.AspNetUsers.Where(x => x.Id == item.IdCliente).ToList();
+                List<Telefonos> tel = db.Telefonos.Where(x => x.IdUsuario == item.IdCliente).ToList();
+                Table enc = new Table(4).UseAllAvailableWidth();
+
+                Cell cellenc = new Cell().Add(new Paragraph("Proforma No." + id).SetFontSize(11)).
+                    SetTextAlignment(TextAlignment.LEFT).SetBorder(Border.NO_BORDER);
+                enc.AddCell(cellenc);
+                cellenc = new Cell().Add(new Paragraph("Día").SetFontSize(9)).
+                            SetTextAlignment(TextAlignment.CENTER).SetWidth(25);
+                enc.AddCell(cellenc);
+                cellenc = new Cell().Add(new Paragraph("Mes").SetFontSize(9)).
+                           SetTextAlignment(TextAlignment.CENTER).SetWidth(40);
+                enc.AddCell(cellenc);
+                cellenc = new Cell().Add(new Paragraph("Año").SetFontSize(9)).
+                           SetTextAlignment(TextAlignment.CENTER).SetWidth(30);
+                enc.AddCell(cellenc);
+                doc.Add(enc);
+                Table enc2 = new Table(4).UseAllAvailableWidth();
+                Cell cellenc2 = new Cell().Add(new Paragraph(item.NombreProforma).SetFontSize(9)).
+                    SetTextAlignment(TextAlignment.LEFT).SetBorder(Border.NO_BORDER);
+                enc2.AddCell(cellenc2);
+                cellenc2 = new Cell().Add(new Paragraph(item.Fecha.Day.ToString()).SetFontSize(9)).
+                            SetTextAlignment(TextAlignment.CENTER).SetWidth(25).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+                enc2.AddCell(cellenc2);
+                cellenc2 = new Cell().Add(new Paragraph(item.Fecha.Month.ToString()).SetFontSize(9)).
+                           SetTextAlignment(TextAlignment.CENTER).SetWidth(40).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+                enc2.AddCell(cellenc2);
+                cellenc2 = new Cell().Add(new Paragraph(item.Fecha.Year.ToString()).SetFontSize(9)).
+                           SetTextAlignment(TextAlignment.CENTER).SetWidth(30).SetHorizontalAlignment(HorizontalAlignment.RIGHT);
+                enc2.AddCell(cellenc2);
+                doc.Add(enc2);
+
+                Table _enc = new Table(2).UseAllAvailableWidth();
+                Cell _cellEnc = new Cell(2, 1).Add(new Paragraph("Información de Cliente").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderRight(Border.NO_BORDER);
+                _enc.AddCell(_cellEnc);
+                _cellEnc = new Cell(2, 1).Add(new Paragraph("Detalles").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderLeft(Border.NO_BORDER);
+                _enc.AddCell(_cellEnc);
+
+                Cell _cellDet1 = new Cell(1, 1).Add(new Paragraph(item.NombreCliente).SetFontSize(9)).
+                     SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                Cell _cellDet2 = new Cell(1, 1).Add(new Paragraph("Vendedor: " + item.AspNetUsers.Nombre + " " + item.AspNetUsers.Apellido1).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderBottom(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER);
+                Cell _cellDet3 = new Cell(1, 1).Add(new Paragraph(item.DireccionEntrega).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                Cell _cellDet4 = new Cell(1, 1).Add(new Paragraph("Estado:" + item.EstadoProforma.Descripcion).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER);
+                Cell _cellDet5 = new Cell(1, 2).Add(new Paragraph("Moneda: Colones ( ¢ )").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER);
+
+                _enc.AddCell(_cellDet1);
+                _enc.AddCell(_cellDet2);
+                _enc.AddCell(_cellDet3);
+                _enc.AddCell(_cellDet4);
+                _enc.AddCell(_cellDet5);
+                doc.Add(_enc);
+
+
+                Table tels = new Table(2).UseAllAvailableWidth().SetBorderRight(new SolidBorder(ColorConstants.BLACK, 1)).SetBorderLeft(new SolidBorder(ColorConstants.BLACK, 1));
+                Cell ctels1 = new Cell(1, 2).Add(new Paragraph("Teléfonos").SetFontSize(9));
+                tels.AddCell(ctels1);
+                if (tel.Count() == 0)
+                {
+                    Cell ctels2 = new Cell(1, 2).Add(new Paragraph("Tel: N/A").SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER);
+                    tels.AddCell(ctels2);
+                    doc.Add(tels);
+                }
+                else
+                {
+                    foreach (var t in tel)
+                    {
+
+                        Cell ctels2 = new Cell(1, 1).Add(new Paragraph("Propietario: " + t.Propietario).SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
+                        Cell ctels3 = new Cell(1, 1).Add(new Paragraph("Tel: " + t.Telefono).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER);
+
+                        tels.AddCell(ctels2);
+                        tels.AddCell(ctels3);
+
+                    }
+                    doc.Add(tels);
+                }
+            }
+            //Productos
+            Style styleCell = new Style()
+                .SetBackgroundColor(WebColors.GetRGBColor("#042c3c"))
+                .SetFontColor(WebColors.GetRGBColor("#f68c25"))
+                .SetTextAlignment(TextAlignment.CENTER)
+                .SetFontSize(10);
+            Table _table = new Table(5).UseAllAvailableWidth();
+            Cell _cell = new Cell(2, 1).Add(new Paragraph("Id"));
+            _table.AddHeaderCell(_cell.AddStyle(styleCell));
+            _cell = new Cell(2, 1).Add(new Paragraph("Producto"));
+            _table.AddHeaderCell(_cell.AddStyle(styleCell));
+            _cell = new Cell(2, 1).Add(new Paragraph("Cantidad"));
+            _table.AddHeaderCell(_cell.AddStyle(styleCell));
+            _cell = new Cell(2, 1).Add(new Paragraph("Precio Unitario"));
+            _table.AddHeaderCell(_cell.AddStyle(styleCell));
+            _cell = new Cell(2, 1).Add(new Paragraph("Descuento"));
+            _table.AddHeaderCell(_cell.AddStyle(styleCell));
+            Style sty = new Style()
+               .SetTextAlignment(TextAlignment.CENTER)
+               .SetFontSize(9);
+            List<ProformaDetalle> det = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
+            foreach (var item in det)
+            {
+                List<Productos> prod = db.Productos.Where(p => p.Id == item.IdProducto).ToList();
+                foreach (var p in prod)
+                {
+                    _cell = new Cell().Add(new Paragraph(item.IdProducto.ToString())).SetBorderRight(Border.NO_BORDER).
+                        SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER);
+                    _table.AddCell(_cell.AddStyle(sty));
+                    _cell = new Cell().Add(new Paragraph(item.Productos.Nombre)).SetBorder(Border.NO_BORDER);
+                    _table.AddCell(_cell.AddStyle(sty));
+                    _cell = new Cell().Add(new Paragraph(item.Cantidad.ToString())).SetBorder(Border.NO_BORDER);
+                    _table.AddCell(_cell.AddStyle(sty));
+                    _cell = new Cell().Add(new Paragraph(item.PrecioUnitario.ToString("₡0,#.00"))).SetBorder(Border.NO_BORDER);
+                    _table.AddCell(_cell.AddStyle(sty));
+                    _cell = new Cell().Add(new Paragraph(item.Descuento.ToString("₡" + "0,#.00"))).SetBorderLeft(Border.NO_BORDER).
+                        SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER);
+                    _table.AddCell(_cell.AddStyle(sty));
+                }
+            }
+            doc.Add(_table);
+            foreach (var item in model)
+            {
+                Table foot = new Table(5).UseAllAvailableWidth();
+
+                Cell f1 = new Cell(1, 3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetBorderBottom(Border.NO_BORDER).SetTextAlignment(TextAlignment.LEFT);
+                Cell f2 = new Cell(1, 1).Add(new Paragraph("Total Descuento").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f3 = new Cell(1, 1).Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f4 = new Cell(1, 3).Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER);
+                Cell f5 = new Cell(1, 1).Add(new Paragraph("Total Impuesto").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f6 = new Cell(1, 1).Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f7 = new Cell(1, 3).Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).SetBorderTop(Border.NO_BORDER);
+                Cell f8 = new Cell(1, 1).Add(new Paragraph("Total Pagar").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f9 = new Cell(1, 1).Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                foot.AddCell(f1);
+                foot.AddCell(f2);
+                foot.AddCell(f3);
+                foot.AddCell(f4);
+                foot.AddCell(f5);
+                foot.AddCell(f6);
+                foot.AddCell(f7);
+                foot.AddCell(f8);
+                foot.AddCell(f9);
+                doc.Add(foot);
+            }
+            doc.Close();
+            byte[] bytesStream = ms.ToArray();
+            ms = new MemoryStream();
+            ms.Write(bytesStream, 0, bytesStream.Length);
+            ms.Position = 0;
+            return ms;
+        }
+
+        private bool EnviarCorreoAsync(string userID, int idProforma, string comentario)
+        {
+            SistemaJYREntities db = new SistemaJYREntities();
+            AspNetUsers user = db.AspNetUsers.Find(userID);
+            var pdf = PDFCorreo(idProforma);
+
+            string text = "";
+            string html = "<!DOCTYPE html>";
+            html += "<html lang='en'>";
+            html += "<head>";
+            html += "<meta charset='UTF-8'>";
+            html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+            html += "</head>";
+            html += "<body style='background-color: lightgrey; padding: 1px;'>";
+            html += "<div style='background-color: white;'>";
+            html += "<div style='display:flex;align-items: center;justify-content: center; background-color: #002f3f; width: 100%; padding:1px ; text-align: center'>";
+            html += "<img style='padding:3px;width: 80px; height:60px; display: inline-block;' src='https://scontent.fsjo9-1.fna.fbcdn.net/v/t1.0-9/89285644_1717326001743786_4731412217533038592_n.jpg?_nc_cat=105&_nc_sid=09cbfe&_nc_ohc=zTP6NomuI3EAX-sl7hp&_nc_ht=scontent.fsjo9-1.fna&oh=535397f2460f693b37cd9bc53878841b&oe=5F6059EB'>";
+            html += "<h1 style='font-weight: 200;display: inline-block; color: white;'>Tu proforma #" + idProforma + " ha sido revalorada</h1>";
+            html += "</div>";
+            html += "<div style='padding: 20px;'>";
+            html += "<h4 style='color: black;font-weight: 200'>Hola " + user.Nombre + " " + user.Apellido1 + ",</h4>";
+            html += "<p style='color: black;font-weight: 200'>La proforma ha sido revalorada por los empleados de Ferretería y Materiales JYR, adjunto encontrás el PDF de la proforma.</p>";
+            html += "<p style='color: black;font-weight: 200'>También puedes acceder a nuestro sitio y buscar la proforma en la lista de nuevas proformas. </p>";
+            html += "<br>";
+            html += "<h6>Comentario de los empleados:</h6><p>" + comentario + "</p>";
+            html += "<br>";
+            html += "<p style='color: black;font-weight: 200'>¡Muchas gracias por confiar en nosotros, no dudes en confirmar tu pedido!</p>";
+            html += "<p style='color: black;font-weight: 200'>Ferretería y Materíales JYR S.A</p>";
+            html += "<hr>";
+            html += "<p style='color: black;font-weight: 200;font-size:smaller;text-align: center'>Si recibiste este correo por error solamente eliminalo.</p>";
+
+
+            html += "</div>";
+            html += "</div>";
+            html += "</body>";
+            html += "</html>";
+
+            MailMessage msg = new MailMessage();
+            msg.From = new MailAddress("ferreteriaymaterialesjyr@gmail.com");
+            msg.To.Add(new MailAddress(user.UserName));
+            msg.Subject = "Tu proforma #" + idProforma + " ha sido revalorada";
+            msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
+            msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
+            Attachment pdfA = new Attachment(pdf,"Proforma#"+idProforma+".pdf");
+            msg.Attachments.Add(pdfA);
+
+            using (SmtpClient client = new SmtpClient())
+            {
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Credentials = new System.Net.NetworkCredential("ferreteriaymaterialesjyr@gmail.com", "ferre24301131");
+                client.Host = "smtp.gmail.com";
+                client.Port = 587;
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                client.Send(msg);
+            }
+            return true;
+        }
+
         // GET: Proformas/Create
         [Authorize(Roles = "Admin,Vendedor")]
         public ActionResult Create()
@@ -536,10 +814,13 @@ namespace Sistema_JYR.Controllers
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Cancelada";
-            Documento doc = ((Documento)Session["Documento"]);
-            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            if (Session["Documento"] != null)
             {
-                Session["Documento"] = null;
+                Documento doc = ((Documento)Session["Documento"]);
+                if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+                {
+                    Session["Documento"] = null;
+                }
             }
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
@@ -672,10 +953,13 @@ namespace Sistema_JYR.Controllers
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
             Session["Proforma"] = "Revaloracion";
-            Documento doc = ((Documento)Session["Documento"]);
-            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            if (Session["Documento"] != null)
             {
-                Session["Documento"] = null;
+                Documento doc = ((Documento)Session["Documento"]);
+                if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+                {
+                    Session["Documento"] = null;
+                }
             }
             return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
@@ -1155,6 +1439,139 @@ namespace Sistema_JYR.Controllers
             return PartialView("_ListaProformaCarrito", prof);
         }
 
+        public ActionResult CambiarDescuentoRevaloracion(AjaxDescuento objet)
+        {
+
+            int proId = Convert.ToInt32(objet.proformaId);
+            int id = Convert.ToInt32(objet.productoId);
+            int descuentoP = 0;
+            try
+            {
+                descuentoP = Convert.ToInt32(objet.descuento);
+                if (descuentoP < 0)
+                {
+                    descuentoP = 0;
+                }
+                if (descuentoP > 30)
+                {
+                    descuentoP = 30;
+                }
+            }
+            catch (Exception)
+            {
+                descuentoP = 0;
+            }
+
+            double totalPagar = 0;
+            double desc = 0;
+            double imp = 0;
+            Proformas prof = db.Proformas.Find(proId);
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proId).ToList();
+
+            foreach (var item in detalles)
+            {
+                ProformaDetalle detalle = db.ProformaDetalle.Find(item.Id);
+                if (item.IdProducto == id)
+                {
+                    detalle.Id = item.Id;
+                    detalle.Cantidad = item.Cantidad;
+                    detalle.IdProforma = item.IdProforma;
+                    detalle.IdProducto = item.IdProducto;
+                    detalle.PrecioUnitario = item.PrecioUnitario;
+                    detalle.Descuento = descuentoP;
+                    db.Entry(detalle).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
+            }
+            prof.TotalDescuento = desc;
+            prof.TotalImpuesto = imp;
+            prof.TotalPagar = totalPagar;
+            db.Entry(prof).State = EntityState.Modified;
+            db.SaveChanges();
+            prof.ProformaDetalle = detalles;
+            ViewBag.TotalPagar = prof.TotalPagar;
+            ViewBag.TotalDescuento = prof.TotalDescuento;
+            ViewBag.TotalImpuesto = prof.TotalImpuesto;
+            return PartialView("_ListaProformaCarritoRevaloracion", prof);
+        }
+
+        public ActionResult CambiarPrecioRevaloracion(AjaxPrecio objet)
+        {
+
+            int proId = Convert.ToInt32(objet.proformaId);
+            int id = Convert.ToInt32(objet.productoId);
+            int precioP = 0;
+            ProformaDetalle det = db.ProformaDetalle.Where(x => x.IdProforma == proId && x.IdProducto == id).First();
+            try
+            {
+                precioP = Convert.ToInt32(objet.precio);
+                if (precioP < 0)
+                {
+                    precioP = Convert.ToInt32(det.PrecioUnitario);
+                }
+                if(precioP > 99999999)
+                {
+                    precioP = Convert.ToInt32(det.PrecioUnitario);
+                }
+            }
+            catch (Exception)
+            {
+                precioP = Convert.ToInt32(det.PrecioUnitario);
+            }
+
+            double totalPagar = 0;
+            double desc = 0;
+            double imp = 0;
+            Proformas prof = db.Proformas.Find(proId);
+            List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == proId).ToList();
+
+            foreach (var item in detalles)
+            {
+                ProformaDetalle detalle = db.ProformaDetalle.Find(item.Id);
+                if (item.IdProducto == id)
+                {
+                    detalle.Id = item.Id;
+                    detalle.Cantidad = item.Cantidad;
+                    detalle.IdProforma = item.IdProforma;
+                    detalle.IdProducto = item.IdProducto;
+                    detalle.PrecioUnitario = precioP;
+                    detalle.Descuento = item.Descuento;
+                    db.Entry(detalle).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+                double precioBase = item.PrecioUnitario;
+                double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                double descuento = precioBase - (precioConDescuento - iva);
+                double subTotal = precioBase + iva - descuento;
+
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
+            }
+            prof.TotalDescuento = desc;
+            prof.TotalImpuesto = imp;
+            prof.TotalPagar = totalPagar;
+            db.Entry(prof).State = EntityState.Modified;
+            db.SaveChanges();
+            prof.ProformaDetalle = detalles;
+            ViewBag.TotalPagar = prof.TotalPagar;
+            ViewBag.TotalDescuento = prof.TotalDescuento;
+            ViewBag.TotalImpuesto = prof.TotalImpuesto;
+            return PartialView("_ListaProformaCarritoRevaloracion", prof);
+        }
+
         /// <summary>
         /// Agrega un nuevo producto a la proforma
         /// </summary>
@@ -1496,6 +1913,27 @@ namespace Sistema_JYR.Controllers
                 set;
             }
         }
+
+        public class AjaxPrecio
+        {
+            public string precio
+            {
+                get;
+                set;
+            }
+            public string productoId
+            {
+                get;
+                set;
+            }
+
+            public string proformaId
+            {
+                get;
+                set;
+            }
+        }
+
         public class AjaxDetalle
         {
             public string cantidad

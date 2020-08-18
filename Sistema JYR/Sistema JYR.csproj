@@ -655,6 +655,8 @@
     <Content Include="Views\Proformas\_ListaDocumentos.cshtml" />
     <Content Include="Views\Proformas\Revaloracion.cshtml" />
     <Content Include="Views\Proformas\DetailsRevaloracion.cshtml" />
+    <Content Include="Views\Proformas\RevalorarProforma.cshtml" />
+    <Content Include="Views\Proformas\_ListaProformaCarritoRevaloracion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1701,11 +1701,7 @@ namespace Sistema_JYR.Controllers
                 PdfPage page = docEvent.GetPage();
                 Rectangle rootArea = new iText.Kernel.Geom.Rectangle(35, page.GetPageSize().GetTop() - 130, page.GetPageSize().GetRight() - 70, 100);
                 iText.Kernel.Pdf.Canvas.PdfCanvas canvas1 = new iText.Kernel.Pdf.Canvas.PdfCanvas(page.NewContentStreamBefore(), page.GetResources(), pdfDoc);
-                new Canvas(canvas1, pdfDoc, rootArea)
-                    .Add(getTable(docEvent));
-
-
-
+                new Canvas(canvas1, pdfDoc, rootArea).Add(getTable(docEvent));
             }
 
 

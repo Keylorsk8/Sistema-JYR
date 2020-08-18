@@ -1,0 +1,193 @@
+﻿@model Sistema_JYR.Models.Proformas
+@using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
+
+@{
+    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+    SistemaJYREntities db = new SistemaJYREntities();
+    string id = HttpContext.Current.User.Identity.GetUserId();
+    usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+}
+
+
+    <div id="carritoAjax">
+        <div class="card bg-light mb-12" style="width:auto">
+            <div class="card-header">Materiales en la Proforma - Moneda: Colones ( ¢ )</div>
+            <div class="card-body">
+                <table class="table table-responsive-lg">
+                    <tr style="text-align:center">
+                        <th style="text-align:center">
+                            Id
+                        </th>
+                        <th style="text-align:center">
+                            Producto
+                        </th>
+                        <th>
+                            Cantidad
+                        </th>
+
+                        <th>
+                            Precio Unitario
+                        </th>
+                        <th>
+                            Impuesto
+                        </th>
+                        <th>
+                            Descuento
+                        </th>
+                        <th>Subtotal</th>
+
+                    </tr>
+
+                    @if (Model.ProformaDetalle.Count() != 0)
+                    {
+
+                        foreach (var item in Model.ProformaDetalle)
+                        {
+                            <tr style="text-align: center">
+                                <td style="text-align:center">
+                                    @item.Productos.Id
+                                </td>
+                                <td style="text-align:center">
+                                    @item.Productos.Nombre
+                                </td>
+                                <td>
+                                    @item.Cantidad
+                                </td>
+                                <td style="text-align:center">
+                                    <input type="number" min="0" value="@item.PrecioUnitario" class="form-control" onchange="cambiarPrecio(this.value,@item.IdProducto, @item.IdProforma)" id="precio" style="text-align: center" />
+                                </td>
+                                <td style="text-align:center">
+                                    @item.Productos.Impuesto%
+                                </td>
+                                @if (usuario.Rol == 3)
+                                {
+                                    <td style="text-align:center">
+                                        @item.Descuento %
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="text-align:center">
+                                        <input type="number" min="0" value="@item.Descuento" class="form-control" onchange="cambiarDescuento(this.value,@item.IdProducto, @item.IdProforma)" id="descuento" style="text-align:center" />
+                                    </td>
+                                }
+                                <td style="text-align:center">
+                                    @{
+
+
+                                        double precioBase = item.PrecioUnitario;
+                                        double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                                        double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                                        double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                                        double descuento = precioBase - (precioConDescuento - iva);
+                                        double subTotal = precioBase + iva - descuento;
+                                        double sub = Math.Round(subTotal * item.Cantidad);
+
+                                    }
+                                    @sub.ToString("0,#.00")
+                                </td>
+
+                            </tr>
+
+                        }
+                        <tr style="text-align:center">
+                            <td colspan="4"></td>
+                            <th colspan="2">
+                                <label>Descuento Total</label>
+                            </th>
+                            <th colspan="2">
+                                @if (Model.TotalDescuento == 0)
+                                {
+                                    <label>0,00</label>
+                                }
+                                else
+                                {
+                                    <label>@Math.Round(Model.TotalDescuento).ToString("0,#.00")</label>
+                                }
+
+                            </th>
+                        </tr>
+                        <tr style="text-align:center">
+                            <td colspan="4"></td>
+                            <th colspan="2">
+                                <label>Total de Impuestos</label>
+                            </th>
+                            <th colspan="2">
+                                @if (Model.TotalImpuesto == 0)
+                                {
+                                    <label>0,00</label>
+                                }
+                                else
+                                {
+                                    <label>@Math.Round(Model.TotalImpuesto).ToString("0,#.00")</label>
+                                }
+                            </th>
+                        </tr>
+                        <tr style="text-align:center">
+                            <td colspan="4"></td>
+                            <th colspan="2">
+                                <label>Total a Pagar</label>
+                            </th>
+                            <th colspan="2">
+                                @if (Model.TotalPagar == 0)
+                                {
+                                    <label>0,00</label>
+                                }
+                                else
+                                {
+                                    <label>@Math.Round(Model.TotalPagar).ToString("0,#.00")</label>
+                                }
+                            </th>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr style="text-align: center">
+                            <td colspan="7">Ningún producto encontrado</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <br />
+
+        <div>
+            @Html.AntiForgeryToken()
+            @Html.Hidden("Id", Model.Id)
+            <div id="Documentos" style="border: 1px solid lightgray; padding: 5px">
+                <h6>Comentario del cliente</h6>
+                <p>@Model.Comentario</p>
+                @{
+                    Model.Comentario = "";
+                }
+                @Html.TextAreaFor(Model => Model.Comentario, new { @class = "form*control", rows = "5", style = "width:100%; padding: 5px", placeHolder = "Respuesta" })
+                @*<textarea id="Comentario" name="Comentario" class="form-control" rows="5"></textarea>*@
+            </div>
+        </div>
+        <br />
+
+        <div>
+            <div class="card bg-light mb-12" style="">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-info btn-block" type="submit" style="margin:5px">
+                                <i class="fa fa-line-chart" style="margin-right: 5px"></i>  Confirmar Revaloración
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })" target="_blank" style="margin:5px">
+                                <i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>  Exportar a PDF
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>

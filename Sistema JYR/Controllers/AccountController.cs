@@ -535,7 +535,7 @@ namespace Sistema_JYR.Controllers
             html += "<body style='background-color: lightgrey; padding: 1px;'>";
             html += "<div style='background-color: white;'>";
             html += "<div style='display:flex;align-items: center;justify-content: center; background-color: #002f3f; width: 100%; padding:1px ; text-align: center'>";
-            html += "<img style='padding:3px;width: 80px; height:60px; display: inline-block;' src='https://scontent.fsjo9-1.fna.fbcdn.net/v/t1.0-9/89285644_1717326001743786_4731412217533038592_n.jpg?_nc_cat=105&_nc_sid=09cbfe&_nc_ohc=JU5DJunai8sAX9rvEL3&_nc_ht=scontent.fsjo9-1.fna&oh=a651db2a91ad73b41bc9114543292741&oe=5F25066B'>";
+            html += "<img style='padding:3px;width: 80px; height:60px; display: inline-block;' src='https://scontent.fsjo9-1.fna.fbcdn.net/v/t1.0-9/89285644_1717326001743786_4731412217533038592_n.jpg?_nc_cat=105&_nc_sid=09cbfe&_nc_ohc=zTP6NomuI3EAX-sl7hp&_nc_ht=scontent.fsjo9-1.fna&oh=535397f2460f693b37cd9bc53878841b&oe=5F6059EB'>";
             html += "<h1 style='font-weight: 200;display: inline-block; color: white;'>" + subject + "</h1>";
             html += "</div>";
             html += "<div style='padding: 20px;'>";

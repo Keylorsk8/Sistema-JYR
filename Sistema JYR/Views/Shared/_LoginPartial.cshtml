@@ -58,43 +58,11 @@
             <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:5px">|</li>
             <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">
                 <a href="@Url.Action("Mantenimientos","Home")" class="btn" style="color: white; font-weight:100">Mantenimientos</a>
-                <div class="btn-group" role="group">
-                    <button id="btnMantenimientos" type="button" class="btn dropdown-toggle dropdown dividerNav" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white; font-weight:100"></button>
-                    <div class="dropdown-menu" aria-labelledby="btnMantenimientos">
-                        @if (usuario.Rol == 1)
-                        {
-                            <h6 class="dropdown-header">Usuarios</h6>
-                            @Html.ActionLink("Vendedores", "Index", "Usuarios", new { }, new { @class = "dropdown-item" })
-                            <div class="dropdown-divider"></div>
-                        }
-                        <h6 class="dropdown-header">Inventario</h6>
-                        @Html.ActionLink("Categorías de Productos", "Index", "CategoriasProducto", new { }, new { @class = "dropdown-item" })
-                        @Html.ActionLink("Productos", "Index", "Productos", new { }, new { @class = "dropdown-item" })
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Proforma</h6>
-                        @Html.ActionLink("Proformas", "Index", "Proformas", new { }, new { @class = "dropdown-item" })
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">Pedido</h6>
-                        @Html.ActionLink("Pedidos", "Index", "Pedido", new { }, new { @class = "dropdown-item" })
-                    </div>
-                </div>
             </li>
             if (usuario.Rol == 1)
             {
                 <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">
                     <a href="@Url.Action("Reportes","Home")" class="btn" style="color: white; font-weight:100">Reportes</a>
-                    <div class="btn-group" role="group">
-                        <button id="btnReportes" type="button" class="btn dropdown-toggle dropdown dividerNav" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white; font-weight:100"></button>
-                        <div class="dropdown-menu" aria-labelledby="btnReportes" style="margin-right: 15px">
-                            @Html.ActionLink("Reporte de Ventas por Empleado", "reporteVentasPorEmpleado", "Pedido", new { }, new { @class = "dropdown-item" })
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Inventario</h6>
-                            @Html.ActionLink("Reporte Top 10 Productos", "reporteTopProducto", "Pedido", new { }, new { @class = "dropdown-item" })
-                            <div class="dropdown-divider"></div>
-                            <h6 class="dropdown-header">Proformas</h6>
-                            @Html.ActionLink("Reporte de Profomas a Pedidos", "reporteProformaAPedido", "Proformas", new { }, new { @class = "dropdown-item" })
-                        </div>
-                    </div>
                 </li>
             }
             <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:10px">|</li>

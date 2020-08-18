@@ -154,6 +154,21 @@
             </script>
             Session["Proforma"] = null;
             break;
+        case "Revalorada":
+            <script type="text/javascript">
+                function ProformaNull() {
+                    Swal.fire({
+                        title: 'La revaloración ha sido enviada al cliente correctamente',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProformaNull();
+            </script>
+            Session["Proforma"] = null;
+            break;
         default:
             break;
     }
