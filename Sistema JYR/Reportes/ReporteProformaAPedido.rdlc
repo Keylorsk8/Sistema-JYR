@@ -95,6 +95,8 @@
                       </ChartDataPointValues>
                       <ChartDataLabel>
                         <Style />
+                        <Label>#PERCENT{P0}</Label>
+                        <Visible>true</Visible>
                       </ChartDataLabel>
                       <Style />
                       <ChartMarker>
@@ -768,7 +770,6 @@
                             <rd:FormatSymbolCulture>es-CR</rd:FormatSymbolCulture>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
