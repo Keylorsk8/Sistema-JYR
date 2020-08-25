@@ -52,7 +52,7 @@
                                 <div class="form-group has-feedback">
                                     <i class="fa fa-calendar-o form-control-feedback"></i>
                                     @Html.HiddenFor(model => model.Fecha)
-                                    @Html.TextBox("Date", Model.Fecha.ToString("dd/MM/yyyy"), new { @class = "form-control", @readonly = true, @name= "Date",@id = "Date" })
+                                    @Html.TextBox("Date", Model.Fecha.ToString("dd/MM/yyyy"), new { @class = "form-control", @readonly = true })
                                 </div>
 
                             </div>
@@ -328,8 +328,8 @@
                                             </div>
                                             <div class="col-md-6">
                                                 @*<a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente",new { id = Model.Id } )" style="margin:5px">
-                                                <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                                </a>*@
+                                                        <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
+                                                    </a>*@
                                                 <button class="btn btn-success btn-block" id="convertir" style="margin:5px">
                                                     <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
                                                 </button>
@@ -447,10 +447,13 @@ $("#carritoAjax").html(data);
                         url: '@Url.Action("ConvertiraPedidoCliente","Proformas", new { id = Model.Id})'
                     }).done(function (data) {
                         @{
+
                         }
+
                         window.location.href = '@Url.Action("ListaProformas","Proformas", new { idUser = id })';
                         Session["Proforma"] = "¡Proforma convertida en Pedido exitosamente!";
-                    });*@
+
+                    });
 
             });
         });

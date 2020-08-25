@@ -848,6 +848,7 @@ namespace Sistema_JYR.Controllers
             var usuario = db.AspNetUsers.Where(x => x.Id == idUser).First();
             if (usuario.Rol != 3)
             {
+              
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = idUser });
             }
@@ -916,6 +917,14 @@ namespace Sistema_JYR.Controllers
                 }
                 db.Entry(proformas).State = EntityState.Modified;
                 db.SaveChanges();
+                if (Session["Documento"] != null)
+                {
+                    Documento doc = ((Documento)Session["Documento"]);
+                    if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == proformas.Id)
+                    {
+                        Session["Documento"] = null;
+                    }
+                }
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = proformas.IdCliente });
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Id == proformas.IdCliente), "Id", "Nombre");
