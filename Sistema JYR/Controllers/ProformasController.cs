@@ -1827,6 +1827,7 @@ namespace Sistema_JYR.Controllers
         }
 
         [Authorize(Roles = "Cliente")]
+        [HttpPost]
         public ActionResult ConvertiraPedidoCliente(int? id)
         {
             if (id == null)
