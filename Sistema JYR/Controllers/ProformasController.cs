@@ -109,7 +109,7 @@ namespace Sistema_JYR.Controllers
             }
             var proforma = db.Proformas.Find(id);
             ViewBag.Id = proforma.Id;
-            proforma.IdEstado = 2;
+            proforma.IdEstado = 6;
             proforma.Comentario = comentario;
             db.Entry(proforma).State = EntityState.Modified;
             db.SaveChanges();
@@ -772,7 +772,7 @@ namespace Sistema_JYR.Controllers
         [Authorize(Roles = "Cliente")]
         public ActionResult ListaProformas(string idUser)
         {
-            var proformas = db.Proformas.Where(x => x.IdUsuario == idUser && x.IdEstado == 2).OrderByDescending(x => x.Id);
+            var proformas = db.Proformas.Where(x => x.IdUsuario == idUser && x.IdEstado == 2 || x.IdEstado== 6).OrderByDescending(x => x.Id);
             return View(proformas);
         }
 
