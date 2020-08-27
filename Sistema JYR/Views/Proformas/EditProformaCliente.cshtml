@@ -25,7 +25,7 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-horizontal" style="margin-bottom: 100px">
+        <div class="form-horizontal">
 
             <div class="row">
                 <div class="col-lg-6">
@@ -188,101 +188,104 @@
                                                 <td style="text-align:center">
                                                     @item.Productos.Impuesto%
                                                 </td>
-                                                    @if (user.Rol == 3)
-                                                    {
-                                                        <td style="text-align:center">
-                                                            @item.Descuento %
-                                                        </td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td style="text-align:center">
-                                                            <input type="number" min="0" value="@item.Descuento" class="form-control" onchange="x(this.value,@item.IdProducto, @item.IdProforma)" id="descuento" style="text-align:center"/>
-                                                        </td>
-                                                    }
+                                                @if (user.Rol == 3)
+                                                {
                                                     <td style="text-align:center">
-                                                        @{
-
-
-                                                            double precioBase = item.PrecioUnitario;
-                                                            double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
-                                                            double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
-                                                            double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
-                                                            double descuento = precioBase - (precioConDescuento - iva);
-                                                            double subTotal = precioBase + iva - descuento;
-                                                            double sub = Math.Round(subTotal * item.Cantidad);
-
-                                                        }
-                                                        @sub.ToString("0,#.00")
+                                                        @item.Descuento %
                                                     </td>
+                                                }
+                                                else
+                                                {
                                                     <td style="text-align:center">
-                                                        <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#carritoAjax" href="@Url.Action("EliminarProdProforma","Proformas",new { idD = item.Id, idProforma = item.IdProforma })" class="btn btn-danger btn-block">
-                                                            <i class="fa fa-times"></i>
-                                                        </a>
+                                                        <input type="number" min="0" value="@item.Descuento" class="form-control" onchange="x(this.value,@item.IdProducto, @item.IdProforma)" id="descuento" style="text-align:center" />
                                                     </td>
-                                                </tr>
+                                                }
+                                                <td style="text-align:center">
+                                                    @{
 
-                                            }
-                                            <tr style="text-align:center">
-                                                <td colspan="5"></td>
-                                                <th colspan="2">
-                                                    <label>Descuento Total</label>
-                                                </th>
-                                                <th colspan="2">
-                                                    @if (Model.TotalDescuento == 0)
-                                                    {
-                                                        <label>0,00</label>
-                                                    }
-                                                    else
-                                                    {
-                                                        <label>@Math.Round(Model.TotalDescuento).ToString("0,#.00")</label>
-                                                    }
 
-                                                </th>
+                                                        double precioBase = item.PrecioUnitario;
+                                                        double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                                                        double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                                                        double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                                                        double descuento = precioBase - (precioConDescuento - iva);
+                                                        double subTotal = precioBase + iva - descuento;
+                                                        double sub = Math.Round(subTotal * item.Cantidad);
+
+                                                    }
+                                                    @sub.ToString("0,#.00")
+                                                </td>
+                                                <td style="text-align:center">
+                                                    <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#carritoAjax" href="@Url.Action("EliminarProdProforma","Proformas",new { idD = item.Id, idProforma = item.IdProforma })" class="btn btn-danger btn-block">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
-                                            <tr style="text-align:center">
-                                                <td colspan="5"></td>
-                                                <th colspan="2">
-                                                    <label>Total de Impuestos</label>
-                                                </th>
-                                                <th colspan="2">
-                                                    @if (Model.TotalImpuesto == 0)
-                                                    {
-                                                        <label>0,00</label>
-                                                    }
-                                                    else
-                                                    {
-                                                        <label>@Math.Round(Model.TotalImpuesto).ToString("0,#.00")</label>
-                                                    }
-                                                </th>
-                                            </tr>
-                                            <tr style="text-align:center">
-                                                <td colspan="5"></td>
-                                                <th colspan="2">
-                                                    <label>Total a Pagar</label>
-                                                </th>
-                                                <th colspan="2">
-                                                    @if (Model.TotalPagar == 0)
-                                                    {
-                                                        <label>0,00</label>
-                                                    }
-                                                    else
-                                                    {
-                                                        <label>@Math.Round(Model.TotalPagar).ToString("0,#.00")</label>
-                                                    }
-                                                </th>
-                                            </tr>
+
                                         }
-                                        else
-                                        {
-                                            <tr style="text-align: center">
-                                                <td colspan="7">Ningún producto encontrado</td>
-                                            </tr>
-                                        }
+                                        <tr style="text-align:center">
+                                            <td colspan="5"></td>
+                                            <th colspan="2">
+                                                <label>Descuento Total</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalDescuento == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalDescuento).ToString("0,#.00")</label>
+                                                }
+
+                                            </th>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td colspan="5"></td>
+                                            <th colspan="2">
+                                                <label>Total de Impuestos</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalImpuesto == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalImpuesto).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td colspan="5"></td>
+                                            <th colspan="2">
+                                                <label>Total a Pagar</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalPagar == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalPagar).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr style="text-align: center">
+                                            <td colspan="7">Ningún producto encontrado</td>
+                                        </tr>
+                                    }
                                 </table>
                             </div>
                         </div>
                         <br />
+                        <script>
+                            var cant = @Model.ProformaDetalle.Count();
+                        </script>
                         @if (Model.ProformaDetalle.Count == 0)
                         {
                             <div>
@@ -294,13 +297,8 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <button class="btn btn-danger btn-block" disabled style="margin:5px"><i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>Exportar a PDF</button>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <a class="btn btn-success btn-block disabled" href="@Url.Action("ConvertiraPedidoCliente", new { id = Model.Id })" disabled="disabled" style="margin:5px">
-                                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -310,34 +308,24 @@
                         }
                         else
                         {
-                            <div class="">
-                                <div class="card bg-light mb-12" style="">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <a class="btn btn-info btn-block" href="@Url.Action("EnviarRevaloracion", new { id = Model.Id })" style="margin:5px">
-                                                    <i class="fa fa-line-chart" style="margin-right: 5px"></i>  Solicitar Revaloración de Precios
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })" target="_blank" style="margin:5px">
-                                                    <i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>  Exportar a PDF
-                                                </a>
-                                            </div>
-                                            <div class="col-md-6">
-                                                @*<a class="btn btn-success btn-block" href="@Url.Action("ConvertiraPedidoCliente",new { id = Model.Id } )" style="margin:5px">
-                                                        <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                                    </a>*@
-                                                <button class="btn btn-success btn-block" id="convertir" style="margin:5px">
-                                                    <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
-                                                </button>
-                                            </div>
+                            <div class="card bg-light mb-12" style="">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a class="btn btn-info btn-block" href="@Url.Action("EnviarRevaloracion", new { id = Model.Id })" style="margin:5px">
+                                                <i class="fa fa-line-chart" style="margin-right: 5px"></i>  Solicitar Revaloración de Precios
+                                            </a>
                                         </div>
                                     </div>
-
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a class="btn btn-danger btn-block" href="@Url.Action("PDF", new { id = Model.Id })" target="_blank" style="margin:5px">
+                                                <i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>  Exportar a PDF
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
+
                             </div>
                         }
                     </div>
@@ -345,7 +333,63 @@
             </div>
         </div>
     }
+    <br />
+    <div class="container">
+        <div class="card bg-light mb-12" style="margin-bottom: 100px">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-success btn-block" id="convertir" style="margin:5px" onclick="convertir(event)">
+                            <i class="fa fa-send-o" style="margin-right: 5px"></i>  Convertir a Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<link href="~/Content/sweetalert/sweet-alert.css" rel="stylesheet" />
+<script type="text/javascript">
+    function convertir(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Una vez convertido en pedido no se podrá realizar más modificaciones",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Aceptar'
+        }).then((result) => {
+            if (result.value) {
+                if (cant > 0) {
+                Swal.fire({
+                    title: 'La proforma ha sido convertidad a pedido',
+                    icon: 'success',
+                    toast: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+                var url = '@Url.Action("ConvertiraPedidoCliente","Proformas",new { id = Model.Id })';
+                $.post(url);
+                setTimeout(redireccionar,2000)
+                } else {
+                    Swal.fire({
+                        title: 'Debes agregar productos a la proforma antes de convetirla en pedido',
+                        icon: 'info',
+                        toast: false,
+                    });
+                }
+            }
+        })
+    }
+
+    function redireccionar() {
+        window.location.href = '@Url.Action("ListaProformas","Proformas", new { idUser = id })';
+    }
+</script>
 
 <script>
 function CambiarCantidadPedida(id) {
@@ -406,6 +450,19 @@ $("#carritoAjax").html(data);
             </script>
             Session["Proforma"] = null;
             break;
+        case "Error":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Antes de convertir a pedido agrega productos a la proforma',
+                        icon: 'info',
+                        toast: false,
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Proforma"] = null;
+            break;
         default:
             break;
     }
@@ -421,40 +478,4 @@ $("#carritoAjax").html(data);
             }
         });
     });
-</script>
-
-
-<script type="text/javascript">
-        $("#convertir").click(function (event) {
-
-            
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Una vez convertido en pedido no se podrá realizar más modificaciones",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Aceptar'
-            }).then((result) => {
-
-                                var url = '@Url.Action("ConvertiraPedidoCliente","Proformas",new { id = Model.Id })';
-                var tipo = 1;
-                $.post(url, { tipo: tipo })
-                //event.preventDefault();
-                    @*$.ajax({
-                        url: '@Url.Action("ConvertiraPedidoCliente","Proformas", new { id = Model.Id})'
-                    }).done(function (data) {
-                        @{
-
-                        }
-
-                        window.location.href = '@Url.Action("ListaProformas","Proformas", new { idUser = id })';
-                        Session["Proforma"] = "¡Proforma convertida en Pedido exitosamente!";
-
-                    });
-
-            });
-        });
 </script>

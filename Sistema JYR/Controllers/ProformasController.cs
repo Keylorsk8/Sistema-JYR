@@ -1,13 +1,4 @@
-﻿using System;
-using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using iText.IO.Font.Constants;
+﻿using iText.IO.Font.Constants;
 using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Events;
@@ -18,17 +9,22 @@ using iText.Layout;
 using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.AspNet.Identity;
 using Sistema_JYR.Models;
 using Sistema_JYR.Models.Session;
-using Image = iText.Layout.Element.Image;
-using Rectangle = iText.Kernel.Geom.Rectangle;
-using System.Web;
-using System.Web.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
-using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
-using iText.Pdfa;
+using System.Web;
+using System.Web.Mvc;
+using Image = iText.Layout.Element.Image;
+using Rectangle = iText.Kernel.Geom.Rectangle;
 
 namespace Sistema_JYR.Controllers
 {
@@ -56,14 +52,14 @@ namespace Sistema_JYR.Controllers
             Proformas proforma = null;
             try
             {
-                 proforma = db.Proformas.Find(id);
+                proforma = db.Proformas.Find(id);
             }
             catch (Exception)
             {
 
                 proforma = null;
             }
-            
+
             if (proforma == null)
             {
                 Session["Revaloracion"] = "No existe la proforma";
@@ -93,7 +89,7 @@ namespace Sistema_JYR.Controllers
             proformas.ProformaDetalle = detalles;
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
             return View(proformas);
-           
+
         }
 
         [HttpPost]
@@ -306,7 +302,7 @@ namespace Sistema_JYR.Controllers
                 doc.Add(_enc);
 
 
-                Table tels = new Table(2).UseAllAvailableWidth().SetBorderRight(new SolidBorder(ColorConstants.BLACK,1)).SetBorderLeft(new SolidBorder(ColorConstants.BLACK,1));
+                Table tels = new Table(2).UseAllAvailableWidth().SetBorderRight(new SolidBorder(ColorConstants.BLACK, 1)).SetBorderLeft(new SolidBorder(ColorConstants.BLACK, 1));
                 Cell ctels1 = new Cell(1, 2).Add(new Paragraph("Teléfonos").SetFontSize(9));
                 tels.AddCell(ctels1);
                 if (tel.Count() == 0)
@@ -322,7 +318,7 @@ namespace Sistema_JYR.Controllers
 
                         Cell ctels2 = new Cell(1, 1).Add(new Paragraph("Propietario: " + t.Propietario).SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderRight(Border.NO_BORDER);
                         Cell ctels3 = new Cell(1, 1).Add(new Paragraph("Tel: " + t.Telefono).SetFontSize(9)).SetTextAlignment(TextAlignment.LEFT).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER).SetBorderLeft(Border.NO_BORDER);
-                        
+
                         tels.AddCell(ctels2);
                         tels.AddCell(ctels3);
 
@@ -375,14 +371,14 @@ namespace Sistema_JYR.Controllers
             {
                 Table foot = new Table(5).UseAllAvailableWidth();
 
-                Cell f1 = new Cell(1, 3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetBorderBottom(Border.NO_BORDER).SetTextAlignment(TextAlignment.LEFT); 
-                Cell f2 = new Cell(1,1).Add(new Paragraph("Total Descuento").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
-                Cell f3 = new Cell(1, 1).Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
-                Cell f4 = new Cell(1,3).Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER); 
-                Cell f5 = new Cell(1, 1).Add(new Paragraph("Total Impuesto").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
-                Cell f6 = new Cell(1, 1).Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
-                Cell f7 = new Cell(1,3).Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).SetBorderTop(Border.NO_BORDER); 
-                Cell f8 = new Cell(1, 1).Add(new Paragraph("Total Pagar").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER); 
+                Cell f1 = new Cell(1, 3).Add(new Paragraph("Términos y Condiciones").SetFontSize(9)).SetBorderBottom(Border.NO_BORDER).SetTextAlignment(TextAlignment.LEFT);
+                Cell f2 = new Cell(1, 1).Add(new Paragraph("Total Descuento").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f3 = new Cell(1, 1).Add(new Paragraph(item.TotalDescuento.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f4 = new Cell(1, 3).Add(new Paragraph("El precio de los productos en una proforma estará vigente por los próximos 10 días").SetFontSize(9)).SetBorderTop(Border.NO_BORDER).SetBorderBottom(Border.NO_BORDER);
+                Cell f5 = new Cell(1, 1).Add(new Paragraph("Total Impuesto").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f6 = new Cell(1, 1).Add(new Paragraph(item.TotalImpuesto.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
+                Cell f7 = new Cell(1, 3).Add(new Paragraph("después de su creación (" + item.Fecha.ToShortDateString() + ") ,posterior a este tiempo los mismos podrían variar.").SetFontSize(9)).SetBorderTop(Border.NO_BORDER);
+                Cell f8 = new Cell(1, 1).Add(new Paragraph("Total Pagar").SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
                 Cell f9 = new Cell(1, 1).Add(new Paragraph(item.TotalPagar.ToString("₡0,#.00")).SetFontSize(9)).SetTextAlignment(TextAlignment.CENTER);
                 foot.AddCell(f1);
                 foot.AddCell(f2);
@@ -611,7 +607,7 @@ namespace Sistema_JYR.Controllers
             msg.Subject = "Tu proforma #" + idProforma + " ha sido revalorada";
             msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
             msg.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
-            Attachment pdfA = new Attachment(pdf,"Proforma#"+idProforma+".pdf");
+            Attachment pdfA = new Attachment(pdf, "Proforma#" + idProforma + ".pdf");
             msg.Attachments.Add(pdfA);
 
             using (SmtpClient client = new SmtpClient())
@@ -763,7 +759,7 @@ namespace Sistema_JYR.Controllers
             }
             ViewBag.IdUsuario = new SelectList(db.AspNetUsers.Where(x => x.Rol == 2 || x.Rol == 1 && x.Estado == true), "Id", "Nombre", proformas.IdUsuario);
             ViewBag.IdEstado = new SelectList(db.EstadoProforma, "Id", "Descripcion", proformas.IdEstado);
-         
+
             return View(proformas);
         }
         #endregion
@@ -848,7 +844,7 @@ namespace Sistema_JYR.Controllers
             var usuario = db.AspNetUsers.Where(x => x.Id == idUser).First();
             if (usuario.Rol != 3)
             {
-              
+
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
                 return RedirectToAction("ListaProformas", "Proformas", new { idUser = idUser });
             }
@@ -1320,7 +1316,7 @@ namespace Sistema_JYR.Controllers
             {
                 cantidadCambio = Convert.ToInt32(objeto.terminoBusqueda);
 
-                if(cantidadCambio < 0)
+                if (cantidadCambio < 0)
                 {
                     cantidadCambio = 1;
                 }
@@ -1539,7 +1535,7 @@ namespace Sistema_JYR.Controllers
                 {
                     precioP = Convert.ToInt32(det.PrecioUnitario);
                 }
-                if(precioP > 99999999)
+                if (precioP > 99999999)
                 {
                     precioP = Convert.ToInt32(det.PrecioUnitario);
                 }
@@ -1603,12 +1599,12 @@ namespace Sistema_JYR.Controllers
             int nuevoId = Convert.ToInt32(objeto.idProducto);
             int cant = Convert.ToInt32(objeto.cantidad);
             Proformas ped = db.Proformas.Find(idProforma);
-        
+
             double totalPagar = 0;
             double desc = 0;
             double imp = 0;
 
-     
+
 
             if (cant == 0)
             {
@@ -1668,9 +1664,9 @@ namespace Sistema_JYR.Controllers
                 double descuento = precioBase - (precioConDescuento - iva);
                 double subTotal = precioBase + iva - descuento;
 
-                desc += descuento*item.Cantidad;
-                imp += iva*item.Cantidad;
-                totalPagar += subTotal*item.Cantidad;
+                desc += descuento * item.Cantidad;
+                imp += iva * item.Cantidad;
+                totalPagar += subTotal * item.Cantidad;
             }
             ped.TotalDescuento = desc;
             ped.TotalImpuesto = imp;
@@ -1839,6 +1835,7 @@ namespace Sistema_JYR.Controllers
         [HttpPost]
         public ActionResult ConvertiraPedidoCliente(int? id)
         {
+            var user = User.Identity.GetUserId();
             if (id == null)
             {
                 Session["Proforma"] = "Proforma inválida. Especifique una proforma";
@@ -1852,6 +1849,11 @@ namespace Sistema_JYR.Controllers
             }
             List<ProformaDetalle> detalles = db.ProformaDetalle.Where(x => x.IdProforma == id).ToList();
             proformas.ProformaDetalle = detalles;
+            if (proformas.ProformaDetalle.Count == 0)
+            {
+                Session["Proforma"] = "Error";
+                return RedirectToAction("EditProformaCliente", new { id = id, idUser = user });
+            }
             Pedidos pedido = new Pedidos
             {
                 IdUsuario = proformas.IdUsuario,
@@ -1880,7 +1882,8 @@ namespace Sistema_JYR.Controllers
                 db.PedidoDetalle.Add(pedidoDetalle);
                 db.SaveChanges();
             }
-            
+
+            Session["Proforma"] = "¡Proforma convertida en Pedido exitosamente!";
             Session["NumPedido"] = pedido.Id;
 
             proformas.IdEstado = 4;
@@ -1895,7 +1898,10 @@ namespace Sistema_JYR.Controllers
                     Session["Documento"] = null;
                 }
             }
-            return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
+            //var user = User.Identity.GetUserId();
+            var pro = db.Proformas.Where(x => x.IdUsuario == user && x.IdEstado == 2).OrderByDescending(x => x.Id);
+            return View("ListaProformas",pro);
+            //return RedirectToAction("ListaProformas", "Proformas", new { idUser = User.Identity.GetUserId() });
         }
 
         public class Ajax
