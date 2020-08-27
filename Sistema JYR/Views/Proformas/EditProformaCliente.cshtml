@@ -20,7 +20,17 @@
 </div>
 
 <div class="container">
-    <h4>Editar Proforma No.  @ViewBag.Id</h4>
+    @if (Model.IdEstado == 6)
+    {
+        <h4>   Editar Proforma No.  @ViewBag.Id - Revalorada </h4>
+    }
+    else
+    {
+        <h4>
+            Editar Proforma No.  @ViewBag.Id
+        </h4>
+    }
+
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
@@ -179,8 +189,18 @@
                                                 </td>
                                                 <td style="text-align:center; width:10% auto">
                                                     @*Otra posible y mejor forma de hacerlo*@
-                                                    <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
-                                                    <input type="hidden" value="@item.IdProforma" id="idProforma" />
+
+                                                    @if (Model.IdEstado == 6)
+                                                    {
+                                                        @item.Cantidad
+                                                    }
+
+                                                    else
+                                                    {
+                                                        <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
+                                                        <input type="hidden" value="@item.IdProforma" id="idProforma" />
+                                                    }
+
                                                 </td>
                                                 <td style="text-align:center">
                                                     @item.PrecioUnitario.ToString("0,#.00")

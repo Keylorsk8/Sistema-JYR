@@ -37,7 +37,10 @@
                         <th></th>
                     </tr>
 
-                    @foreach (var item in Model.ProformaDetalle)
+                @if (Model.ProformaDetalle.Count() != 0)
+                {
+
+                    foreach (var item in Model.ProformaDetalle)
                     {
                         <tr>
                             <td style="text-align:center">
@@ -46,13 +49,21 @@
                             <td style="text-align:center">
                                 @item.Productos.Nombre
                             </td>
-                            <td style="text-align:center;width:10% auto">
+                            <td style="text-align:center; width:10% auto">
                                 @*Otra posible y mejor forma de hacerlo*@
-                                <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
-                                <input type="hidden" value="@item.IdProforma" id="idProforma" />
+
+                                @if (Model.IdEstado == 6)
+                                {
+                                    <input type="number" min="0" value="@item.Cantidad" class="form-control" style="text-align:center" readonly="readonly" />
+                                }
+
+                                else
+                                {
+                                    <input type="number" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" style="text-align:center" />
+                                    <input type="hidden" value="@item.IdProforma" id="idProforma" />
+                                }
+
                             </td>
-
-
                             <td style="text-align:center">
                                 @item.PrecioUnitario.ToString("0,#.00")
                             </td>
@@ -100,7 +111,7 @@
                             <label>Descuento Total</label>
                         </th>
                         <th colspan="2">
-                            @if (Model.TotalDescuento == 0 || ViewBag.TotalDescuento == null)
+                            @if (Model.TotalDescuento == 0)
                             {
                                 <label>0,00</label>
                             }
