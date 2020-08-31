@@ -322,6 +322,7 @@ namespace Sistema_JYR.Controllers
                 pro.Impuesto = productos.Impuesto;
                 pro.Nombre = productos.Nombre;
                 pro.Precio = productos.Precio;
+                pro.CantidadEnInventario = productos.CantidadEnInventario;
                 pro.UnidadDeMedida = productos.UnidadDeMedida;
                 pro.Estado = productos.Estado;
                 db.Entry(pro).State = EntityState.Modified;

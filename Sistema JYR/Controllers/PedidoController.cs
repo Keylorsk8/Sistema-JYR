@@ -36,7 +36,7 @@ namespace Sistema_JYR.Controllers
         public ActionResult Index()
         {
 
-            var pedidos = db.Pedidos.Where(x => x.IdEstado == 7).ToList();
+            var pedidos = db.Pedidos.Where(x => x.AspNetUsers.Rol == 2 && x.IdEstado == 7 || x.AspNetUsers.Rol == 1 && x.IdEstado == 7).ToList();
             return View(pedidos.ToList());
         }
 
@@ -756,7 +756,7 @@ namespace Sistema_JYR.Controllers
 
         public ActionResult SeguimientoPedidoEmpresa()
         {
-            var list = db.Pedidos.Where(x => x.IdEstado == 7).ToList();
+            var list = db.Pedidos.Where(x => x.AspNetUsers.Rol == 3 && x.IdEstado == 7).ToList();
             return View(list);
         }
 
@@ -1566,6 +1566,7 @@ namespace Sistema_JYR.Controllers
                                                 by new { p.Id, p.Nombre, c.Descripcion }
                                                 into g
                                                 orderby g.Sum(x => x.PrecioUnitario * x.Cantidad) descending
+                                                
 
                                                 select new
                                                 {
@@ -1576,6 +1577,8 @@ namespace Sistema_JYR.Controllers
                                                     Total = g.Sum(x => x.PrecioUnitario * x.Cantidad)
 
                                                 };
+
+                                    query = query.Take(10);
 
                                     ViewBag.ReportViewer = Reporte.reporte(query.ToList(), "", "ReporteTopProducto.rdlc");
                                     return PartialView("_reporteTopProducto", query.ToList());
@@ -1601,7 +1604,7 @@ namespace Sistema_JYR.Controllers
 
                                              };
 
-
+                                querys = querys.Take(10);
 
                                 ViewBag.ReportViewer = Reporte.reporte(querys.ToList(), "", "ReporteTopProducto.rdlc");
 

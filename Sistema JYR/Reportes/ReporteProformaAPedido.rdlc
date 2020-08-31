@@ -1085,6 +1085,7 @@
                       <Style>
                         <FontSize>8pt</FontSize>
                         <FontWeight>Normal</FontWeight>
+                        <Language>es-419</Language>
                       </Style>
                     </TextRun>
                   </TextRuns>
@@ -1700,6 +1701,7 @@ PUwEwBBCCCGEEEIIIYQQepgIgCGEEEIIIYQQQggh9DARAEMIIYQQQgghhBBC6GEiAIYQQgghhBBCCCGE
 IYQQQggh9DARAEMIIYQQQgghhBBC6GEiAIYQQgghhBBCCCGE0MNEAAwhhBBCCCGEEEIIoYeJABhCCCGEEEIIIYQQQs/SNP9/BPTCXTeR8wsAAAAASUVORK5CYII=</ImageData>
     </EmbeddedImage>
   </EmbeddedImages>
+  <Language>es-419</Language>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>ca150ad0-b0a8-4173-b18e-f940bafe3850</rd:ReportID>
 </Report>

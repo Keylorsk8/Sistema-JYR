@@ -1823,10 +1823,14 @@ namespace Sistema_JYR.Controllers
             db.Entry(proformas).State = EntityState.Modified;
             db.SaveChanges();
             Documento doc = ((Documento)Session["Documento"]);
-            if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+            if (doc != null)
             {
-                Session["Documento"] = null;
+                if (doc.TipoDocumento == TipoDocumento.Proforma && doc.NumerosDocumento == id)
+                {
+                    Session["Documento"] = null;
+                }
             }
+
 
             return RedirectToAction("Index");
         }

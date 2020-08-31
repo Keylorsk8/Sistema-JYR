@@ -433,6 +433,8 @@
     <Content Include="Reportes\Reporte.xsc">
       <DependentUpon>Reporte.xsd</DependentUpon>
     </Content>
+    <Content Include="Content\Manual de Usuario\Manual de Usuario - Empleado.pdf" />
+    <Content Include="Content\Manual de Usuario\Manual de Usuario.pdf" />
     <None Include="Reportes\Reporte.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
@@ -661,7 +663,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="App_LocalResources\" />
-    <Folder Include="Views\Recomendaciones\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -13,7 +13,7 @@
                     <figure style="text-align: center" class="wow animate__animated animate__fadeInRight">
                         <img src="@Url.Action("getImage", "Productos", new { id = item.Id })">
                         <figcaption>@item.Nombre</figcaption>
-                        <span class="price">₡@item.Precio</span>
+                        <span class="price">₡@item.Precio.ToString("0,#.00")</span>
                         <br />
                         <br />
                         <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#Mensajes" href="@Url.Action("AgregaraDocumento",new { id = item.Id })" class="button"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar</span></a>

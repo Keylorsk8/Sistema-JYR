@@ -44,12 +44,7 @@
 
     </div>
 
-    @*<footer style="text-align: center">
-            <p>&copy; @DateTime.Now.Year - Ferretería y Materiales JYR S.A</p>
-            <div>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-            <div>Icons made by <a href="https://www.flaticon.com/free-icon/sweeping_3035186?term=clean&page=4&position=42" title="Linector">Linector</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-            <div>Icons made by <a href="https://www.flaticon.com/authors/ultimatearm" title="ultimatearm">ultimatearm</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-        </footer>*@
+
 
     <footer class="mainfooter" role="contentinfo" style="font-weight:100">
         <div class="footer-middle">
@@ -66,44 +61,71 @@
                         <div class="footer-pad">
                             <h4>¿Necesitas Ayuda?</h4>
                             <ul class="list-unstyled">
-                                <li><a href="#">Tutorial de Uso</a></li>
+
+                                @using Microsoft.AspNet.Identity
+                                @using Sistema_JYR.Models
+                                @{
+                                    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+                                    SistemaJYREntities db = new SistemaJYREntities();
+                                    string id = HttpContext.Current.User.Identity.GetUserId();
+                                    if (id != null)
+                                    {
+                                        usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+                                    }
+                                }
+
+                                @if (usuario != null)
+                                {
+                                    if (usuario.Rol == 1 || usuario.Rol == 2)
+                                    {
+                                        <li><a href="~/Content/Manual de Usuario/Manual de Usuario - Empleado.pdf" target="_blank">Tutorial de Uso</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="~/Content/Manual de Usuario/Manual de Usuario.pdf" target="_blank">Tutorial de Uso</a></li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li><a href="~/Content/Manual de Usuario/Manual de Usuario.pdf" target="_blank">Tutorial de Uso</a></li>
+                                }
                                 <li><a href="@Url.Action("Politic","Home")">Política de privacidad</a></li>
                                 <li><a href="@Url.Action("About","Home")">Acerca de</a></li>
                                 <li><a href="@Url.Action("Contact","Home")">Contacto</a></li>
                             </ul>
                         </div>
                     </div>
-                  
+
                     <div class="col-md-3 col-sm-6" style="text-align: center">
-                  
+
                         <!--Column1-->
                         <div class="footer-pad">
                             <h4>Productos</h4>
                             <ul class="list-unstyled">
                                 <li><a href="@Url.Action("ListaProductos","Productos")">Lista de Productos</a></li>
-                                
+
                                 <li>
                                     <a href="#"></a>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                        <div class="col-md-3" style="text-align: center">
-                            <h4>¿Tienes Consultas?</h4>
-                            <p>
-                                No dudes en ponerte en contacto
-                                <br />
-                                <a href="mailto:ferreymatjyr@hotmail.com"><i class="fa fa-envelope-o" style="margin-right: 5px"></i>ferreymatjyr@hotmail.com</a>
-                                <br />
-                                <a href="tel:+50624301131"><i class="fa fa-phone" style="margin-right: 5px"></i>+506 2430 1131</a>
-                            </p>
+                    <div class="col-md-3" style="text-align: center">
+                        <h4>¿Tienes Consultas?</h4>
+                        <p>
+                            No dudes en ponerte en contacto
+                            <br />
+                            <a href="mailto:ferreymatjyr@hotmail.com"><i class="fa fa-envelope-o" style="margin-right: 5px"></i>ferreymatjyr@hotmail.com</a>
+                            <br />
+                            <a href="tel:+50624301131"><i class="fa fa-phone" style="margin-right: 5px"></i>+506 2430 1131</a>
+                        </p>
 
-                            <h4>¡Síguenos en Facebook!</h4>
-                            <ul class="social-network social-circle">
-                                <li><a href="https://www.facebook.com/materialesjyr" target="_blank" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
-                            </ul>
-                        </div>
+                        <h4>¡Síguenos en Facebook!</h4>
+                        <ul class="social-network social-circle">
+                            <li><a href="https://www.facebook.com/materialesjyr" target="_blank" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
+                        </ul>
                     </div>
+                </div>
                 <div class="row" style="margin-top: 3%">
                     <div class="col-md-12 copy">
                         <p class="text-center">&copy; Copyright 2020 - Ferretería y Materiales JYR S.A.  Todos los Derechos Reservados.</p>
@@ -113,6 +135,11 @@
         </div>
     </footer>
     <a href="#" class="scrollup">Scroll</a>
+    @*<footer style="text-align: center">
+            <div>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <div>Icons made by <a href="https://www.flaticon.com/free-icon/sweeping_3035186?term=clean&page=4&position=42" title="Linector">Linector</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <div>Icons made by <a href="https://www.flaticon.com/authors/ultimatearm" title="ultimatearm">ultimatearm</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        </footer>*@
 
     <script src="~/Scripts/index.js"></script>
     <script src="~/Scripts/umd/popper.min.js"></script>

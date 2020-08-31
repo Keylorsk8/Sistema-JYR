@@ -38,7 +38,7 @@
             }
             <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
             <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-            var pedidos = db.Pedidos.Where(x => x.IdEstado == 7).ToList().Count();
+            var pedidos = db.Pedidos.Where(x => x.AspNetUsers.Rol == 3 && x.IdEstado == 7).ToList().Count();
             <li class="nav-item">@Html.ActionLink("Pedidos de Clientes", "SeguimientoPedidoEmpresa", "Pedido", new { }, new { @class = "nav-link", @style = "color: white !important;display: inline-block" })
                         @if (pedidos != 0)
                         {

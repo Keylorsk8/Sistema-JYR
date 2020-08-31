@@ -34,7 +34,7 @@ namespace Sistema_JYR.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Desarrolador")]
         // GET: Role
         public ActionResult Index()
         {
@@ -44,7 +44,7 @@ namespace Sistema_JYR.Controllers
             return View(list);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Desarrolador")]
         public ActionResult Create()
         {
             return View();
