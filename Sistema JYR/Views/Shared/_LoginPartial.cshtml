@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNet.Identity
 @using Sistema_JYR.Models
+@using Sistema_JYR.Models.Session
+
 @if (Request.IsAuthenticated)
 {
     Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
@@ -8,36 +10,110 @@
     usuario = db.AspNetUsers.Where(x => x.Id == id).First();
 
 
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "ml-auto" +
-        "" }))
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new
+    {
+        id = "logoutForm",
+        @class = "ml-auto" +
+        ""
+    }))
     {
         @Html.AntiForgeryToken()
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-            <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-            <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-            <li class="nav-item dropdown">
-                <i class="fa fa-user-circle" style="display: inline-block; color: white; margin-right: -5px"></i>
-                <a class="nav-link dropdown-toggle" style="display:inline-block; color: white !important" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @usuario.Nombre @usuario.Apellido1
-                </a>
+    <ul class="navbar-nav ml-auto" style="text-align: center">
+        @if (usuario.Rol == 1 || usuario.Rol == 2)
+        {
+            if (Session["Documento"] != null)
+            {
+                var num = ((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido ? "Pedido #" + ((Documento)Session["Documento"]).NumerosDocumento : "Proforma#" + ((Documento)Session["Documento"]).NumerosDocumento;
+                <li class="nav-item">
+                    @if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                    {
+                        @Html.ActionLink(num, "Edit", "Pedido", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink(num, "Edit", "Proformas", new { id = ((Documento)Session["Documento"]).NumerosDocumento }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
 
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    @Html.ActionLink("Preferencias", "Index", "Manage", new { }, new { @class = "dropdown-item" })
-                    <div class="dropdown-divider"></div>
-                    <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item">Cerrar sesión</a>
-                </div>
+                </li>
+            }
+            <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            var pedidos = db.Pedidos.Where(x => x.AspNetUsers.Rol == 3 && x.IdEstado == 7).ToList().Count();
+            <li class="nav-item">@Html.ActionLink("Pedidos de Clientes", "SeguimientoPedidoEmpresa", "Pedido", new { }, new { @class = "nav-link", @style = "color: white !important;display: inline-block" })
+                        @if (pedidos != 0)
+                        {
+                            <span class="badge badge-pill badge-danger" style="display:inline-block">@pedidos</span>
+                        }
             </li>
-        </ul>
+             
+            var revaloraciones = db.Proformas.Where(x => x.IdEstado == 5).ToList().Count();
+            
+            <li class="nav-item">@Html.ActionLink("Revaloraciones", "Revaloracion", "Proformas", new { }, new { @class = "nav-link", @style = "color: white !important;display: inline-block" })
+            @if (revaloraciones != 0)
+            {
+                <span class="badge badge-pill badge-danger" style="display:inline-block">@revaloraciones</span>
+            }
+        </li>
+
+            <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:5px">|</li>
+            <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">
+                <a href="@Url.Action("Mantenimientos","Home")" class="btn" style="color: white; font-weight:100">Mantenimientos</a>
+            </li>
+            if (usuario.Rol == 1)
+            {
+                <li class="nav-item btn-group" role="group" style="color: white; font-weight:100">
+                    <a href="@Url.Action("Reportes","Home")" class="btn" style="color: white; font-weight:100">Reportes</a>
+                </li>
+            }
+            <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:10px">|</li>
+            <li class="dropdown-divider" style="color: white"></li>
+        }
+        else
+        {
+            if (Session["Documento"] != null)
+            {
+                var num = ((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido ? "Pedido #" + ((Documento)Session["Documento"]).NumerosDocumento : "Proforma#" + ((Documento)Session["Documento"]).NumerosDocumento;
+                <li class="nav-item">
+                    @if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                    {
+                        @Html.ActionLink(num, "", "Pedido", new { id = ((Documento)Session["Documento"]).NumerosDocumento, idUsuario = usuario.Id }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink(num, "EditProformaCliente", "Proformas", new { id = ((Documento)Session["Documento"]).NumerosDocumento, idUser = usuario.Id }, new { @class = "nav-link", @style = "color: white !important" })
+                    }
+
+                </li>
+            }
+            <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:5px">|</li>
+            <li class="nav-item">@Html.ActionLink("Proformas", "ListaProformas", "Proformas", new { @idUser = usuario.Id }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="nav-item">@Html.ActionLink("Pedidos", "SeguimientoPedido", "Pedido", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
+            <li class="dividerNav" style="color: white; text-align: center; margin-top: 5px; margin-left:5px;margin-right:10px">|</li>
+            <li class="dropdown-divider" style="color: white"></li>
+        }
+
+        <li class="nav-item dropdown">
+            <i class="fa fa-user-circle" style="display: inline-block; color: white; margin-right: -5px"></i>
+            <a class="nav-link dropdown-toggle" style="display:inline-block; color: white !important" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @usuario.Nombre @usuario.Apellido1
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                @Html.ActionLink("Configuración", "Index", "Manage", new { }, new { @class = "dropdown-item" })
+                <div class="dropdown-divider"></div>
+                <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item">Cerrar sesión</a>
+            </div>
+        </li>
+    </ul>
     }
 }
 else
 {
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">@Html.ActionLink("Inicio", "Index", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-        <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-        <li class="nav-item">@Html.ActionLink("Contacto", "Contact", "Home", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
-        <li class="nav-item">
+        <li class="nav-item">@Html.ActionLink("Productos", "ListaProductos", "Productos", new { }, new { @class = "nav-link", @style = "color: white !important" })</li>
         <li class="nav-item">
             @Html.ActionLink("Registrarse", "Register", "Account", new { }, new { @class = "nav-link", @style = "color: white !important" })
         </li>
@@ -53,7 +129,8 @@ else
         padding-right: 2px;
         font-weight: 100;
     }
-    .ml-auto > .nav-item:hover {
-        background-color: #0D4657;
-    }
+
+        .ml-auto > .nav-item:hover {
+            background-color: #0D4657;
+        }
 </style>

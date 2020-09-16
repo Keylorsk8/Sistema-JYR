@@ -15,6 +15,7 @@ namespace Sistema_JYR.Models
         public string Apellido2 { get; set; }
         public int Cedula { get; set; }
         public int Rol { get; set; }
+        public bool Estado { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Tenga en cuenta que el valor de authenticationType debe coincidir con el definido en CookieAuthenticationOptions.AuthenticationType
@@ -33,7 +34,7 @@ namespace Sistema_JYR.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("DefaultConnection", throwIfV1Schema: true)
         {
         }
 

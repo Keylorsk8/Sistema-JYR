@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -6,6 +7,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using SendGrid.Helpers.Mail;
 using Sistema_JYR.Models;
 
 namespace Sistema_JYR.Controllers
@@ -13,6 +15,7 @@ namespace Sistema_JYR.Controllers
     [Authorize]
     public class ManageController : Controller
     {
+        SistemaJYREntities db = new SistemaJYREntities();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -32,9 +35,9 @@ namespace Sistema_JYR.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -112,22 +115,159 @@ namespace Sistema_JYR.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+                // Generar el token y enviarlo
+                Telefonos tel = new Telefonos();
+                tel.Propietario = model.Name;
+                tel.Telefono = model.Number;
+                tel.IdUsuario = User.Identity.GetUserId();
+
+                db.Telefonos.Add(tel);
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                return View(model);
+            }
+
+            var userId = User.Identity.GetUserId();
+            var model2 = new IndexViewModel
+            {
+                HasPassword = HasPassword(),
+                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
+                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
+                Logins = await UserManager.GetLoginsAsync(userId),
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+            };
+            return View("Index", model2);
+        }
+
+        public List<SelectListItem> ObtenerProvincias()
+        {
+            return new List<SelectListItem>(){
+                new SelectListItem()
+                {
+                    Text = "San Jose",
+                    Value = "1"
+                },
+                new SelectListItem()
+                {
+                    Text = "Alajuela",
+                    Value = "2"
+                },
+                new SelectListItem()
+                {
+                    Text = "Heredia",
+                    Value = "3"
+                },
+                new SelectListItem()
+                {
+                    Text = "Cartago",
+                    Value = "4"
+                },
+                new SelectListItem()
+                {
+                    Text = "Guanacaste",
+                    Value = "5"
+                },
+                new SelectListItem()
+                {
+                    Text = "Puntarenas",
+                    Value = "6"
+                },
+                new SelectListItem()
+                {
+                    Text = "Limón",
+                    Value = "7"
+                }
+            };
+        }
+
+        //
+        // GET: /Manage/AddPhoneNumber
+        public ActionResult AddDireccion()
+        {
+
+            ViewBag.Provincias = ObtenerProvincias();
+            return View();
+        }
+
+        //
+        // POST: /Manage/AddPhoneNumber
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddDireccion(AddDireccionViewModel model)
+        {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            // Generar el token y enviarlo
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
-            if (UserManager.SmsService != null)
+            Direcciones direc = new Direcciones();
+            if(model.Provincia == "1")
             {
-                var message = new IdentityMessage
-                {
-                    Destination = model.Number,
-                    Body = "Su código de seguridad es: " + code
-                };
-                await UserManager.SmsService.SendAsync(message);
+                model.Provincia = "San Jose";
+            }else if (model.Provincia == "2")
+            {
+                model.Provincia = "Alajuela";
             }
-            return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
+            else if (model.Provincia == "3")
+            {
+                model.Provincia = "Heredia";
+            }
+            else if (model.Provincia == "4")
+            {
+                model.Provincia = "cartago";
+            }
+            else if (model.Provincia == "5")
+            {
+                model.Provincia = "Guanacaste";
+            }
+            else if (model.Provincia == "6")
+            {
+                model.Provincia = "Puntarenas";
+            }
+            else if (model.Provincia == "7")
+            {
+                model.Provincia = "Limón";
+            }
+            direc.Provincia = model.Provincia;
+            direc.Direccion = model.Direccion;
+            direc.IdUsuario = User.Identity.GetUserId();
+
+            db.Direcciones.Add(direc);
+            db.SaveChanges();
+            var userId = User.Identity.GetUserId();
+            var model2 = new IndexViewModel
+            {
+                HasPassword = HasPassword(),
+                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
+                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
+                Logins = await UserManager.GetLoginsAsync(userId),
+                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+            };
+            return View("Index", model2);
+        }
+
+        public ActionResult EliminarTelefono(int id)
+        {
+            Telefonos telefonos = db.Telefonos.Find(id);
+            db.Telefonos.Remove(telefonos);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult EliminarDireccion(int id)
+        {
+            Direcciones direccion = db.Direcciones.Find(id);
+            db.Direcciones.Remove(direccion);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         //
@@ -238,6 +378,7 @@ namespace Sistema_JYR.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
+                Session["Cuenta"] = 1;
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
             AddErrors(result);
@@ -333,7 +474,7 @@ namespace Sistema_JYR.Controllers
             base.Dispose(disposing);
         }
 
-#region Aplicaciones auxiliares
+        #region Aplicaciones auxiliares
         // Se usan para protección XSRF al agregar inicios de sesión externos
         private const string XsrfKey = "XsrfId";
 
@@ -384,6 +525,6 @@ namespace Sistema_JYR.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

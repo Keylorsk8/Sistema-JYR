@@ -1,0 +1,44 @@
+﻿@using (Ajax.BeginForm("filtrarCliente", "Proformas", new AjaxOptions
+    {
+        HttpMethod = "GET",
+        UpdateTargetId = "divCliente",
+        InsertionMode = InsertionMode.Replace,
+        OnFailure = "fail()",
+        OnSuccess = "Complete()"
+}))
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                Filtro:
+            </div>
+            <div class="col-md-8">
+                @Html.TextBox("cedula", "", new { @class = "form-control", @placeholder = "Cédula", @required = "required" })
+            </div>
+            <div class="col-md-2">
+                <button type="submit" value="Buscar" class="btn btn-dark btn-block"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function fail() {
+            $('#exampleModal').modal('hide');
+            function failSwal() {
+                Swal.fire({
+                    title: 'El cliente buscado no existe.',
+                    icon: 'warning',
+                    text: 'El número de identificación digitado no corresponde a ningun cliente registrado',
+                    toast: false,
+                    timerProgressBar: true
+                });
+            };
+            failSwal();
+        }
+        function Complete() {
+            $('#exampleModal').modal('hide');
+        }
+    </script>
+}
+
+
+

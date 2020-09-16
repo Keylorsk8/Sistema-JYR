@@ -61,9 +61,24 @@ namespace Sistema_JYR.Models
     public class AddPhoneNumberViewModel
     {
         [Required]
+        [Display(Name = "Propietario")]
+        public string Name { get; set; }
+
+        [Required]
         [Phone]
         [Display(Name = "Número de teléfono")]
         public string Number { get; set; }
+    }
+
+    public class AddDireccionViewModel
+    {
+        [Required]
+        [Display(Name = "Provincia")]
+        public string Provincia { get; set; }
+
+        [Required]
+        [Display(Name = "Dirección")]
+        public string Direccion { get; set; }
     }
 
     public class VerifyPhoneNumberViewModel

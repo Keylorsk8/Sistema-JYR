@@ -1,0 +1,132 @@
+﻿@model Sistema_JYR.Models.Proformas
+@using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
+
+@{
+    ViewBag.Title = "Crear Profroma";
+    Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
+    string iduser = HttpContext.Current.User.Identity.GetUserId();
+    var usuario = db.AspNetUsers.Where(x => x.Id == iduser).First();
+
+    var lista = db.Direcciones.Where(x => x.IdUsuario.Equals(usuario.Id)).ToList();
+    Sistema_JYR.Models.Direcciones direc = new Sistema_JYR.Models.Direcciones();
+    direc.Direccion = "Retirar en la ferretería";
+    direc.Provincia = "Alajuela";
+    lista.Insert(0, direc);
+    SelectList list = new SelectList(lista, "Direccion", "Direccion");
+}
+
+<div class="container-fluid">
+    <ol class="breadcrumb container-fluid">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas",new { idUser = usuario.Id })</li>
+        <li class="breadcrumb-item active">Crear Proforma</li>
+    </ol>
+</div>
+
+<div class="container">
+    <h4>Crear Proforma</h4>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            <hr />
+
+            <div class="form-horizontal" style="margin-bottom: 100px">
+                <div class="row">
+                    <div class="col col-lg-6">
+                        <p>Digite la información de la proforma</p>
+                    </div>
+                    <div class="col col-lg-6">
+                        <a class="btn btn-outline-dark btn-block" href="@Url.Action("ListaProformas",new { @idUser = usuario.Id })">
+                            <i class="fa fa-arrow-left"></i> Volver
+                        </a>
+
+                    </div>
+
+                </div>
+                <div class="form-horizontal">
+                    <hr />
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    <div class="form-group has-feedback">
+                                        <i class="fa fa-calendar-o form-control-feedback"></i>
+                                        <input type="text" class="fa form-control" value="@ViewBag.Fecha" readonly="readonly">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="divCliente">
+                                @Html.Hidden("IdCliente", usuario.Id)
+                                <div class="form-group container">
+                                    @Html.Label("NombreCliente", htmlAttributes: new { @class = "control-label col-md-12" })
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="text" class="fa form-control" value="@usuario.Nombre @usuario.Apellido1 @usuario.Apellido2" id="NombreCliente" name="NombreCliente" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Dirección", htmlAttributes: new { @class = "control-label col-md-12" })
+                                    <div class="col-md-12">
+                                        <div class="form-group has-feedback">
+                                            @Html.DropDownList("DireccionEntrega", list, htmlAttributes: new { @class = "form-control", @id = "DireccionEntrega" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.NombreProforma, "Nombre de la Proforma", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    <div class="form-group has-feedback">
+                                        @Html.TextBoxFor(model => model.NombreProforma, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.NombreProforma, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" style="display:none">
+                                @Html.LabelFor(model => model.IdUsuario, "Vendedor", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="display: none">
+                                @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <button type="submit" value="Crear" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Crear </button>
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+

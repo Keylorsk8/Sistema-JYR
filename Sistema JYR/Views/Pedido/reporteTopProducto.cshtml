@@ -1,0 +1,118 @@
+﻿@{ ViewBag.Title = "Reporte Top Producto";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+
+<br />
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Reportes", "Reportes", "Home")</li>
+        <li class="breadcrumb-item active"> @Html.ActionLink("Inventario", "Reportes", "Home")</li>
+        <li class="breadcrumb-item active">Reporte Top 10 Productos</li>
+    </ol>
+</div>
+
+
+
+@using (Ajax.BeginForm("reporteTopProducto", "Pedido", new AjaxOptions
+
+{
+    UpdateTargetId = "divFecha", // <-- ID de elemento DOM para actualiza
+    InsertionMode = InsertionMode.Replace, // <-- Reemplazar el contenido del elemento DOM
+    HttpMethod = "GET", // <-- Método HTTP
+}))
+{
+    <div class="container">
+        <br />
+        <div class="row">
+
+            <div class="col-lg-12">
+                <h2><i class="fa fa-file" style="margin-right: 2px"></i>Reporte Top 10 Productos</h2>
+                <hr />
+            </div>
+
+        </div>
+        <div class="row" style="margin: 2%">
+            <div class="col-md-1">
+                Filtro:
+            </div>
+            <div class="col-md-3">
+                <label style="margin-left:50%">Desde</label>
+                @Html.TextBox("fechaAnterior", "", new { @class = "form-control", type = "date", @style = "margin-left:10%", @required = "required" })
+            </div>
+
+            <div class="col-md-3">
+                <label style="margin-left:50%">Hasta</label>
+                @Html.TextBox("fechaActual", "", new { @class = "form-control", type = "date", @style = "margin-left:10%", @required = "required" })
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.Label("Categoría", htmlAttributes: new { @class = "control-label col-md-12", @style = "margin-left:30%" })
+                    <div class="col-md-12">
+                        @Html.DropDownList("IdCategoria", null, htmlAttributes: new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+
+                <div class="col-md-1" style="margin-top: 35px;">
+
+                    <input type="submit" value="Generar Reporte" class="btn btn-success" style="margin-left: 40%" />
+                </div>
+            </div>
+        </div>
+
+
+    </div>}
+
+<div class="container">
+    <div id="divFecha" style="margin-top: 50px;">
+
+    </div>
+</div>
+
+
+
+
+@if (Session["Pedidos"] != null)
+{
+    switch (Session["Pedidos"])
+    {
+
+        case "Seleccione una fecha válida":
+            <script type="text/javascript">
+                function EdicionPed() {
+                    Swal.fire({
+                        title: 'Seleccione una fecha válida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionPed();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+        case "No hay elementos":
+            <script type="text/javascript">
+                function EdicionPed() {
+                    Swal.fire({
+                        title: 'No hay elementos',
+                        icon: 'alert',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionPed();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+
+        default:
+            break;
+    }
+}
+

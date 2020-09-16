@@ -1,0 +1,152 @@
+﻿
+@using Microsoft.AspNet.Identity
+@model IEnumerable<Sistema_JYR.Models.Pedidos>
+
+
+@{
+    ViewBag.Title = "Seguimiento de Pedidos";
+    Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
+    string iduser = HttpContext.Current.User.Identity.GetUserId();
+    var usuario = db.AspNetUsers.Where(x => x.Id == iduser).First();
+
+}
+
+
+<div class="tab-content" id="seguimiento">
+    <div class="tab-pane fade show active estado" role="tabpanel" aria-labelledby="home-tab">
+
+        <table class="table table-striped table-hover table-bordered table-responsive-lg" style="text-align: center">
+
+
+            <tr>
+                <th>
+                    Número
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </th>
+
+                <th>
+                    Nombre de Pedido
+                </th>
+
+                <th>
+                    Descuento
+                </th>
+                <th>
+                    Impuesto
+                </th>
+                <th>
+                    Total
+                </th>
+                <th>
+                    Acciones
+                </th>
+
+
+
+            </tr>
+
+            @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @item.Fecha.ToString("dd/M/yyyy")
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.NombrePedido)
+            </td>
+
+            <td>
+
+                @if (item.TotalDescuento == 0)
+                {
+                    <label>₡0,00</label>
+                }
+                else
+                {
+                    <label>₡@item.TotalDescuento.ToString("0,#.00")</label>
+                }
+            </td>
+            <td>
+                @if (item.TotalImpuesto == 0)
+                {
+                    <label>₡0,00</label>
+                }
+                else
+                {
+                    <label>₡@item.TotalImpuesto.ToString("0,#.00")</label>
+                }
+            </td>
+            <td>
+                @if (item.TotalPagar == 0)
+                {
+                    <label>₡0,00</label>
+                }
+                else
+                {
+                    <label> ₡@item.TotalPagar.ToString("0,#.00")</label>
+                }
+            </td>
+
+           
+
+            <td>
+                @if (item.IdEstado == 7)
+                {
+
+                    <a class="btn btn-danger" href="@Url.Action("Cancelar", new { id = item.Id })">
+                        <i class="fa fa-close"></i>  Cancelar
+                    </a>
+                }
+
+                <a class="btn btn-outline-secondary" href="@Url.Action("DetalleCliente",new { id = item.Id})">
+                    <i class="fa fa-fw fa-lg fa-info"></i>Detalles
+                </a>
+            </td>
+           
+
+        </tr>
+            }
+
+            @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="9">
+                        No hay elementos
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+
+@if (Session["Pedido"] != null)
+{
+    switch (Session["Pedido"])
+    {
+        case "¡Orden Cancelada Correctamente!":
+            <script type="text/javascript">
+                function CreacionCategoria() {
+                    Swal.fire({
+                        title: '¡Orden Cancelada Correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CreacionCategoria();
+            </script>
+            Session["Pedido"] = null;
+            break;
+
+        default:
+            break;
+    }
+}

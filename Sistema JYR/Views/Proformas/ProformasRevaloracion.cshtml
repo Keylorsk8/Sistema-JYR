@@ -1,0 +1,156 @@
+﻿@model IEnumerable<Sistema_JYR.Models.Proformas>
+@using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
+
+@{
+    ViewBag.Title = "Proformas Canceladas";
+    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+    SistemaJYREntities db = new SistemaJYREntities();
+    string id = HttpContext.Current.User.Identity.GetUserId();
+    usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+}
+
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas", new { idUser = id })</li>
+        <li class="breadcrumb-item active">Proformas en revaloración</li>
+    </ol>
+</div>
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h2><i class="fa fa-list-ul" style="margin-right: 2px"></i>Proformas en Revaloración</h2>
+        </div>
+        <div class="col-lg-4">
+
+        </div>
+        <div class="col-lg-2">
+            <a class="btn btn-outline-dark btn-block" href="@Url.Action("ListaProformas",new { idUser = usuario.Id })">
+                <i class="fa fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="container-fluid" style="text-align: center" id="divProformas">
+    <div>
+        <table class="table table-striped table-hover table-bordered table-responsive-md" style="width:100%">
+
+            <tr>
+                <th>
+                    Número
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </th>
+                <th>
+                    Nombre
+                </th>
+                @*<th>
+                        Descuento
+                    </th>
+                    <th>
+                        Impuestos
+                    </th>
+                    <th>
+                        Total
+                    </th>*@
+                <th>
+                    Acciones
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @item.Fecha.ToString("dd/M/yyyy")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreProforma)
+                    </td>
+                    @*<td>
+
+                            @if (item.TotalDescuento == 0)
+                            {
+                                <label>₡0,00</label>
+                            }
+                            else
+                            {
+                                <label>₡@item.TotalDescuento.ToString("0,#.00")</label>
+                            }
+                        </td>
+                        <td>
+                            @if (item.TotalImpuesto == 0)
+                            {
+                                <label>₡0,00</label>
+                            }
+                            else
+                            {
+                                <label>₡@item.TotalImpuesto.ToString("0,#.00")</label>
+                            }
+                        </td>
+                        <td>
+                            @if (item.TotalPagar == 0)
+                            {
+                                <label>₡0,00</label>
+                            }
+                            else
+                            {
+                                <label> ₡@item.TotalPagar.ToString("0,#.00")</label>
+                            }
+                        </td>*@
+                    <td>
+                        <a class="btn btn-dark" href="@Url.Action("DetallesProformasRevaloracion",new { id = item.Id })">
+                            <i class="fa fa-info" style="margin-right: 5px"></i>Detalles
+                        </a>
+                    </td>
+                </tr>
+            }    @if (Model.Count() == 0)
+            {
+                <tr>
+                    <td colspan="9">
+                        No hay elementos
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+<br />
+<br />
+
+@if (Session["Proforma"] != null)
+{
+    switch (Session["Proforma"])
+    {
+        case "Restaurada":
+            <script type="text/javascript">
+                function ProformaNull() {
+                    Swal.fire({
+                        title: 'Proforma Restaurada',
+                        icon: 'success',
+                        text: '¡La proforma ha sido restaurada con éxito!',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProformaNull();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        default:
+            break;
+    }
+}

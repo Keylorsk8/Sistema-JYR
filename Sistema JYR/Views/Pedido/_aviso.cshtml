@@ -1,0 +1,41 @@
+﻿@{ ViewBag.Title = "Reportes"; }
+@if (Session["Pedido"] != null)
+{
+    switch (Session["Pedido"])
+    {
+
+        case "Seleccione una fecha válida":
+            <script type="text/javascript">
+                function EdicionPed() {
+                    Swal.fire({
+                        title: 'Seleccione una fecha válida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "No hay elementos":
+            <script type="text/javascript">
+                function EdicionPed() {
+                    Swal.fire({
+                        title: 'No hay elementos',
+                        icon: 'alert',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+
+        default:
+            break;
+    }
+}

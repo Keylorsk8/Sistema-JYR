@@ -1,0 +1,34 @@
+﻿@model List<Sistema_JYR.Models.Productos>
+
+    <div id="divProductos">
+        <div id="wrap">
+            <h3 class="wow animate__animated animate__fadeInLeft"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i>Lista de Productos</h3>
+            <hr />
+
+            @if (Model.Count != 0)
+            {
+                <div id="columns" class="columns_4">
+                    @foreach (var item in Model)
+                    {
+                    <figure style="text-align: center" class="wow animate__animated animate__fadeInRight">
+                        <img src="@Url.Action("getImage", "Productos", new { id = item.Id })">
+                        <figcaption>@item.Nombre</figcaption>
+                        <span class="price">₡@item.Precio.ToString("0,#.00")</span>
+                        <br />
+                        <br />
+                        <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#Mensajes" href="@Url.Action("AgregaraDocumento",new { id = item.Id })" class="button"><i class="fa fa-shopping-cart" style="margin-right: 10px"></i><span>Agregar</span></a>
+                        <br />
+                        <p style="font-size:smaller;color:gray">Producto #@item.Id - Disp. @item.CantidadEnInventario</p>
+                    </figure>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="container" style="text-align: center">
+                    <h3 style="padding:100px" class="wow animate__animated animate__zoomIn"><i class="fa fa-exclamation-triangle" style="margin-right: 10px"></i>Ningún producto encontrado</h3>
+                </div>
+            }
+
+        </div>
+    </div>

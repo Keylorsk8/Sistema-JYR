@@ -1,40 +1,148 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Ferretería y Materiales JYR S.A</title>
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/wow.min.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="NavBar" style="padding-left: 30px;padding-right:30px">
-        <div>
-            <img src="~/Content/imagenes/logoC.png" width="50" />
-            <h2 class="navbar-brand" style="font-weight:100">Ferretería y Materiales JYR</h2>
-        </div>
-
+    <div id="contenedor_carga">
+        <div id="carga"></div>
+    </div>
+    <script>
+        window.onload = function () {
+            var contenedor = document.getElementById('contenedor_carga');
+            contenedor.style.visibility = 'hidden';
+            contenedor.style.opacity = '0';
+        };
+    </script>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="NavBar" style="padding-left: 30px;padding-right:30px">
+        <a href="@Url.Action("Index","Home")" style="text-decoration: none">
+            <img src="~/Content/imagenes/logoC.png" width="50" id="imgBrand" />
+            <h2 class="navbar-brand" style="font-weight:100;" id="NavBrand">Ferretería y Materiales JYR</h2>
+        </a>
         <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarColor02" aria-label="Toggle navigation" type="button" data-target="#navbarColor02" data-toggle="collapse">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarColor02">
             @Html.Partial("_LoginPartial")
         </div>
     </nav>
 
-    <div class="container body-content" id="RenderBody">
+    <div class="body-content" id="RenderBody">
         @RenderBody()
-        <hr />
-        <footer style="text-align: center">
-            <p>&copy; @DateTime.Now.Year - Ferretería y Materiales JYR S.A</p>
-        </footer>
+
     </div>
 
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/popper.min.js"></script>
+
+
+    <footer class="mainfooter" role="contentinfo" style="font-weight:100">
+        <div class="footer-middle">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6" style="text-align: center">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <img src="~/Content/imagenes/logo.jpeg" style="width: 230px" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6" style="text-align: center">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>¿Necesitas Ayuda?</h4>
+                            <ul class="list-unstyled">
+
+                                @using Microsoft.AspNet.Identity
+                                @using Sistema_JYR.Models
+                                @{
+                                    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+                                    SistemaJYREntities db = new SistemaJYREntities();
+                                    string id = HttpContext.Current.User.Identity.GetUserId();
+                                    if (id != null)
+                                    {
+                                        usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+                                    }
+                                }
+
+                                @if (usuario != null)
+                                {
+                                    if (usuario.Rol == 1 || usuario.Rol == 2)
+                                    {
+                                        <li><a href="~/Content/Manual de Usuario/Manual de Usuario - Empleado.pdf" target="_blank">Tutorial de Uso</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="~/Content/Manual de Usuario/Manual de Usuario.pdf" target="_blank">Tutorial de Uso</a></li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li><a href="~/Content/Manual de Usuario/Manual de Usuario.pdf" target="_blank">Tutorial de Uso</a></li>
+                                }
+                                <li><a href="@Url.Action("Politic","Home")">Política de privacidad</a></li>
+                                <li><a href="@Url.Action("About","Home")">Acerca de</a></li>
+                                <li><a href="@Url.Action("Contact","Home")">Contacto</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6" style="text-align: center">
+
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>Productos</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="@Url.Action("ListaProductos","Productos")">Lista de Productos</a></li>
+
+                                <li>
+                                    <a href="#"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3" style="text-align: center">
+                        <h4>¿Tienes Consultas?</h4>
+                        <p>
+                            No dudes en ponerte en contacto
+                            <br />
+                            <a href="mailto:ferreymatjyr@hotmail.com"><i class="fa fa-envelope-o" style="margin-right: 5px"></i>ferreymatjyr@hotmail.com</a>
+                            <br />
+                            <a href="tel:+50624301131"><i class="fa fa-phone" style="margin-right: 5px"></i>+506 2430 1131</a>
+                        </p>
+
+                        <h4>¡Síguenos en Facebook!</h4>
+                        <ul class="social-network social-circle">
+                            <li><a href="https://www.facebook.com/materialesjyr" target="_blank" class="icoFacebook" title="Facebook"><i class="fa fa-facebook"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 3%">
+                    <div class="col-md-12 copy">
+                        <p class="text-center">&copy; Copyright 2020 - Ferretería y Materiales JYR S.A.  Todos los Derechos Reservados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <a href="#" class="scrollup">Scroll</a>
+    @*<footer style="text-align: center">
+            <div>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <div>Icons made by <a href="https://www.flaticon.com/free-icon/sweeping_3035186?term=clean&page=4&position=42" title="Linector">Linector</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+            <div>Icons made by <a href="https://www.flaticon.com/authors/ultimatearm" title="ultimatearm">ultimatearm</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+        </footer>*@
+
+    <script src="~/Scripts/index.js"></script>
+    <script src="~/Scripts/umd/popper.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>

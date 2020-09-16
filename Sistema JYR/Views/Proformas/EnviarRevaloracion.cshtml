@@ -1,0 +1,346 @@
+﻿@model Sistema_JYR.Models.Proformas
+@using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
+
+@{
+    ViewBag.Title = "Solicitud de Revaloración";
+    Sistema_JYR.Models.SistemaJYREntities db = new Sistema_JYR.Models.SistemaJYREntities();
+    List<Sistema_JYR.Models.Telefonos> tels = db.Telefonos.Where(x => x.IdUsuario == Model.IdCliente).ToList();
+    var idUser = HttpContext.Current.User.Identity.GetUserId();
+}
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mis Proformas", "ListaProformas", "Proformas", new { idUser = idUser })</li>
+        <li class="breadcrumb-item active">Solicitud de Revaloración</li>
+    </ol>
+</div>
+
+@using (Html.BeginForm())
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <h4>Proforma No. @Model.Id - @Model.NombreProforma</h4>
+            </div>
+            <div class="col-md-2">
+                <a class="btn btn-outline-dark btn-block" href="@Url.Action("EditProformaCliente", new { id = Model.Id, idUser = idUser })">
+                    <i class="fa fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Cliente</h5>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Nombre del Cliente
+                    </dt>
+                    <dd>
+                        @Model.NombreCliente
+                    </dd>
+                    <dt>
+                        Dirección de Entrega
+                    </dt>
+                    <dd>
+                        @Model.DireccionEntrega
+                    </dd>
+                    <dt>
+                        Teléfonos
+                    </dt>
+                    @if (tels.Count != 0)
+                    {
+                        foreach (var item in tels)
+                        {
+                            <dd> @item.Propietario - @item.Telefono </dd>
+                        }
+                    }
+                    else
+                    {
+                        <dd>No hay teléfonos registrados</dd>
+                    }
+                </dl>
+            </div>
+            <div class="col-md-4">
+                <h5>Total</h5>
+                <dl class="dl-horizontal">
+                    <dt>
+                        Descuento Total
+                    </dt>
+                    <dd>
+                        @if (Model.TotalDescuento == 0)
+                        {
+                            <label>₡0,00</label>
+                        }
+                        else
+                        {
+                            <label>₡@Model.TotalDescuento.ToString("0,#.00")</label>
+                        }
+                    </dd>
+                    <dt>
+                        Impuesto Total
+                    </dt>
+                    <dd>
+                        @if (Model.TotalImpuesto == 0)
+                        {
+                            <label>₡0,00</label>
+                        }
+                        else
+                        {
+                            <label>₡@Model.TotalImpuesto.ToString("0,#.00")</label>
+                        }
+                    </dd>
+                    <dt>
+                        Total a pagar
+                    </dt>
+                    <dd>
+                        @if (Model.TotalPagar == 0)
+                        {
+                            <label>₡0,00</label>
+                        }
+                        else
+                        {
+                            <label>₡@Model.TotalPagar.ToString("0,#.00")</label>
+                        }
+                    </dd>
+                </dl>
+            </div>
+            <div class="col-md-4">
+                <h5>Información</h5>
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Fecha)
+                    </dt>
+
+                    <dd>
+                        @Model.Fecha.ToString("dd/M/yyyy")
+                    </dd>
+                    <dt>
+                        Estado
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EstadoProforma.Descripcion)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <hr />
+        <div class="container"><b>Productos</b><br /></div><br />
+        <div class="container" style="text-align: center">
+            <div class="panel panel-default">
+                <table class="table table-striped table-hover table-bordered table-responsive-lg">
+                    <tr>
+                        <th>
+                            Id
+                        </th>
+                        <th>
+                            Producto
+                        </th>
+                        <th>
+                            Precio Unitario
+                        </th>
+                        <th>
+                            Descuento
+                        </th>
+                        <th>
+                            Cantidad
+                        </th>
+                    </tr>
+                    @if (Model.ProformaDetalle.Count() != 0)
+                    {
+                        foreach (var c in Model.ProformaDetalle)
+                        {
+                            <tr>
+                                <td>
+                                    @c.Productos.Id
+                                </td>
+                                <td>
+                                    @c.Productos.Nombre
+                                </td>
+                                <td>
+                                    @if (c.PrecioUnitario == 0)
+                                    {
+                                        <label>₡0,00</label>
+                                    }
+                                    else
+                                    {
+                                        <label>₡@c.PrecioUnitario.ToString("0,#.00")</label>
+                                    }
+                                </td>
+                                <td>
+                                    @if (c.Descuento == 0)
+                                    {
+                                        <label>₡0,00</label>
+                                    }
+                                    else
+                                    {
+                                        <label>₡@c.Descuento.ToString("0,#.00")</label>
+                                    }
+                                </td>
+                                <td>
+                                    @c.Cantidad
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr style="text-align: center">
+                            <td colspan="7">Ningún producto encontrado</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="container">
+            <p style="text-align:justify">
+                El proceso de revaloración consiste en enviar una solicitud de mejora de precios a los empleados de la Ferretería y Materiales JYR.
+                Los empleados responderán con los mejores precios posibles, una vez listo recibirás un correo con la confirmación del proceso y encontrarás
+                tu proforma revalorada en la lista de proformas.
+            </p>
+            <div class="card bg-light mb-12">
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h5>Adjunta las proformas de otras instituciones</h5>
+                                    <br />
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input name="file" id="file" type="file" accept="application/pdf" />
+                                        <input type="button" value="Agregar archivo" id="upload" class="btn btn-secondary" style="margin-left: 25px" />
+                                        <p>(Máximo 4 megabytes)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @section scripts
+                 {
+                        <script type="text/javascript">
+                        $(document).ready(function () {
+                            $('#upload').click(function () {
+                                var data = new FormData();
+                                var file = $('form input[type=file]')[0].files[0];
+                                var idProfroma = @Model.Id;
+                                data.append('file', file);
+                                data.append('idProforma', idProfroma)
+
+                                jQuery.ajax({
+                                    url: '@Url.Action("agregardocumento", "Proformas", new { id = Model.Id })',
+                                    data: data,
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    method: 'POST',
+                                    success: function (data) {
+                                        $('#Documentos').html(data);
+                                        document.getElementById("file").value = "";
+                                    }
+                                })
+                            });
+                        });
+
+                        </script>
+                    }
+
+                    <div class="container">
+                        <div id="Documentos" style="border: 1px solid lightgray;border-radius: 10px; padding: 5px">
+                            <h6>Proformas adjuntas</h6>
+                            <hr />
+                            @{
+                                List<Documentos> documentos = db.Documentos.Where(x => x.IdProforma == Model.Id).ToList();
+                            }
+                            @if (documentos.Count != 0)
+                            {
+                                <div class="row" style="padding: 15px">
+                                    @foreach (var item in documentos)
+                                    {
+
+                                        <div class="col-md-2" style="overflow:hidden; text-align: center; color: red">
+                                            <div style="text-align: left">
+                                                <a class="btnCerrar" data-ajax="true" data-ajax-method="GET" date-ajax-mode="remplace" data-ajax-update="#Documentos" href="@Url.Action("EliminarDocumentos", new { id = item.Id })"> <span style="margin-left: 5px; margin-right: 5px">X</span></a>
+                                            </div>
+                                            <a href="@Url.Action("PDFD", new { id = item.Id })">
+                                                <i class="fa fa-file-pdf-o" style="color: red !important; font-size:100px"></i>
+                                                <br />
+                                                @item.Descripcion
+                                            </a>
+                                        </div>
+
+                                    }
+                                </div>
+                                <style>
+                                    .btnCerrar {
+                                        color: black;
+                                        text-decoration: none;
+                                        border-radius: 100%;
+                                        border: 1px solid black;
+                                        width: 50px;
+                                        height: 50px;
+                                        transition: all 0.5s;
+                                    }
+
+                                        .btnCerrar:hover {
+                                            background-color: black;
+                                            color: white;
+                                            text-decoration: none;
+                                        }
+                                </style>
+                            }
+                            else
+                            {
+                                <div class="container" style="text-align: center; padding: 25px">
+                                    <h7>Ningún adjunto</h7>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                    <br />
+                    <div class="container">
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("Id", Model.Id)
+                        <div id="Documentos" style="border: 1px solid lightgray;border-radius: 10px; padding: 5px">
+                            <h6>Comentario</h6>
+                            @Html.TextAreaFor(Model => Model.Comentario,new { @class = "form*control", rows="5", style ="width:100%; padding: 8px" })
+                            @*<textarea id="Comentario" name="Comentario" class="form-control" rows="5"></textarea>*@
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row" style="margin-top: 5px">
+                        <div class="col-md-12">
+                            <button class="btn btn-info btn-block" type="submit">
+                                <i class="fa fa-line-chart" style="margin-right: 5px"></i>  Enviar Solicitud de Revaloración
+                            </button>
+                        </div>
+                        @*<script type="text/javascript">
+                        function post(id) {
+                            var id = id;
+                            var comentario = $('#Comentario').val();
+                            var data = new FormData();
+                            data.append('id', id);
+                            data.append('comentario', comentario);
+                            var url = '@Url.Action("EnviarRevaloracionPOST", "Proformas", new { id = Model.Id })';
+                            $.ajax({
+                                type: "POST",
+                                url: url,
+                                data: data,
+                                //success: success,
+                                dataType: dataType
+                            });
+                        }
+                        </script>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+    </div>
+
+}

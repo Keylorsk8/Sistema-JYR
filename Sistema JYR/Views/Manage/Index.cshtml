@@ -1,18 +1,28 @@
 ﻿@model Sistema_JYR.Models.IndexViewModel
+@using Microsoft.AspNet.Identity
+@using Sistema_JYR.Models
 @{
     ViewBag.Title = "Administrar";
+    Sistema_JYR.Models.AspNetUsers usuario = new AspNetUsers();
+    SistemaJYREntities db = new SistemaJYREntities();
+    string id = HttpContext.Current.User.Identity.GetUserId();
+    usuario = db.AspNetUsers.Where(x => x.Id == id).First();
+    List<Telefonos> telefonos = db.Telefonos.Where(x => x.IdUsuario == id).ToList();
+    List<Direcciones> direcciones = db.Direcciones.Where(x => x.IdUsuario == id).ToList();
 }
 
-<h2>@ViewBag.Title.</h2>
-
-<p class="text-success">@ViewBag.StatusMessage</p>
-<div>
+<div class="container" style="padding: 25px">
+    <h2>@ViewBag.Title.</h2>
     <h4>Cambiar la configuración de la cuenta</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <h1>@usuario.Nombre @usuario.Apellido1 @usuario.Apellido2 @(usuario.Rol == 1? " - Administrador ": usuario.Rol == 2? " - Vendedor": "")</h1>
+    <dl class="<dl></dl>-horizontal">
+        <dt>Correo:</dt>
+        <dd>@usuario.UserName</dd>
+        <dt>Cédula:</dt>
+        <dd>@usuario.Cedula</dd>
         <dt>Contraseña:</dt>
         <dd>
-            [
             @if (Model.HasPassword)
             {
                 @Html.ActionLink("Cambiar la contraseña", "ChangePassword")
@@ -21,67 +31,93 @@
             {
                 @Html.ActionLink("Crear", "SetPassword")
             }
-            ]
         </dd>
         <dt>Inicios de sesión externos:</dt>
         <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Administrar", "ManageLogins") ]
+            @Html.ActionLink("Administrar", "ManageLogins")
+            | @Model.Logins.Count Sincronizados
         </dd>
-        @*
-            Los números de teléfono se pueden usar como una segunda fase de comprobación en un sistema de autenticación en dos fases.
-             
-             Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
-                para obtener detalles sobre cómo configurar esta aplicación ASP.NET para que sea compatible con la autenticación en dos fases mediante SMS.
-             
-             Quite la marca de comentario del bloque siguiente después de configurar la autenticación en dos fases
-        *@
-        @*  
-            <dt>Número de teléfono:</dt>
-            <dd>
-                @(Model.PhoneNumber ?? "None")
-                @if (Model.PhoneNumber != null)
-                {
-                    <br />
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                    using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+
+        <dt>Número de teléfono:</dt>
+        @if (telefonos != null)
+        {
+
+            <dd class="">
+                <table>
+                    @foreach (var item in telefonos)
                     {
-                        @Html.AntiForgeryToken()
-                        <text>[<input type="submit" value="Quitar" class="btn-link" />]</text>
+                        <tr>
+                            <td style="min-width: 100px">
+                                @item.Propietario
+                            </td>
+                            <td style="min-width: 100px">
+                                @item.Telefono
+                            </td>
+                            <td>
+                                @Html.ActionLink("Eliminar", "EliminarTelefono", new { @id = item.Id }, new { @class = "btn btn-outline-danger" })
+                            </td>
+                        </tr>
                     }
-                }
-                else
-                {
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-                }
+                </table>
             </dd>
-        *@
-        <dt>Autenticación de dos factores:</dt>
-        <dd>
-            <p>
-                No hay ningún proveedor de autenticación en dos fases configurado. Consulte <a href="https://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
-                para obtener detalles sobre cómo configurar esta aplicación ASP.NET para que sea compatible con la autenticación en dos fases.
-            </p>
-            @*@if (Model.TwoFactor)
-                {
-                    using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        }
+        else
+        {
+            <dd>Ningún teléfono asociado</dd>
+        }
+
+        @Html.ActionLink("Agregar", "AddPhoneNumber")
+        <dt>Direcciones de entrega</dt>
+        @if (direcciones.Count != 0)
+        {
+            <dd class="">
+                <table>
+                    @foreach (var item in direcciones)
                     {
-                        @Html.AntiForgeryToken()
-                        <text>Habilitado
-                        <input type="submit" value="Deshabilitar" class="btn btn-link" />
-                        </text>
+                        <tr>
+                            <td style="min-width: 100px">
+                                @item.Provincia
+                            </td>
+                            <td style="min-width: 100px">
+                                @item.Direccion
+                            </td>
+                            <td>
+                                @Html.ActionLink("Eliminar", "EliminarDireccion", new { @id = item.Id }, new { @class = "btn btn-outline-danger" })
+                            </td>
+                        </tr>
                     }
-                }
-                else
-                {
-                    using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>Deshabilitada
-                        <input type="submit" value="Habilitar" class="btn btn-link" />
-                        </text>
-                    }
-                }*@
-        </dd>
+                </table>
+            </dd>
+        }
+        else
+        {
+            <dd>Ningúna dirección asociada</dd>
+        }
+        @Html.ActionLink("Agregar", "AddDireccion")
+
     </dl>
 </div>
+
+@if (Session["Cuenta"] != null)
+{
+    switch (Session["Cuenta"])
+    {
+        case "Duplicada":
+            <script type="text/javascript">
+                function ProformaNull() {
+                    Swal.fire({
+                        title: 'Contraseña actualizada con éxito',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProformaNull();
+            </script>
+            Session["Cuenta"] = null;
+            break;
+        default:
+            break;
+    }
+}

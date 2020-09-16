@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace Sistema_JYR.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -24,6 +25,25 @@ namespace Sistema_JYR.Controllers
         {
             ViewBag.Message = "Your contact page.";
 
+            return View();
+        }
+
+        public ActionResult Politic()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+
+        [Authorize(Roles = "Admin,Vendedor")]
+        public ActionResult Mantenimientos()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin,Vendedor")]
+        public ActionResult Reportes()
+        {
             return View();
         }
     }

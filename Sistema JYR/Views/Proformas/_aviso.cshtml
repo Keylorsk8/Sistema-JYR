@@ -1,0 +1,42 @@
+﻿@{ ViewBag.Title = "Reporte de Proformas Convertidas en Pedidos"; }
+
+@if (Session["Proforma"] != null)
+{
+    switch (Session["Proforma"])
+    {
+
+        case "Seleccione una fecha válida":
+            <script type="text/javascript">
+                function Invalido() {
+                    Swal.fire({
+                        title: 'Seleccione una fecha válida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                Invalido();
+            </script>
+            Session["Proforma"] = null;
+            break;
+        case "No hay elementos":
+            <script type="text/javascript">
+                function Inexistente() {
+                    Swal.fire({
+                        title: 'No hay elementos',
+                        icon: 'alert',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                Inexistente();
+            </script>
+            Session["Proforma"] = null;
+            break;
+
+        default:
+            break;
+    }
+}

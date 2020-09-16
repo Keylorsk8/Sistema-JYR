@@ -11,7 +11,9 @@ namespace Sistema_JYR.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public partial class AspNetUsers
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -24,19 +26,43 @@ namespace Sistema_JYR.Models
             this.ProductosPrecioUsuarios = new HashSet<ProductosPrecioUsuarios>();
             this.Proformas = new HashSet<Proformas>();
             this.Direcciones = new HashSet<Direcciones>();
-            this.Telefonos = new HashSet<Telefonos>();
+            this.Direcciones1 = new HashSet<Direcciones>();
+            this.Telefonos1 = new HashSet<Telefonos>();
         }
     
         public string Id { get; set; }
+
+        [Required(ErrorMessage = "El nombre es requerido")]
         public string Nombre { get; set; }
+
+
+        [Required(ErrorMessage = "Primer apellido es requerido")]
+        [DisplayName("Primer Apellido")]
         public string Apellido1 { get; set; }
+
+        [Required(ErrorMessage = "Segundo apellido es requerido")]
+        [DisplayName("Segundo Apellido")]
         public string Apellido2 { get; set; }
+
+        [Required(ErrorMessage = "Cédula es requerida")]
+        [Range(100000000, 999999999, ErrorMessage = "La cédula debe estar en un rango de 100000000 y 999999999")]
+        [DisplayName("Cédula")]
         public int Cedula { get; set; }
         public int Rol { get; set; }
+
+        [Required(ErrorMessage = "Correo electrónico es requerido")]
+        [DisplayName("Correo Electrónico")]
+        [RegularExpression("^[a-zA-Z0-9_\\.-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$", ErrorMessage = "Correo electrónico no es válido")]
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
+
+        [Required(ErrorMessage = "Contraseña es requerida")]
+        [DisplayName("Contraseña")]
         public string PasswordHash { get; set; }
         public string SecurityStamp { get; set; }
+
+        [DisplayName("Teléfono")]
+        [StringLength(8)]
         public string PhoneNumber { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
         public bool TwoFactorEnabled { get; set; }
@@ -44,6 +70,7 @@ namespace Sistema_JYR.Models
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }
+        public bool Estado { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
@@ -60,6 +87,8 @@ namespace Sistema_JYR.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Direcciones> Direcciones { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Telefonos> Telefonos { get; set; }
+        public virtual ICollection<Direcciones> Direcciones1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Telefonos> Telefonos1 { get; set; }
     }
 }

@@ -1,7 +1,96 @@
 ﻿@{
-    ViewBag.Title = "About";
+    ViewBag.Title = "Acerca de";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+<div class="container-fluid">
+    <br />
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">Acerca De</li>
+       
+    </ol>
+</div>
 
-<p>Use this area to provide additional information.</p>
+
+<div class="container">
+    <section id="Acercade">
+  
+        <div class="row">
+            <div class="col-md-12" style="text-align: center">
+                <h2 style="text-align:left; color: dimgray" class="wow animate__animated animate__fadeInDown">Sobre Nosotros</h2>
+                <hr />
+                <br />
+            </div>
+        </div>
+
+    </section>
+
+  
+    <br>
+    <div class="row">
+        <div class="col-sm-6">
+            <img src="~/Content/imagenes/C01.jpg" class="img-fluid wow animate__animated animate__fadeInUp" />
+        </div>
+        <div class="col-sm-6 wow animate__animated animate__fadeInRight">
+            @*<h4 class="subheading">GetLance is a great place to find more clients, and to run and grow your own freelance business.</h4>*@
+            <p class="text-muted" style="text-align: justify">
+                Ferretería y Materiales J&R S.A es un negocio en manos de dos socios: José Sánchez Padilla y Rodrigo Hidalgo Montero,
+                se encuentra ubicado 25 metros al oeste de entrada Calle La Flory en Guadalupe de Alajuela;
+                fundada en el año 2013 por lo que cuenta con solamente 7 años antigüedad; la empresa nace debido a
+                que uno de los socios se desempeñaba en el ámbito ferretero desde hacía mucho tiempo, se presentó la
+                oportunidad y el capital para crear su propia empresa, conjunto su socio. Esta se dedica a la venta de
+                oportunidad y el capital para crear su propia empresa, conjunto su socio. Esta se dedica a la venta de
+                herramientas y materiales para construcción y remodelación, además del transporte de estos hasta el lugar necesitado.
+                Estos dos socios emprendieron este nuevo proyecto buscando experiencia y nuevos conocimientos debido a que
+                este tipo de mercado presentaba variada competencia. Siempre han tenido como meta crear una nueva y buena
+                oportunidad de productos ferreteros.
+
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 wow animate__animated animate__fadeInUp">
+       
+            @*<h4 class="subheading">GetLance is a great place to find more clients, and to run and grow your own freelance business.</h4>*@
+            <p class="text-muted" style="text-align: justify">
+                A través de los años la empresa ha enfrentado diversas situaciones,
+                tanto positivas como negativas, asaltos, robos, pérdida de inventario, sin embargo, dichas situaciones no
+                han detenido las ganas de superarse y ver su misión empresarial cumplida. Gracias a estas vivencias la empresa
+                ha contado con el apoyo de un gran personal, además de que siempre ha sido frecuentada por diversos personajes
+                costarricenses que al igual que el resto de los clientes han quedado satisfechos con el servicio brindado.
+            </p>
+
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 how-img">
+          @*  <img src="~/Content/imagenes/Index/Compromise.png" class="rounded-circle img-fluid wow animate__animated animate__fadeInUp" alt="" />*@
+        </div>
+        <div class="col-sm-6 wow animate__animated animate__fadeInRight">
+            <h4></h4>
+            @*<h4 class="subheading">GetLance is a great place to find more clients, and to run and grow your own freelance business.</h4>*@
+            <p class="text-muted" style="text-align: justify">
+          
+            </p>
+        </div>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 wow animate__animated animate__fadeInUp">
+            <h4></h4>
+            @*<h4 class="subheading">GetLance is a great place to find more clients, and to run and grow your own freelance business.</h4>*@
+            <p class="text-muted" style="text-align: justify">
+               
+            </p>
+
+        </div>
+        <div class="col-sm-6 how-img">
+           @* <img src="~/Content/imagenes/Index/Generosity.png" class="rounded-circle img-fluid wow animate__animated animate__fadeInLeft" alt="" />*@
+        </div>
+
+    </div>
+</div>

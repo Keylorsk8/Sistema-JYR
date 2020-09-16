@@ -25,6 +25,10 @@ namespace Sistema_JYR.Models
         [Required]
         [Display(Name = "Segundo Apellido")]
         public string Apellido2 { get; set; }
+
+        public int Rol { get; set; }
+
+        public bool Estado { get; set; }
     }
 
     public class ExternalLoginListViewModel
@@ -113,6 +117,9 @@ namespace Sistema_JYR.Models
         [Display(Name = "Confirmar contraseña")]
         [Compare("Password", ErrorMessage = "La contraseña y la contraseña de confirmación no coinciden.")]
         public string ConfirmPassword { get; set; }
+
+        public int Rol { get; set; }
+        public bool Estado { get; set; }
     }
 
     public class ResetPasswordViewModel

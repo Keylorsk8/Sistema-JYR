@@ -1,0 +1,562 @@
+﻿@model Sistema_JYR.Models.Pedidos
+
+@{
+    ViewBag.Title = "Editar Pedido";
+}
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Pedidos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimiento Pedidos", "Index", "Pedido")</li>
+        <li class="breadcrumb-item active">Editar Pedido</li>
+    </ol>
+</div>
+<div class="container">
+    <h4>Editar Pedido No.  @ViewBag.Id</h4>
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal" style="margin-bottom: 100px">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <p>Actualiza la información del pedido</p>
+                </div>
+                <div class="col-lg-6">
+                    <a class="btn btn-outline-dark btn-block" href="@Url.Action("Index")">
+                        <i class="fa fa-arrow-left"></i> Volver
+                    </a>
+
+                </div>
+            </div>
+            <div class="form-horizontal">
+
+                <hr />
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.NumeroProforma)
+                <h5>Encabezado</h5>
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Fecha, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-12">
+                                @Html.Hidden("Fecha", Model.Fecha)
+                                <div class="form-group has-feedback">
+                                    <i class="fa fa-calendar-o form-control-feedback"></i>
+                                    @Html.HiddenFor(model => model.Fecha)
+                                    @Html.TextBox("Date", Model.Fecha.ToString("dd/MM/yyyy"), new { @class = "form-control", @readonly = true })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="divCliente">
+                            @Html.Hidden("IdCliente", Model.IdCliente)
+                            @Html.Hidden("NombreCliente", Model.NombreCliente)
+                            <div class="form-group container">
+                                @Html.LabelFor(model => model.NombreCliente, "Nombre del Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @Html.TextBox("Nombre", Model.NombreCliente, new { disabled = "disabled", @class = "form-control", @id = "NombreCliente" })
+                                        @Html.ValidationMessageFor(model => model.NombreCliente, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DireccionEntrega, "Dirección de entrega", htmlAttributes: new { @class = "control-label col-md-12" })
+                                <div class="col-md-12">
+                                    <div class="form-group has-feedback">
+                                        @Html.TextBoxFor(model => model.DireccionEntrega, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.DireccionEntrega, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NumeroProforma, "Número de Proforma", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+
+                                @if (Model.NumeroProforma == null)
+                                {
+                                    <input type="text" class="form-control" value="N/A" readonly="readonly">
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(model => model.NumeroProforma, new { @class = "form-control", @readonly = true })
+                                }
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdEstado, "Estado", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("IdEstado", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdEstado, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IdUsuario, "Usuario", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("IdUsuario", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdUsuario, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group container">
+                            @Html.LabelFor(model => model.NombrePedido, "Nombre del Pedido", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @Html.TextBoxFor(model => model.NombrePedido, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.NombrePedido, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="submit" value="Guardar" class="btn btn-success btn-block"> <i class="fa fa-save"></i> Guardar </button>
+                    </div>
+                </div>
+
+                <hr />
+                <h5 id="PRO">Productos</h5>
+
+                <div id="detalleAjax" class="row container">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            @Html.Label("", "Agregar Producto", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" id="nuevoId" placeholder="Código Producto" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+
+                            @Html.Label("", "Cantidad", htmlAttributes: new { @class = "control-label col-md-12" })
+                            <div class="col-md-12">
+                                <input type="number" min="0" class="form-control" id="cant" placeholder="Cantidad" />
+
+                                @Html.Hidden("IdPedido", Model.Id)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-12">
+                            <input type="button" id="agregar" style="margin-top:32px; background-color:#043443; color:white" value="Agregar" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="container table-responsive">
+
+                    <div id="carritoAjax">
+                        <div class="card bg-light mb-12" style="width:auto">
+                            <div class="card-header">Materiales en la Orden - Moneda: Colones ( ¢ )</div>
+                            <div class="card-body">
+                                <table class="table table-responsive-lg">
+                                    <tr style="text-align:center">
+                                        <th style="text-align:center">
+                                            Id
+                                        </th>
+                                        <th style="text-align:center">
+                                            Producto
+                                        </th>
+                                        <th>
+                                            Cantidad
+                                        </th>
+                                        <th>
+                                            Cantidad Enviada
+                                        </th>
+                                        <th>
+                                            Precio Unitario
+                                        </th>
+                                        <th>
+                                            Impuesto
+                                        </th>
+                                        <th>
+                                            Descuento
+                                        </th>
+
+                                        <th>Subtotal</th>
+                                        <th></th>
+                                    </tr>
+
+                                    @if (Model.PedidoDetalle.Count != 0)
+                                    {
+                                        foreach (var item in Model.PedidoDetalle)
+                                        {
+                                            <tr>
+                                                <td style="text-align:center">
+                                                    @item.Productos.Id
+                                                </td>
+                                                <td style="text-align:center">
+                                                    @item.Productos.Nombre
+                                                </td>
+                                                <td style="text-align:center">
+                                                    @*Otra posible y mejor forma de hacerlo*@
+                                                    <input type="number" style="text-align:center" min="0" id="@item.IdProducto" value="@item.Cantidad" class="form-control" onchange="CambiarCantidadPedida(@item.IdProducto)" />
+                                                    <input type="hidden" value="@item.IdPedido" id="idPedido" />
+                                                </td>
+
+                                                <td style="text-align:center">
+                                                    <input type="number" min="0" style="text-align:center" value="@item.CantidadEnviada" class="form-control" onchange="x(this.value,@item.IdProducto )" id="cantEnviada" />
+                                                </td>
+
+                                                <td style="text-align:center">
+                                                    ₡@item.PrecioUnitario.ToString("0,#.00")
+                                                </td>
+                                                <td>
+                                                    @item.Productos.Impuesto%
+                                                </td>
+                                                <td style="text-align:center">
+                                                    <input type="number" min="0" style="text-align:center" value="@item.Descuento" class="form-control" onchange="y(@item.IdProducto, @item.IdPedido)" id="descuento" />
+                                                </td>
+                                                <td style="text-align:center">
+                                                    @{
+
+
+                                                        double precioBase = item.PrecioUnitario;
+                                                        double precioConIVA = precioBase * ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1);
+                                                        double precioConDescuento = precioConIVA - (precioConIVA * (item.Descuento / 100));
+                                                        double iva = precioConDescuento - (precioConDescuento / ((Convert.ToDouble(item.Productos.Impuesto) / 100) + 1));
+                                                        double descuento = precioBase - (precioConDescuento - iva);
+                                                        double subTotal = precioBase + iva - descuento;
+                                                        double sub = Math.Round(subTotal * item.Cantidad);
+
+                                                    }
+                                                    @sub.ToString("0,#.00")
+                                                </td>
+                                                <td style="text-align:center">
+
+                                                    <a data-ajax="true" data-ajax-method="GET" data-ajax-mode="remplace" data-ajax-update="#carritoAjax" href="@Url.Action("EliminarCarrito","Pedido",new { idD = item.Id, idPedido = item.IdPedido })" class="btn btn-danger btn-block">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                        <tr style="text-align:center">
+                                            <td colspan="6"></td>
+                                            <th colspan="2">
+                                                <label>Descuento Total</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalDescuento == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalDescuento).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td colspan="6"></td>
+                                            <th colspan="2">
+                                                <label>Total de Impuestos</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalImpuesto == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalImpuesto).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
+                                        <tr style="text-align:center">
+                                            <td colspan="6"></td>
+                                            <th colspan="2">
+                                                <label>Total a Pagar</label>
+                                            </th>
+                                            <th colspan="2">
+                                                @if (Model.TotalPagar == 0)
+                                                {
+                                                    <label>0,00</label>
+                                                }
+                                                else
+                                                {
+                                                    <label>@Math.Round(Model.TotalPagar).ToString("0,#.00")</label>
+                                                }
+                                            </th>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr style="text-align: center">
+                                            <td colspan="8">Ningún producto encontrado</td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                        <br />
+                        <div>
+                            <div class="card bg-light mb-12">
+                                <div class="card-body">
+                                    @if (Model.PedidoDetalle.Count == 0)
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button class="btn btn-danger btn-block" disabled style="margin:5px"><i class="fa fa-file-pdf-o" style="margin-right: 5px"></i>Exportar a PDF</button>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <a class="btn btn-danger btn-block" href="@Url.Action("Pdf", new { id = Model.Id })" target="_blank">
+                                                    <i class="fa fa-file-pdf-o"></i> Exportar a PDF
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+                                                function x(e, id) {
+                                                    var cantidadEnviada = e;
+                                                    var productoId = id;
+                                                    var pedidoId = $("#idPedido").val();
+
+                                                        var dataObjeto = JSON.stringify({
+                                                            'cantidadEnviada': cantidadEnviada,
+                                                            'productoId': productoId,
+                                                            'pedidoId': pedidoId
+                                                        })
+
+                                                        var objeto = new Object();
+                                                        objeto.productoId = productoId;
+                                                    objeto.cantidadEnviada = cantidadEnviada;
+                                                    objeto.pedidoId = pedidoId;
+                                                    var url = "@Url.Action("CambiarCantidadEnviada","Pedido")";
+                                                    var datos = { productoId: productoId, cantidadEnviada: cantidadEnviada, pedidoId: pedidoId };
+
+                                                        $.post(url, datos).done(function (datos) {
+                                                            $("#carritoAjax").html(datos);
+                                                        })
+
+                                                }
+    </script>
+    <script>
+                                            function CambiarCantidadPedida(id) {
+                                                var cantidad = $('#' + id).val();
+                                                var idPedido = $("#idPedido").val();
+
+                                                var dataObject = JSON.stringify({
+                                                    'terminoBusqueda': cantidad,
+                                                    'id': id,
+                                                    'idPedido': idPedido
+
+                                        })
+                                                var objeto = new Object();
+                                                objeto.terminoBusqueda = cantidad;
+                                                objeto.id = id;
+                                                objeto.idPedido = idPedido
+
+                                                var url = "@Url.Action("CambiarCantidadPedida", "Pedido")";
+                                                var data = { terminoBusqueda: cantidad, id: id, idPedido: idPedido };
+                                        $.post(url, data).done(function (data) {
+                                            $("#carritoAjax").html(data);
+
+                                        })
+                                    }
+    </script>
+    <script>
+                                                function y(id, idP) {
+                                                    var descuento = $("#descuento").val();;
+                                                    var productoId = id;
+                                                    var pedidoId = idP;
+
+                                                    var dataObjeto = JSON.stringify({
+                                                        'descuento': descuento,
+                                                            'productoId': productoId,
+                                                            'pedidoId': pedidoId
+                                                        })
+
+                                                        var objeto = new Object();
+                                                        objeto.productoId = productoId;
+                                                    objeto.descuento = descuento;
+                                                    objeto.pedidoId = pedidoId;
+                                                    var url = "@Url.Action("CambiarDescuento","Pedido")";
+                                                    var datos = { productoId: productoId, descuento: descuento, pedidoId: pedidoId };
+
+                                                        $.post(url, datos).done(function (datos) {
+                                                            $("#carritoAjax").html(datos);
+                                                        })
+
+                                                }
+    </script>
+
+    <script>
+        $(function () {
+            $("#agregar").click(function () {
+                var cantidad = $("#cant").val();
+                var idPedido = $("#IdPedido").val();
+                var idProducto = $("#nuevoId").val();
+
+                var dataObject = JSON.stringify({
+                    'cantidad': cant,
+                    'idPedido': idPedido,
+                    'idProducto': idProducto,
+                })
+                var objeto = new Object();
+                objeto.cantidad = cantidad;
+                objeto.idPedido = idPedido;
+                objeto.idProducto = idProducto;
+
+                var url = "@Url.Action("AgregarDetalle","Pedido")";
+                var data = { idPedido, idProducto, cantidad };
+
+                $.post(url, data).done(function (data) {
+                    $("#carritoAjax").html(data);
+                    $("#cant").val("");
+                    $("#nuevoId").val("");
+
+                })
+            })
+        })
+    </script>
+
+
+
+}
+
+
+@if (Session["Pedidos"] != null)
+{
+    switch (Session["Pedidos"])
+    {
+        case "Cantidad en inventario menor":
+            <script type="text/javascript">
+                function CantidadMayor() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'La cantidad en inventario es menor a la cantidad requerida',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CantidadMayor();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+
+        case "Debe digitar una cantidad menor a la cantidad":
+            <script type="text/javascript">
+                function CantidadMayor() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad enviada menor a la cantidad',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CantidadMayor();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a la cantidad enviada":
+            <script type="text/javascript">
+                function CantidadMenor() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a la cantidad enviada',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CantidadMenor();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+        case "Producto es inválido. Digite un código de producto nuevamente":
+            <script type="text/javascript">
+                function ProductoInvalido() {
+                    Swal.fire({
+                        title: 'Producto es inválido. Digite un código de producto nuevamente',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoInvalido();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+        case "Debe digitar una cantidad mayor a 0":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Debe digitar una cantidad mayor a 0',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+
+        case "No se puede eliminar":
+            <script type="text/javascript">
+                function ProductoCantidad() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se puede eliminar este producto, debido a que ya se ha hecho entrega parte del pedido',
+                        icon: 'error',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ProductoCantidad();
+            </script>
+            Session["Pedidos"] = null;
+            break;
+           
+
+default:
+            break;
+    }
+}
+

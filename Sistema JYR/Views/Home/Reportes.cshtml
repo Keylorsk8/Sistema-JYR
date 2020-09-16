@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Reportes";
+}
+
+<div class="container">
+
+    <ol class="breadcrumb container-fluid">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">Reportes</li>
+    </ol>
+
+    <h2>Reportes</h2>
+
+    <div class="list-group border-dark">
+        <div class="list-group-item list-group-item-action" style="background-color: #002f3f !important; color: white">
+            Usuarios
+        </div>
+        <a href="@Url.Action("reporteVentasPorEmpleado","Pedido")" class="list-group-item list-group-item-action">Reporte de Ventas por Empleado</a>
+        <div class="list-group-item list-group-item-action" style="background-color: #002f3f !important; color: white">
+            Inventarios
+        </div>
+        <a href="@Url.Action("reporteTopProducto","Pedido")" class="list-group-item list-group-item-action">Reporte Top 10 productos</a>
+        <div class="list-group-item list-group-item-action" style="background-color: #002f3f !important; color: white">
+            Proformas
+        </div>
+        <a href="@Url.Action("reporteProformaAPedido","Proformas")" button" class="list-group-item list-group-item-action">Reporte de Proformas a Pedidos</a>
+
+    </div>
+</div>

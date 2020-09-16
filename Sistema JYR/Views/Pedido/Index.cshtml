@@ -1,0 +1,380 @@
+﻿@model IEnumerable<Sistema_JYR.Models.Pedidos>
+@using Sistema_JYR.Models.Session
+
+@{
+    ViewBag.Title = "Mantenimiento Pedidos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> @Html.ActionLink("Inicio", "Index", "Home") </li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Mantenimientos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">@Html.ActionLink("Pedidos", "Mantenimientos", "Home")</li>
+        <li class="breadcrumb-item active">Mantenimiento Pedidos</li>
+    </ol>
+</div>
+
+
+@using (Ajax.BeginForm("FiltrarPedidosAjax", "Pedido", new AjaxOptions
+
+{
+    HttpMethod = "GET",
+    UpdateTargetId = "divPedidos",
+    InsertionMode = InsertionMode.Replace
+
+}))
+{
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-lg-8">
+                <h2><i class="fa fa-list-ul" style="margin-right: 2px"></i>Mantenimiento Pedidos</h2>
+            </div>
+            <div class="col-lg-4">
+                <a class="btn btn-dark btn-block" href="@Url.Action("Create",new {})">
+                    <i class="fa fa-plus" style="margin-right:5px"></i>Crear Nuevo Pedido
+                </a>
+
+            </div>
+        </div>
+        <div class="row" style="margin: 2%">
+            <div class="col-md-1">
+                Filtro:
+            </div>
+            <div class="col-md-3">
+                <input type="number" min="0" class="form-control" placeholder="Número de Pedido" id="numeroPedido" name="numeroPedido"/>
+
+            </div>
+            <div class="col-md-6">
+                @Html.TextBox("terminoBusqueda", "", new { @class = "form-control", @placeholder = "Criterio de búsqueda" })
+            </div>
+
+
+
+
+            <div class="col-md-1">
+                <button type="submit" value="Buscar" class="btn btn-dark btn-block"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-danger btn-block" href="@Url.Action("Index")">
+                    <i class="fa fa-trash-o"></i>
+                </a>
+            </div>
+        </div>
+    </div>}
+
+<hr />
+
+
+<div class="container-fluid" style="text-align: center" id="divPedidos">
+    <table class="table table-striped table-hover table-bordered table-responsive-lg">
+
+
+        <tr>
+            <th>
+                Número
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                Número de proforma
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Vendedor
+            </th>
+
+            <th>
+                Descuento
+            </th>
+            <th>
+                Impuesto
+            </th>
+            <th>
+                Total
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @item.Fecha.ToString("dd/M/yyyy")
+                </td>
+                @if (item.NumeroProforma == null)
+                {
+
+                    <td>
+                        N/A
+                    </td>
+
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombrePedido)
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombrePedido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AspNetUsers.Cedula)
+                </td>
+                <td>
+
+                    @if (item.TotalDescuento == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@item.TotalDescuento.ToString("0,#.00")</label>
+                    }
+                </td>
+                <td>
+                    @if (item.TotalImpuesto == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label>₡@item.TotalImpuesto.ToString("0,#.00")</label>
+                    }
+                </td>
+                <td>
+                    @if (item.TotalPagar == 0)
+                    {
+                        <label>₡0,00</label>
+                    }
+                    else
+                    {
+                        <label> ₡@item.TotalPagar.ToString("0,#.00")</label>
+                    }
+                </td>
+                <td>
+                    @if (Session["Documento"] != null)
+                    {
+                        if (((Documento)Session["Documento"]).TipoDocumento == TipoDocumento.Pedido)
+                        {
+                            if (((Documento)Session["Documento"]).NumerosDocumento == item.Id)
+                            {
+                                <button class="btn btn-dark" disabled>
+                                    Seleccionar
+                                </button>
+                            }
+                            else
+                            {
+                                <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                                    Seleccionar
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                                Seleccionar
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-dark" href="@Url.Action("SeleccionarDocumento",new { id = item.Id })">
+                            Seleccionar
+                        </a>
+                    }
+
+                    <div class="btn-group">
+                        <a class="btn btn-dark" href="@Url.Action("Edit",new { id = item.Id})">
+                            <i class="fa fa-pencil-square-o"></i>Editar
+                        </a>
+                        <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="@Url.Action("Details",new { id = item.Id})">
+                                <i class="fa fa-info-circle"></i>Detalles
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="@Url.Action("DuplicarPedido",new { id = item.Id })">
+                                <i class="fa fa-files-o"></i>Duplicar
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="@Url.Action("CancelarPedido",new { id = item.Id })" style="color: red">
+                                <i class="fa fa-trash-o"></i>Cancelar Pedido
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+
+        @if (Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="9">
+                    No hay elementos
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<script>
+  function x(e) {
+var numeroPedido = e;
+var dataObjeto = JSON.stringify({
+    'numeroPedido': numeroPedido,
+                                                          
+                                                        })
+
+                                                        var objeto = new Object();
+                                                    objeto.numeroPedido = numeroPedido;
+                                                   
+                                                    var url = "@Url.Action("filtrarNumeroPedido", "Pedido")";
+                                                    var datos = { numeroPedido: numeroPedido };
+
+                                                        $.post(url, datos).done(function (datos) {
+                                                            $("#divPedidos").html(datos);
+                                                            $("#numeroPedido").val("");
+                                                        })
+
+                                                }
+</script>
+
+
+
+
+
+
+@if (Session["Pedido"] != null)
+{
+    switch (Session["Pedido"])
+    {
+
+        case "Pedido inválido. Especifique un pedido":
+            <script type="text/javascript">
+                function EdicionPed() {
+                    Swal.fire({
+                        title: 'Pedido inválido. Especifique un pedido',
+                        icon: 'warning',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                EdicionPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+
+        case "No existe el pedido":
+            <script type="text/javascript">
+                function ExistenciaPed() {
+                    Swal.fire({
+                        title: 'No existe el pedido',
+                        icon: 'warning',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ExistenciaPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+
+        case "¡Pedido creado con éxito!":
+            <script type="text/javascript">
+                function CrearPed() {
+                    Swal.fire({
+                        title: '¡Pedido creado con éxito!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                CrearPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "¡Pedido actualizado correctamente!":
+            <script type="text/javascript">
+                function ActualizarPed() {
+                    Swal.fire({
+                        title: '¡Pedido actualizado correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ActualizarPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "¡Pedido duplicado correctamente!":
+            <script type="text/javascript">
+                function DuplicarPed() {
+                    Swal.fire({
+                        title: '¡Pedido duplicado correctamente!',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                DuplicarPed();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Seleccionado":
+            <script type="text/javascript">
+                function DuplicarProforma() {
+                    Swal.fire({
+                        title: '¡Pedido Seleccionado!',
+                        text: 'Ahora los artículos agregados, serán incluidos en este pedido',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                DuplicarProforma();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        case "Cancelado":
+            <script type="text/javascript">
+                function DuplicarProforma() {
+                    Swal.fire({
+                        title: '¡Pedido Cancelado!',
+                        text: 'El Pedido ha sido cancelado con éxito',
+                        icon: 'success',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                DuplicarProforma();
+            </script>
+            Session["Pedido"] = null;
+            break;
+        default:
+            break;
+    }
+}
+
+

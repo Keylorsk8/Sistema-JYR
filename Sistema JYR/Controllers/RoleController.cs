@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity.Owin;
-using Sistema_JYR.Migrations;
 using Sistema_JYR.Models;
 
 namespace Sistema_JYR.Controllers
@@ -34,6 +33,8 @@ namespace Sistema_JYR.Controllers
                 _roleManager = value;
             }
         }
+
+        [Authorize(Roles = "Desarrolador")]
         // GET: Role
         public ActionResult Index()
         {
@@ -43,6 +44,7 @@ namespace Sistema_JYR.Controllers
             return View(list);
         }
 
+        [Authorize(Roles = "Desarrolador")]
         public ActionResult Create()
         {
             return View();

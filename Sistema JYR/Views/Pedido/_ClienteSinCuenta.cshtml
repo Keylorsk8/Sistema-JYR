@@ -1,0 +1,24 @@
+﻿@model Sistema_JYR.Models.Pedidos
+<div id="divCliente">
+    @Html.Hidden("IdCliente", 0)
+    <div class="form-group container">
+        @Html.LabelFor(model => model.IdCliente, "Cliente", htmlAttributes: new { @class = "control-label col-md-12" })
+        <div class="row">
+            <div class="col-md-10">
+                <input type="text" class="fa form-control" value="" id="IdCliente">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-dark" type="button" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DireccionEntrega, "Dirección", htmlAttributes: new { @class = "control-label col-md-12" })
+        <div class="col-md-12">
+            <div class="form-group has-feedback">
+                <input type="text" class="fa form-control" value="">
+            </div>
+        </div>
+    </div>
+</div>
