@@ -57,8 +57,8 @@ namespace Sistema_JYR
             //   consumerSecret: "");
 
             app.UseFacebookAuthentication(
-               appId: "3145642358833794",
-               appSecret: "e3b4adb4fa7df9959184028a9710a5c0");
+               appId: "339109364281112",
+               appSecret: "e42bd910c75a0965156eeed88598b912");
 
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {

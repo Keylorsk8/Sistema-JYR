@@ -97,6 +97,7 @@ namespace Sistema_JYR.Controllers
                     Session["MensajeIndex"] = "Confirma tu cuenta-Reenviado";
                     ViewBag.errorMessage = "Debe confirmar su correo para iniciar sesión."
                         + "La confirmación ha sido reenviada a su correo electrónico.";
+                    Session["MensajeIndex"] = "Confirma tú cuenta";
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -535,7 +536,7 @@ namespace Sistema_JYR.Controllers
             html += "<body style='background-color: lightgrey; padding: 1px;'>";
             html += "<div style='background-color: white;'>";
             html += "<div style='display:flex;align-items: center;justify-content: center; background-color: #002f3f; width: 100%; padding:1px ; text-align: center'>";
-            html += "<img style='padding:3px;width: 80px; height:60px; display: inline-block;' src='https://scontent.fsjo9-1.fna.fbcdn.net/v/t1.0-9/89285644_1717326001743786_4731412217533038592_n.jpg?_nc_cat=105&_nc_sid=09cbfe&_nc_ohc=zTP6NomuI3EAX-sl7hp&_nc_ht=scontent.fsjo9-1.fna&oh=535397f2460f693b37cd9bc53878841b&oe=5F6059EB'>";
+            html += "<img style='padding:3px;width: 80px; height:60px; display: inline-block;' src='https://scontent.fsjo3-1.fna.fbcdn.net/v/t1.6435-9/89285644_1717326001743786_4731412217533038592_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=8n8-xBjEbTEAX8lEXid&_nc_ht=scontent.fsjo3-1.fna&oh=472b09c9dd30d89e953068e12e2d8b38&oe=60CF72F9'>";
             html += "<h1 style='font-weight: 200;display: inline-block; color: white;'>" + subject + "</h1>";
             html += "</div>";
             html += "<div style='padding: 20px;'>";

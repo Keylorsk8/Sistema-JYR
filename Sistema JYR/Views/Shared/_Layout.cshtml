@@ -12,10 +12,32 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
-    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 </head>
 <body>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '339109364281112',
+                cookie: true,
+                xfbml: true,
+                version: 'v11.0'
+            });
+
+            FB.AppEvents.logPageView();
+
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+
     <div id="contenedor_carga">
         <div id="carga"></div>
     </div>
@@ -90,6 +112,7 @@
                                     <li><a href="~/Content/Manual de Usuario/Manual de Usuario.pdf" target="_blank">Tutorial de Uso</a></li>
                                 }
                                 <li><a href="@Url.Action("Politic","Home")">Política de privacidad</a></li>
+                                <li><a href="@Url.Action("Terminos","Home")">Terminos y Condiciones</a></li>
                                 <li><a href="@Url.Action("About","Home")">Acerca de</a></li>
                                 <li><a href="@Url.Action("Contact","Home")">Contacto</a></li>
                             </ul>
