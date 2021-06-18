@@ -2,11 +2,6 @@
 
     ViewBag.Title = "Inicio";
 }
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
-
-<script>
-        new WOW().init();
-</script>
 
 <div class="jumbotron jumbotron-fluid" style="padding-top:0em;padding-bottom:0em;margin-top:-5%">
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="10000">
@@ -39,8 +34,8 @@
                             <p style="margin-top:20px;font-size: 22px;line-height:36px;text-shadow:0 1px 5px rgba(51,51,51,0.4);font-family: 'Open Sans', sans-serif;font-weight:100" class="animate__animated animate__fadeInUp">
                                 Ofreciendo una gran variedad, que permita llegar a los clientes, con un servicio oportuno, de alta calidad y a un precio competitivo.
                                 <br />
-                                <a class="btn btn-info animate__animated animate__fadeInUp" style="width:200px" href="@Url.Action("ListaProductos", "Productos")">
-                                    <img  src="~/Content/imagenes/ff.png" style="width:17%" alt="First slide"> 
+                                <a class="btn btn-outline-light animate__animated animate__fadeInUp" style="width:200px" href="@Url.Action("ListaProductos", "Productos")">
+                                    <i class="fa fa-gear" style="margin-right:5px"></i>
                                     Ver Productos
                                 </a>
                             </p>
@@ -55,16 +50,14 @@
                         <div class="page-title-text" style="width:700px; margin:0 auto; color:#fff;">
                             <h1 style="text-shadow: 0 1px 6px rgba(51,51,51,0.2);font-family: 'Open Sans', sans-serif;font-size:50px;font-weight:400" class="animate__animated animate__zoomIn">Obtenen nuestros materiales y herramientas</h1>
                             <p style="margin-top:20px;font-size: 22px;line-height:36px;text-shadow:0 1px 5px rgba(51,51,51,0.4);font-family: 'Open Sans', sans-serif;font-weight:100" class="animate__animated animate__fadeInUp">
-                                Para acceder fácilmente a ellos puedes
+                                Crea una cuenta o Inicia Sesión
                                 <br />
-                                <a class="btn btn-danger animate__animated animate__fadeInUp" href="@Url.Action("Register","Account")">
+                                <a class="btn btn-outline-light animate__animated animate__fadeInUp" href="@Url.Action("Register","Account")">
                                     <i class="fa fa-user" style="margin-right:5px"></i> Registrarte
                                 </a>
-                                <br />
-                                o
-                                <br />  <a class="btn btn-danger animate__animated animate__fadeInUp" href="@Url.Action("Login","Account")">
-                                            <i class="fa fa-sign-in" style="margin-right:5px"></i>Iniciar sesión
-</a>
+                                <a class="btn btn-outline-light animate__animated animate__fadeInUp" href="@Url.Action("Login","Account")">
+                                    <i class="fa fa-sign-in" style="margin-right:5px"></i>Iniciar sesión
+                                </a>
                             </p>
                         </div>
                     </div>
@@ -87,10 +80,10 @@
     <section id="Acercade">
         <br />
         <br />
-   
+
         <div class="row">
             <div class="col-md-12" style="text-align: center">
-                <h2 style="text-align:center; color: dimgray" class="wow animate__animated animate__fadeInDown">¿Quiénes somos?</h2>
+                <h2 style="text-align:center; color: dimgray" class="animate__animated animate_fadeInDown">¿Quiénes somos?</h2>
                 <hr />
                 <br />
             </div>
@@ -105,7 +98,7 @@
                     que permita llegar a los clientes con un servicio oportuno, de alta calidad y a un precio competitivo.
                 </p>
                 <center>
-                    <img src="~/Content/imagenes/Index/target.png" style="width:50%" class="wow animate__animated animate__fadeInUp"/>
+                    <img src="~/Content/imagenes/Index/target.png" style="width:50%" class="wow animate__animated animate__fadeInUp" />
                 </center>
 
             </div>
@@ -117,7 +110,7 @@
                     ferreteros a través de la búsqueda de la excelencia, logrando así nuestra expansión en el mercado a largo plazo.
                 </p>
                 <center>
-                    <img src="~/Content/imagenes/Index/leader.png" style="width:50%" class="wow animate__animated animate__fadeInUp"/>
+                    <img src="~/Content/imagenes/Index/leader.png" style="width:50%" class="wow animate__animated animate__fadeInUp" />
                 </center>
             </div>
         </div>

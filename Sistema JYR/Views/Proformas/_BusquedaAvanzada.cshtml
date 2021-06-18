@@ -1,10 +1,10 @@
 ﻿@using (Ajax.BeginForm("filtrarCliente", "Proformas", new AjaxOptions
-    {
-        HttpMethod = "GET",
-        UpdateTargetId = "divCliente",
-        InsertionMode = InsertionMode.Replace,
-        OnFailure = "fail()",
-        OnSuccess = "Complete()"
+{
+    HttpMethod = "GET",
+    UpdateTargetId = "divCliente",
+    InsertionMode = InsertionMode.Replace,
+    OnFailure = "fail()",
+    OnSuccess = "Complete()"
 }))
 {
     <div class="container-fluid">
@@ -27,7 +27,7 @@
                 Swal.fire({
                     title: 'El cliente buscado no existe.',
                     icon: 'warning',
-                    text: 'El número de identificación digitado no corresponde a ningun cliente registrado',
+                    text: 'El número de identificación digitado no corresponde a ningún cliente registrado',
                     toast: false,
                     timerProgressBar: true
                 });

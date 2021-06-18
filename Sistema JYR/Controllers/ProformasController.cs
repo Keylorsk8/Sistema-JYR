@@ -1730,18 +1730,35 @@ namespace Sistema_JYR.Controllers
         /// Busqueda avanzada de Usuario para nueva proforma
         /// </summary>
         /// <param name="cedula">Identicación del usuario</param>
-        /// <returns></returns>
         public ActionResult filtrarCliente(string cedula)
         {
+            int ced;
             try
             {
-                int ced = Convert.ToInt32(cedula);
-                AspNetUsers usuario = db.AspNetUsers.Where(x => x.Cedula == ced && x.Rol == 3).First();
-                return PartialView("_Cliente", usuario);
+                ced = Convert.ToInt32(cedula);
             }
-            catch (InvalidOperationException e)
+            catch (Exception)
             {
-                throw e;
+                Session["ErrorFiltro"] = 1;
+                return PartialView("_ClienteSinCuenta");
+            }
+
+            if (db.AspNetUsers.Where(x => x.Cedula == ced).Count() != 0)
+            {
+                if(db.AspNetUsers.Where(x => x.Cedula == ced).First().Rol == 3)
+                {
+                    AspNetUsers usuario = db.AspNetUsers.Where(x => x.Cedula == ced && x.Rol == 3).First();
+                    return PartialView("_Cliente", usuario);
+                }
+                else
+                {
+                    Session["ErrorFiltro"] = 2;
+                    return PartialView("_ClienteSinCuenta");
+                }
+            }
+            else {
+                Session["ErrorFiltro"] = 2;
+                return PartialView("_ClienteSinCuenta");
             }
         }
 

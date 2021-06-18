@@ -7,32 +7,36 @@
     Sistema_JYR.Models.CategoriasProducto categoria = new Sistema_JYR.Models.CategoriasProducto();
     direc.Direccion = "Retirar en la ferretería";
     direc.Provincia = "Alajuela";
-    lista.Insert(0,direc);
+    lista.Insert(0, direc);
     SelectList list = new SelectList(lista, "Direccion", "Direccion");
-    
 }
 
-
-    <div id="divCliente">
-        @Html.Hidden("IdCliente", Model.Id)
-        <div class="form-group container">
-            @Html.Label("NombreCliente", htmlAttributes: new { @class = "control-label col-md-12" })
-            <div class="row">
-                <div class="col-md-10">
-                    <input type="text" class="fa form-control" value="@Model.Nombre @Model.Apellido1 @Model.Apellido2" id="NombreCliente" name="NombreCliente" readonly>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirmation"><i class="fa fa-trash-o"></i></button>
-                </div>
+<div id="divCliente">
+    @Html.Hidden("IdCliente", Model.Id)
+    <div class="form-group container">
+        @Html.Label("NombreCliente", htmlAttributes: new { @class = "control-label col-md-12" })
+        <div class="row">
+            <div class="col-md-10">
+                <input type="text" class="fa form-control" value="@Model.Nombre @Model.Apellido1 @Model.Apellido2" id="NombreCliente" name="NombreCliente" readonly>
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Direccion", htmlAttributes: new { @class = "control-label col-md-12" })
-            <div class="col-md-12">
-                <div class="form-group has-feedback">
-                    @Html.DropDownList("DireccionEntrega", list, htmlAttributes: new { @class = "form-control", @id="DireccionEntrega" })
-                </div>
+            <div class="col-md-2">
+                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#confirmation"><i class="fa fa-trash-o"></i></button>
             </div>
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.Label("Direccion", htmlAttributes: new { @class = "control-label col-md-12" })
+        <div class="col-md-12">
+            <div class="form-group has-feedback">
+                @Html.DropDownList("DireccionEntrega", list, htmlAttributes: new { @class = "form-control", @id = "DireccionEntrega" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

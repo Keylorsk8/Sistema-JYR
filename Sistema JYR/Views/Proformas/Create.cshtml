@@ -19,7 +19,6 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-
         <div class="form-horizontal">
 
             <hr />
@@ -180,4 +179,43 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+}
+
+@if (Session["ErrorFiltro"] != null)
+{
+    switch (Session["ErrorFiltro"])
+    {
+        case 1:
+            <script type="text/javascript">
+                function ErrorCoversion() {
+                    Swal.fire({
+                        title: 'La cédula solo debe contener números',
+                        icon: 'warning',
+                        toast: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                };
+                ErrorCoversion();
+            </script>
+            Session["ErrorFiltro"] = null;
+            break;
+        case 2:
+            <script type="text/javascript">
+                function SinResultados() {
+                    Swal.fire({
+                        title: 'El cliente buscado no existe.',
+                        icon: 'warning',
+                        text: 'El número de identificación digitado no corresponde a ningún cliente registrado',
+                        toast: false,
+                        timerProgressBar: true
+                    });
+                };
+                SinResultados();
+            </script>
+            Session["ErrorFiltro"] = null;
+            break;
+        default:
+            break;
+    }
 }
